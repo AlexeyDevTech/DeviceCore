@@ -9,7 +9,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\ANG24.Core.Devices\ANG24.Core.Devices.csproj" />
-    <ProjectReference Include="..\ANG24.Reflect\ANG24.Reflect.csproj" />
   </ItemGroup>
 
 </Project>
