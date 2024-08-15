@@ -14,8 +14,4 @@
     <ProjectReference Include="..\ANG24.Core.Devices.Interfaces\ANG24.Core.Devices.Interfaces.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Types\" />
-  </ItemGroup>
-
 </Project>

@@ -16,144 +16,270 @@ namespace ANG24.Core.Devices.DeviceBehaviors
     /// </summary>
     public class OrderStrongCommandBehavior : ICommandBehavior
     {
+        private IDevice Device { get; set; }
+        public int TickMilliseconds { get; set; } = 400;
+        public int DefaultCallbackCommandMilliseconds { get; set; } = 500;
 
-        IDevice Device { get; set; }
-        public int TickMilliseconds { get; set; } = 200;
-        public int CallbackCommandMilliseconds { get; set; } = 500;
+        private Queue<CommandElement> commandQueue;
+        private string lastData = string.Empty;
 
-        
-
-        const int Attempts = 3;                                         //количество попыток
-        bool Busy = false;
-        bool BusyHold = false;
-        CommandElement? CurrentCommand;
-        Queue<CommandElement> _commands;
-
-        bool ProcessActive = false;                                     //флаг, указывающий активность задачи обработчика команд
-        Task commandTask;
+        CommandProcessor commandProcessor;
+        private bool isProcessActive = false;
+        private Task commandTask;
 
         public OrderStrongCommandBehavior()
         {
-            _commands = new Queue<CommandElement>();
-            ProcessActive = true;
-            commandTask = Task.Factory.StartNew(CommandProcess);
+            commandQueue = new Queue<CommandElement>();
+            commandProcessor = new CommandProcessor()
+            {
+                commandExecuteAction = SendCommandToDevice,
+                CommandNextAction = () => commandQueue.Dequeue()
+            };
+            StartCommandProcess();
         }
 
-        private async void CommandProcess()
+        private void StartCommandProcess()
         {
-            while (ProcessActive)
+            isProcessActive = true;
+            commandTask = Task.Factory.StartNew(async () =>
             {
-                await Task.Delay(TickMilliseconds);         //задающий темп через задержку
-                if (_commands.Count == 0)                   // если команд нет -- остановка
+                while (isProcessActive)
                 {
-                    Stop(); continue;
+                    //redirected.WaitOne();
+                    await Task.Delay(TickMilliseconds);
+
+                    if (commandQueue.Count == 0)
+                    {
+                        StopCommandProcess();
+                        continue;
+                    }
+                    if (!Device.Online) continue;
+                    ProcessNextCommand();
                 }
-                if (!Device.Online) continue;               //если устройство отключено -- пропустить до следующего "тика"
-                CommandTick();                              //отправка команды
-            }
+            });
         }
 
-
-        //логика обработки одной команды
-        protected virtual void CommandTick()
+        private void ProcessNextCommand()
         {
-           
-            //predicate
-            if (Busy) { return; }              //холдер отправки команды. Указывает на то, что сейчас выполняется какая-то команда
-            CurrentCommand = _commands.Peek(); //забираем команду
-            DeviceSendCommand(CurrentCommand);
+            if (commandProcessor.Busy) return;          //если занято -- пропускаем итерацию
+            commandProcessor.Set(commandQueue.Peek());  //задаем команду
+            commandProcessor.Action();
         }
 
-        private void CommandCheck<T>(T message)
+        private void SendCommandToDevice(string command)
         {
-            if (CurrentCommand != null)        //в итерации может не быть команды, поэтому нужна проверка
-            {
-                if(CurrentCommand is CommandElement) 
-                    CurrentCommand.Execute();
-                else if (CurrentCommand is ParametrizedCommandElement<T>)
-                    (CurrentCommand as ParametrizedCommandElement<T>)?.Execute(message);
-            }
+            Console.WriteLine($"<- {command}");
+            Device.SetCommand(command);
         }
-        private void DeviceSendCommand(CommandElement cur_command)
+        public void ExecuteCommand(string command)
         {
-            Busy = true;
-            Device.SetCommand(cur_command.Command);    //отправляем команду
-
-        }
-        public virtual void ExecuteCommand(string command)
-        {
-            _commands.Enqueue(new CommandElement { Command = command});
-            Start();
+            commandQueue.Enqueue(new CommandElement { Command = command });
+            if (!isProcessActive) StartCommandProcess();
         }
         public void ExecuteCommand(string command, Func<bool>? predicate = null, Action? ifTrue = null, Action? ifFalse = null)
         {
-            _commands.Enqueue(new CommandElement
+            commandQueue.Enqueue(new CommandElement
             {
                 Command = command,
-                Condition = predicate,
-                ActionIfTrueCondition = ifTrue,
-                ActionIfFalseCondition = ifFalse
+                Condition = new CommandCondition(predicate, ifTrue, ifFalse)
             });
-            Start();
+            if (!isProcessActive) StartCommandProcess();
         }
-        public void ExecuteCommand<T>(string command, Func<T, bool>? predicate = null, Action? ifTrue = null, Action? ifFalse = null)
+        public void ExecuteCommand(string command, Func<string, bool>? predicate = null, Action? ifTrue = null, Action? ifFalse = null)
         {
-            _commands.Enqueue(new ParametrizedCommandElement<T>
+            commandQueue.Enqueue(new CommandElement
             {
                 Command = command,
-                Condition = predicate,
-                ActionIfTrueCondition = ifTrue,
-                ActionIfFalseCondition = ifFalse
+                Condition = new ParametrizedCommandCondition(predicate, ifTrue, ifFalse)
             });
-            Start();
+            if (!isProcessActive) StartCommandProcess();
         }
-
-        public virtual void HandleData(string data)
+        public void ExecuteCommand(string command, IOptionalCommandBehavior redirectedBehavior) => new BehaviorCommandElement
         {
-            //if (!BusyHold)
-            //    Busy = false; //если данные не придут -- надо что-то делать...
-
-        }
-
-        private void Start()
+            Command = command,
+            RedirectedBehavior = redirectedBehavior,
+        };
+        public void HandleData(string data)
         {
-            if (!ProcessActive)
-            {
-                ProcessActive = true;
-                commandTask = Task.Factory.StartNew(CommandProcess);
-            }
-        }
-        private void Stop()
-        {
-            ProcessActive = false;
+            Console.WriteLine($"-> {data}");
+            commandProcessor.HandleData(data);
         }
         public void SetDevice(IDevice device) => Device = device;
+        private void StopCommandProcess() => isProcessActive = false;
     }
 
+
+    public class BehaviorCommandElement : CommandElement
+    {
+        public IOptionalCommandBehavior RedirectedBehavior { get; set; }
+    }
     public class CommandElement
     {
-        public required string Command { get; set; }
-        public Func<bool>? Condition { get; set; }
-        public Action? ActionIfTrueCondition { get; set; }
-        public Action? ActionIfFalseCondition { get; set; }
-
-        public void Execute()
-        {
-            if(Condition?.Invoke() ?? true)
-                ActionIfTrueCondition?.Invoke();
-            else ActionIfFalseCondition?.Invoke();
-        }
-
+        public string Command { get; set; }
+        public CommandCondition? Condition { get; set; }
+        public virtual bool Execute(string data = "") => Condition?.Execute(data) ?? true;
     }
-    public class ParametrizedCommandElement<T> : CommandElement
+
+    public class CommandCondition
     {
-        public new Func<T, bool>? Condition { get; set; }
+        private readonly Func<bool>? condition;
+        protected readonly Action? ifTrue;
+        protected readonly Action? ifFalse;
 
-        public void Execute(T param)
+        public CommandCondition(Func<bool>? condition, Action? ifTrue, Action? ifFalse)
         {
-            if (Condition?.Invoke(param) ?? true)
-                ActionIfTrueCondition?.Invoke();
-            else ActionIfFalseCondition?.Invoke();
+            this.condition = condition;
+            this.ifTrue = ifTrue;
+            this.ifFalse = ifFalse;
+        }
+
+        public virtual bool Execute(string data)
+        {
+            bool result = condition?.Invoke() ?? true;
+            if (result) ifTrue?.Invoke();
+            else ifFalse?.Invoke();
+            return result;
         }
     }
+
+    public class ParametrizedCommandCondition : CommandCondition
+    {
+        private readonly Func<string, bool>? condition;
+
+        public ParametrizedCommandCondition(Func<string, bool>? condition, Action? ifTrue, Action? ifFalse)
+            : base(null, ifTrue, ifFalse)
+        {
+            this.condition = condition;
+        }
+
+        public override bool Execute(string data)
+        {
+            bool result = condition?.Invoke(data) ?? true;
+            if (result) ifTrue?.Invoke();
+            else ifFalse?.Invoke();
+            return result;
+        }
+    }
+
+    public class CommandProcessor
+    {
+        private Timer FallTimer;
+        private Timer CommandExecutedTimer;
+
+        int FaultTimeMilliseconds = 500;
+        int CommandExecutedMilliseconds = 300;
+        const int Attempts = 3;
+        int local_attempts = Attempts;
+
+        string last_data = "";
+        private CommandElement? _currentCommand;
+        private IOptionalCommandBehavior? _behavior;
+
+        public CommandElement? CurrentCommand {
+            get => _currentCommand;
+            set
+            {
+                _currentCommand = value;
+                if (_currentCommand is BehaviorCommandElement)
+                {
+                    if((value as BehaviorCommandElement).RedirectedBehavior != null)
+                       _behavior = (value as BehaviorCommandElement).RedirectedBehavior;
+                }
+                else _behavior = null;
+            }
+
+        }
+        public bool Busy { get; set; } = false;
+        public required Action<string> commandExecuteAction { get; set; }
+        public required Action CommandNextAction { get; set; }
+        public CommandProcessor() 
+        { 
+            FallTimer = new Timer(TimeoutCallback, null, Timeout.Infinite, Timeout.Infinite);
+            CommandExecutedTimer = new Timer(ExecuteCommandCallback, null, Timeout.Infinite, Timeout.Infinite);
+        }
+
+        private void TimeoutCallback(object? state)
+        {
+            Check(last_data, true);
+        }
+        private void ExecuteCommandCallback(object? state)
+        {
+            local_attempts = Attempts;
+            Busy = false;
+            CommandNextAction.Invoke();
+        }
+
+        public void Set(CommandElement? command)
+        {
+            CurrentCommand = command;
+        }
+        public void Action()
+        {
+            commandExecuteAction.Invoke(CurrentCommand.Command);
+            Busy = true;
+        }
+        //решает, освобождать выполнение или нет 
+        private void Check(string msg, bool timeout = false)
+        {
+            if (_behavior == null)
+            {
+                if (!timeout)
+                {
+                    var result = CurrentCommand?.Execute(msg) ?? true;
+                    if (result)
+                    {
+                        //если условие команды выполнено
+                        CommandExecutedTimer.Change(CommandExecutedMilliseconds, Timeout.Infinite);
+                    }
+                    else
+                    {
+                        //если нет -- надо выполнить ещё раз
+                        local_attempts--;
+                        if (local_attempts == 0) //пока не исчерпаем количество попыток
+                        {
+                            CommandExecutedTimer.Change(CommandExecutedMilliseconds, Timeout.Infinite);
+                        }
+                    }
+                }
+                else
+                {
+                    local_attempts--;
+                    if (local_attempts == 0) //пока не исчерпаем количество попыток
+                    {
+                        CommandExecutedTimer.Change(CommandExecutedMilliseconds, Timeout.Infinite);
+                    }
+                }
+            }
+            else BehaviorCheck(msg, timeout);
+        }
+        public void HandleData(string data)
+        {
+            Check(data);
+        }
+
+        private void BehaviorCheck(string data, bool timeout)
+        {
+            var state = _behavior.OperationCheck(data);
+            switch (state)
+            {
+                case MEA.OptionalBehaviorState.Processing:
+                    if (timeout)
+                    {
+                        _behavior.OnFail();
+                    }
+                    break;
+                case MEA.OptionalBehaviorState.Success:
+
+                    break;
+                case MEA.OptionalBehaviorState.Fail:
+                    if (!timeout)
+                    {
+
+                    }
+                    break;
+            }
+
+        }
+    }
+
 }
