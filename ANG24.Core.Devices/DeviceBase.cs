@@ -41,27 +41,34 @@ namespace ANG24.Core.Devices
         {
             if (_port.IsOpen)
             {
-                while (_port.BytesToRead > 0) //пока в буфере количество байт не будет равно 0
+                try
                 {
-                    string cur_data = _port.ReadLine();     //чтение по строке
-                    ProcessData(cur_data);                  //в зависимости от реализации, вызываем пост-обработку данных 
-                    _behavior.HandleData(cur_data);         //в зависимости от поведения -- производим обработку данных
-                    _commandBehavior.HandleData(cur_data);  //для обработчика команд -- то же самое
-                    if(_optionalBehaviors.Count > 0)
+                    while (_port.BytesToRead > 0) //пока в буфере количество байт не будет равно 0
                     {
-                        foreach (var behavior in _optionalBehaviors) 
-                        { 
-                            behavior.HandleData(cur_data);
-                        }
-                    }
-                //экспериментальная функция, выполняет дополнительные действия, добавляемые и включаемые по требованию
-                    if (processedActions.Count > 0)
-                        foreach (ProcessAction action in processedActions)
+                        string cur_data = _port.ReadLine();     //чтение по строке
+                        ProcessData(cur_data);                  //в зависимости от реализации, вызываем пост-обработку данных 
+                        _behavior.HandleData(cur_data);         //в зависимости от поведения -- производим обработку данных
+                        _commandBehavior.HandleData(cur_data);  //для обработчика команд -- то же самое
+                        if (_optionalBehaviors.Count > 0)
                         {
-                            action.Execute(cur_data);
-                            if (action.ExecutedOnce)
-                                processedActions.Remove(action);
+                            foreach (var behavior in _optionalBehaviors)
+                            {
+                                behavior.HandleData(cur_data);
+                            }
                         }
+                        //экспериментальная функция, выполняет дополнительные действия, добавляемые и включаемые по требованию
+                        if (processedActions.Count > 0)
+                            foreach (ProcessAction action in processedActions)
+                            {
+                                action.Execute(cur_data);
+                                if (action.ExecutedOnce)
+                                    processedActions.Remove(action);
+                            }
+                    }
+                }
+                catch (InvalidOperationException)
+                {
+
                 }
             }
         }
@@ -95,16 +102,16 @@ namespace ANG24.Core.Devices
                 OnDisconnected();
             }
         }
-        protected void Execute(string command) => _commandBehavior.ExecuteCommand(command);
-        protected void Execute(string command, Func<bool>? predicate = null, Action? ifTrue = null, Action? ifFalse = null)
+        protected void Execute(string command) => _commandBehavior.ExecuteCommand(command, null);
+        protected void Execute(string command, Func<bool>? predicate = null, Action? ifTrue = null, Action? ifFalse = null, CommandElementSettings? settings = null)
         {
-            _commandBehavior.ExecuteCommand(command, predicate, ifTrue, ifFalse);
+            _commandBehavior.ExecuteCommand(command, predicate, ifTrue, ifFalse, settings);
         }
-        protected void Execute(string command, Func<string, bool>? predicate = null, Action? ifTrue = null, Action? ifFalse = null)
+        protected void Execute(string command, Func<string, bool>? predicate = null, Action? ifTrue = null, Action? ifFalse = null, CommandElementSettings? settings = null)
         {
-            _commandBehavior.ExecuteCommand(command, predicate, ifTrue, ifFalse);
+            _commandBehavior.ExecuteCommand(command, predicate, ifTrue, ifFalse, settings);
         }
-        protected void Execute(string command, IOptionalCommandBehavior redirectedBehavior) => _commandBehavior.ExecuteCommand(command, redirectedBehavior);
+        protected void Execute(string command, IOptionalCommandBehavior behavior, CommandElementSettings? settings = null) => _commandBehavior.ExecuteCommand(command, behavior, settings); 
 
         #region Option management
         protected void Option(string Name, Action<string> action, bool isExecutedOnce = false, bool Active = true) => processedActions.Add(new ProcessAction

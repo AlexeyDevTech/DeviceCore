@@ -1,125 +1,245 @@
 ﻿using ANG24.Core.Devices.DeviceBehaviors.Interfaces;
+using ANG24.Core.Devices.DeviceBehaviors.MEA;
 using ANG24.Core.Devices.Interfaces;
 using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Security;
-using System.Text;
-using System.Threading.Tasks;
+using System.Diagnostics;
 
 namespace ANG24.Core.Devices.DeviceBehaviors
 {
+    #region comments
     /// <summary>
     /// Класс, определяющий поведение отправки команд как строго упорядоченное, 
     /// в порядке очереди и через определенный интервал времени.
     /// </summary>
+  
+
+    #endregion
+
     public class OrderStrongCommandBehavior : ICommandBehavior
     {
-        private IDevice Device { get; set; }
-        public int TickMilliseconds { get; set; } = 400;
-        public int DefaultCallbackCommandMilliseconds { get; set; } = 500;
-
         private Queue<CommandElement> commandQueue;
         private string lastData = string.Empty;
-
-        CommandProcessor commandProcessor;
         private bool isProcessActive = false;
+        int Attempts = 3;
+        int messageAttempts = 3;
         private Task commandTask;
+
+        Timer callbackTimeoutTimer;
+        private object _syncRoot = new object();
+
+        IDevice Device { get; set; }
+        public int TickMilliseconds { get; set; } = 350;
+        public int TickAfter { get; set; } = 0;
+        public bool Busy { get; private set; }
+
+        public CommandElement Command { get; set; }
 
         public OrderStrongCommandBehavior()
         {
             commandQueue = new Queue<CommandElement>();
-            commandProcessor = new CommandProcessor()
-            {
-                commandExecuteAction = SendCommandToDevice,
-                CommandNextAction = () => commandQueue.Dequeue()
-            };
-            StartCommandProcess();
+            callbackTimeoutTimer = new Timer(CallbackTimeout, null, Timeout.Infinite, Timeout.Infinite);
         }
 
-        private void StartCommandProcess()
+
+        #region Main cycle
+        private async void CommandProcess()
         {
-            isProcessActive = true;
-            commandTask = Task.Factory.StartNew(async () =>
+            while (isProcessActive)
             {
-                while (isProcessActive)
+                await Task.Delay(TickMilliseconds);
+                if (commandQueue.Count == 0)        //если команд нет
                 {
-                    //redirected.WaitOne();
-                    await Task.Delay(TickMilliseconds);
-
-                    if (commandQueue.Count == 0)
-                    {
-                        StopCommandProcess();
-                        continue;
-                    }
-                    if (!Device.Online) continue;
-                    ProcessNextCommand();
+                    Console.WriteLine("Queue is empty. Stop");
+                    Stop();
+                    continue;
                 }
-            });
+                if (!Device.Online) continue;
+                CommandTick();
+            }
         }
-
-        private void ProcessNextCommand()
+        private void CommandTick()
         {
-            if (commandProcessor.Busy) return;          //если занято -- пропускаем итерацию
-            commandProcessor.Set(commandQueue.Peek());  //задаем команду
-            commandProcessor.Action();
+            if (Busy) return;       //если занят или пустая очередь -- пропустить
+            var _command = commandQueue.Peek();
+            Command = _command;                                 //устанавливаем текущую команду
+            OnProcessing();                                     //задаем сигнал, чтобы не допускать повторной отправки команды
+            var tb = 0;                                         //значение для задержки перед отправкой
+            var tm = 500;                                         //значение для таймера таймаута
+            if(Command.Settings != null)
+            {
+                tm = Command.Settings.Timeout;
+                TickAfter = Command.Settings.TimeoutAfter;
+            }
+            if (Command.Redirected) Command.Behavior.Start();
+            //if (tb > 0)
+            //    await Task.Delay(tb); //по заказу -- задержка перед отправкой команды
+            Device.SetCommand(Command.Command);                 //отправляем
+            
+            Console.WriteLine($"<--- {Command.Command}");
+            callbackTimeoutTimer.Change(tm, Timeout.Infinite); //и запускаем таймер ожидания обратной связи
         }
-
-        private void SendCommandToDevice(string command)
+        #endregion
+        #region start\stop 
+        private void Stop()
         {
-            Console.WriteLine($"<- {command}");
-            Device.SetCommand(command);
+            isProcessActive = false;
         }
-        public void ExecuteCommand(string command)
+        private void Start()
         {
-            commandQueue.Enqueue(new CommandElement { Command = command });
-            if (!isProcessActive) StartCommandProcess();
+            if (!isProcessActive)
+            {
+                isProcessActive = true;
+                commandTask = Task.Run(CommandProcess);
+            }
         }
-        public void ExecuteCommand(string command, Func<bool>? predicate = null, Action? ifTrue = null, Action? ifFalse = null)
+        #endregion
+        #region ExecuteCommand realizations
+        public void ExecuteCommand(string command, CommandElementSettings settings)
         {
             commandQueue.Enqueue(new CommandElement
             {
                 Command = command,
-                Condition = new CommandCondition(predicate, ifTrue, ifFalse)
             });
-            if (!isProcessActive) StartCommandProcess();
+            if (!isProcessActive) Start();
         }
-        public void ExecuteCommand(string command, Func<string, bool>? predicate = null, Action? ifTrue = null, Action? ifFalse = null)
+        public void ExecuteCommand(string command, Func<bool>? predicate = null, Action? ifTrue = null, Action? ifFalse = null, CommandElementSettings settings = null)
         {
             commandQueue.Enqueue(new CommandElement
             {
                 Command = command,
-                Condition = new ParametrizedCommandCondition(predicate, ifTrue, ifFalse)
+                Condition = new CommandCondition(predicate, ifTrue, ifFalse),
+                Settings = settings
             });
-            if (!isProcessActive) StartCommandProcess();
+            if (!isProcessActive) Start();
         }
-        public void ExecuteCommand(string command, IOptionalCommandBehavior redirectedBehavior) => new BehaviorCommandElement
+        public void ExecuteCommand(string command, Func<string, bool>? predicate = null, Action? ifTrue = null, Action? ifFalse = null, CommandElementSettings settings = null)
         {
-            Command = command,
-            RedirectedBehavior = redirectedBehavior,
-        };
+            commandQueue.Enqueue(new CommandElement
+            {
+                Command = command,
+                Condition = new ParametrizedCommandCondition(predicate, ifTrue, ifFalse),
+                Settings = settings
+            });
+            if (!isProcessActive) Start();
+        }
+        public void ExecuteCommand(string command, IOptionalCommandBehavior behavior, CommandElementSettings settings = null)
+        {
+            commandQueue.Enqueue(new CommandElement
+            {
+                Command = command,
+                Behavior = behavior,
+                Settings = settings
+            });
+        }
+        #endregion
         public void HandleData(string data)
         {
-            Console.WriteLine($"-> {data}");
-            commandProcessor.HandleData(data);
+            if (Command != null)
+            {
+                if (Command?.Redirected ?? false) Command.Behavior.HandleData(data);
+                Check(data);
+            }
         }
+
+        private void Check(string msg)
+        {
+            var result = Command.Execute(msg);
+            if (!Command.Redirected) //если команда простая
+            {
+                if (result) OnSuccess();
+                else
+                {
+                    if (messageAttempts == 0)
+                        OnFailure();
+                    messageAttempts--;
+                }
+            }
+            else
+            {
+                var state = Command.GetState();
+                switch (state)
+                {
+                    case OptionalBehaviorState.Success:
+                        OnSuccess();
+                        Console.Out.WriteLine("[behavior success]");
+                        break; //якорь завершения операции
+                    case OptionalBehaviorState.Processing:
+                        OnProcessing();
+                        Console.Out.WriteLine("[behavior processing]");
+                        break; //продолжение операции и задержка главного цикла
+                    case OptionalBehaviorState.Fail:
+                        OnFailure();
+                        Console.Out.WriteLine("[behavior failure]");
+                        break; //Якорь завершения операции с ошибкой (если не исчерпались попытки -- повторение)
+                }
+            }
+        }
+
+        private void CallbackTimeout(object? state)
+        {
+            Console.WriteLine("[[has timeout]]");
+            OnFailure();
+        }
+
         public void SetDevice(IDevice device) => Device = device;
-        private void StopCommandProcess() => isProcessActive = false;
-    }
 
+        public void OnProcessing() => Busy = true;
+        public void OnSuccess()
+        {
+            callbackTimeoutTimer.Change(Timeout.Infinite, Timeout.Infinite);
+            Console.WriteLine("[[Success]]");
+            messageAttempts = 3;
+            Attempts = 3;
+            DropCommand();
+            Busy = false;
+        }
+        public void OnFailure()
+        {
+            Attempts--;
+            if (Attempts == 0)
+            {
+                Attempts = 3;
+                messageAttempts = 3;
+               DropCommand();
+            }
+            Console.WriteLine($"[[Fail(Attempts = {Attempts})]]");
+            Busy = false; //впускает для повторения операции
+        }
+        public void DropCommand()
+        {
+            commandQueue.Dequeue();
+            Command = null;
+            TickAfter = 0;
+            //await Task.Delay(TickAfter); //по заказу -- ожидание после выполнения команды
+            
+        }
 
-    public class BehaviorCommandElement : CommandElement
-    {
-        public IOptionalCommandBehavior RedirectedBehavior { get; set; }
+       
     }
+    #region Command element realization (and conditions)
     public class CommandElement
     {
         public string Command { get; set; }
+        public CommandElementSettings Settings { get; set; }
         public CommandCondition? Condition { get; set; }
-        public virtual bool Execute(string data = "") => Condition?.Execute(data) ?? true;
+        public IOptionalCommandBehavior Behavior { get; set; }
+        public bool Redirected => Behavior != null;
+        public virtual bool Execute(string data = "")
+        {
+            if(Behavior == null)
+               return Condition?.Execute(data) ?? true;
+            else
+            {
+                var res = Behavior.OperationCheck(data);
+                if (res == MEA.OptionalBehaviorState.Processing || res == MEA.OptionalBehaviorState.Fail) return false;
+                else return true;
+            }
+        }
+        public OptionalBehaviorState GetState()
+        {
+            return Behavior?.State ?? OptionalBehaviorState.Success;
+        }
     }
-
     public class CommandCondition
     {
         private readonly Func<bool>? condition;
@@ -141,7 +261,6 @@ namespace ANG24.Core.Devices.DeviceBehaviors
             return result;
         }
     }
-
     public class ParametrizedCommandCondition : CommandCondition
     {
         private readonly Func<string, bool>? condition;
@@ -160,126 +279,5 @@ namespace ANG24.Core.Devices.DeviceBehaviors
             return result;
         }
     }
-
-    public class CommandProcessor
-    {
-        private Timer FallTimer;
-        private Timer CommandExecutedTimer;
-
-        int FaultTimeMilliseconds = 500;
-        int CommandExecutedMilliseconds = 300;
-        const int Attempts = 3;
-        int local_attempts = Attempts;
-
-        string last_data = "";
-        private CommandElement? _currentCommand;
-        private IOptionalCommandBehavior? _behavior;
-
-        public CommandElement? CurrentCommand {
-            get => _currentCommand;
-            set
-            {
-                _currentCommand = value;
-                if (_currentCommand is BehaviorCommandElement)
-                {
-                    if((value as BehaviorCommandElement).RedirectedBehavior != null)
-                       _behavior = (value as BehaviorCommandElement).RedirectedBehavior;
-                }
-                else _behavior = null;
-            }
-
-        }
-        public bool Busy { get; set; } = false;
-        public required Action<string> commandExecuteAction { get; set; }
-        public required Action CommandNextAction { get; set; }
-        public CommandProcessor() 
-        { 
-            FallTimer = new Timer(TimeoutCallback, null, Timeout.Infinite, Timeout.Infinite);
-            CommandExecutedTimer = new Timer(ExecuteCommandCallback, null, Timeout.Infinite, Timeout.Infinite);
-        }
-
-        private void TimeoutCallback(object? state)
-        {
-            Check(last_data, true);
-        }
-        private void ExecuteCommandCallback(object? state)
-        {
-            local_attempts = Attempts;
-            Busy = false;
-            CommandNextAction.Invoke();
-        }
-
-        public void Set(CommandElement? command)
-        {
-            CurrentCommand = command;
-        }
-        public void Action()
-        {
-            commandExecuteAction.Invoke(CurrentCommand.Command);
-            Busy = true;
-        }
-        //решает, освобождать выполнение или нет 
-        private void Check(string msg, bool timeout = false)
-        {
-            if (_behavior == null)
-            {
-                if (!timeout)
-                {
-                    var result = CurrentCommand?.Execute(msg) ?? true;
-                    if (result)
-                    {
-                        //если условие команды выполнено
-                        CommandExecutedTimer.Change(CommandExecutedMilliseconds, Timeout.Infinite);
-                    }
-                    else
-                    {
-                        //если нет -- надо выполнить ещё раз
-                        local_attempts--;
-                        if (local_attempts == 0) //пока не исчерпаем количество попыток
-                        {
-                            CommandExecutedTimer.Change(CommandExecutedMilliseconds, Timeout.Infinite);
-                        }
-                    }
-                }
-                else
-                {
-                    local_attempts--;
-                    if (local_attempts == 0) //пока не исчерпаем количество попыток
-                    {
-                        CommandExecutedTimer.Change(CommandExecutedMilliseconds, Timeout.Infinite);
-                    }
-                }
-            }
-            else BehaviorCheck(msg, timeout);
-        }
-        public void HandleData(string data)
-        {
-            Check(data);
-        }
-
-        private void BehaviorCheck(string data, bool timeout)
-        {
-            var state = _behavior.OperationCheck(data);
-            switch (state)
-            {
-                case MEA.OptionalBehaviorState.Processing:
-                    if (timeout)
-                    {
-                        _behavior.OnFail();
-                    }
-                    break;
-                case MEA.OptionalBehaviorState.Success:
-
-                    break;
-                case MEA.OptionalBehaviorState.Fail:
-                    if (!timeout)
-                    {
-
-                    }
-                    break;
-            }
-
-        }
-    }
-
+    #endregion
 }

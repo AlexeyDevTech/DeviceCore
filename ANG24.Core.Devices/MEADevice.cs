@@ -1,4 +1,5 @@
 ﻿using ANG24.Core.Devices.DeviceBehaviors;
+using ANG24.Core.Devices.DeviceBehaviors.Interfaces;
 using ANG24.Core.Devices.DeviceBehaviors.MEA;
 using ANG24.Core.Devices.Helpers;
 using ANG24.Core.Devices.Types;
@@ -10,6 +11,8 @@ namespace ANG24.Core.Devices
     public class MEADevice : DeviceBase
     {
         public ControllerData CurrentData { get; set; }
+
+        public bool ModuleActive { get; set; }
 
         public MEADevice() : base(new AutoCallbackDeviceBehavior() { CallBackMilliseconds = 5000 },
                                   new OrderStrongCommandBehavior()) 
@@ -25,7 +28,7 @@ namespace ANG24.Core.Devices
         protected override void ProcessData(string data)
         {
             CurrentData = new ControllerData(data);
-            //Console.WriteLine($"device callback: {data}");
+            Console.WriteLine($"device callback: {data}");
         }
 
 
@@ -94,7 +97,10 @@ namespace ANG24.Core.Devices
         }
         public void EnterKeys(int[] keys)
         {
-
+            Execute($"EnterKey1,{keys[0]};", x => x.Contains("Key1 accepted"));
+            Execute($"EnterKey2,{keys[0]};", x => x.Contains("Key2 accepted"));
+            Execute($"EnterKey3,{keys[0]};", x => x.Contains("Key3 accepted"));
+            Execute($"EnterKey4,{keys[0]};", x => x.Contains("Key4 accepted"));
         }
 
         public FazeType GetFazeType()
@@ -221,6 +227,9 @@ namespace ANG24.Core.Devices
                   if (msz.MSKMagnetFault) Console.WriteLine(">>> error in [MSK Magnet] -> down");
                   if (hvinc) Console.WriteLine(">>> check HVSwitch!");
               }
+            }, new CommandElementSettings
+            {
+                Timeout = 6000, TimeoutAfter = 1000
             });
         }
         public void PowerOff()
@@ -245,6 +254,11 @@ namespace ANG24.Core.Devices
                     if (msz.MSKMagnetFault) Console.WriteLine(">>> error in [MSK Magnet] -> down");
                     Console.WriteLine("[--- power off in Fail ---]");
                 }
+            }, 
+            new CommandElementSettings
+            {
+                Timeout = 6000,
+                TimeoutAfter = 1000
             });
         }
     }
