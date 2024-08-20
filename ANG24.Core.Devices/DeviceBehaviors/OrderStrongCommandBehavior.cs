@@ -1,5 +1,5 @@
-﻿using ANG24.Core.Devices.DeviceBehaviors.Interfaces;
-using ANG24.Core.Devices.DeviceBehaviors.MEA;
+﻿using ANG24.Core.Devices.DeviceBehaviors.Base;
+using ANG24.Core.Devices.DeviceBehaviors.Interfaces;
 using ANG24.Core.Devices.Interfaces;
 using System;
 using System.Diagnostics;
@@ -11,7 +11,7 @@ namespace ANG24.Core.Devices.DeviceBehaviors
     /// Класс, определяющий поведение отправки команд как строго упорядоченное, 
     /// в порядке очереди и через определенный интервал времени.
     /// </summary>
-  
+
 
     #endregion
 
@@ -20,14 +20,18 @@ namespace ANG24.Core.Devices.DeviceBehaviors
         private Queue<CommandElement> commandQueue;
         private string lastData = string.Empty;
         private bool isProcessActive = false;
-        int Attempts = 3;
+        int attempts = 3;
         int messageAttempts = 3;
         private Task commandTask;
 
         Timer callbackTimeoutTimer;
         private object _syncRoot = new object();
 
+        
         IDevice Device { get; set; }
+        public bool AutoResponse { get; set; } = true;
+        public int Attempts { get; set; } = 3;
+        public int MessageAttempts { get; set; } = 3;
         public int TickMilliseconds { get; set; } = 350;
         public int TickAfter { get; set; } = 0;
         public bool Busy { get; private set; }
@@ -65,10 +69,13 @@ namespace ANG24.Core.Devices.DeviceBehaviors
             OnProcessing();                                     //задаем сигнал, чтобы не допускать повторной отправки команды
             var tb = 0;                                         //значение для задержки перед отправкой
             var tm = 500;                                         //значение для таймера таймаута
+            messageAttempts = MessageAttempts;
+            attempts = Attempts;
             if(Command.Settings != null)
             {
                 tm = Command.Settings.Timeout;
-                TickAfter = Command.Settings.TimeoutAfter;
+                messageAttempts = Command.Settings.MessageAttempts;
+                attempts = Command.Settings.Attempts;
             }
             if (Command.Redirected) Command.Behavior.Start();
             //if (tb > 0)
@@ -149,9 +156,15 @@ namespace ANG24.Core.Devices.DeviceBehaviors
                 if (result) OnSuccess();
                 else
                 {
-                    if (messageAttempts == 0)
+                    if (AutoResponse)
+                    {
+                        if (messageAttempts == 0)
+                            OnFailure();
+                        messageAttempts--;
+                    } else
+                    {
                         OnFailure();
-                    messageAttempts--;
+                    }
                 }
             }
             else
@@ -188,30 +201,23 @@ namespace ANG24.Core.Devices.DeviceBehaviors
         {
             callbackTimeoutTimer.Change(Timeout.Infinite, Timeout.Infinite);
             Console.WriteLine("[[Success]]");
-            messageAttempts = 3;
-            Attempts = 3;
             DropCommand();
             Busy = false;
         }
         public void OnFailure()
         {
-            Attempts--;
-            if (Attempts == 0)
+            attempts--;
+            if (attempts == 0)
             {
-                Attempts = 3;
-                messageAttempts = 3;
                DropCommand();
             }
-            Console.WriteLine($"[[Fail(Attempts = {Attempts})]]");
+            Console.WriteLine($"[[Fail(Attempts = {attempts})]]");
             Busy = false; //впускает для повторения операции
         }
         public void DropCommand()
         {
             commandQueue.Dequeue();
             Command = null;
-            TickAfter = 0;
-            //await Task.Delay(TickAfter); //по заказу -- ожидание после выполнения команды
-            
         }
 
        
@@ -231,7 +237,7 @@ namespace ANG24.Core.Devices.DeviceBehaviors
             else
             {
                 var res = Behavior.OperationCheck(data);
-                if (res == MEA.OptionalBehaviorState.Processing || res == MEA.OptionalBehaviorState.Fail) return false;
+                if (res == OptionalBehaviorState.Processing || res == OptionalBehaviorState.Fail) return false;
                 else return true;
             }
         }

@@ -1,16 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace ANG24.Core.Devices.Interfaces
+﻿namespace ANG24.Core.Devices.Interfaces
 {
-
+    public delegate void DREventHandler(string data);
     public interface IDevice
     {
         event EventHandler Connected;
         event EventHandler Disconnected;
+        event DREventHandler DeviceDataReceived;
         bool Online { get; }
         string DeviceStatus { get; }
         void Connect();

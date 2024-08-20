@@ -2,13 +2,14 @@
 using ANG24.Core.Devices.DeviceBehaviors.Interfaces;
 using ANG24.Core.Devices.Helpers;
 using ANG24.Core.Devices.Interfaces;
+using System.Diagnostics.Tracing;
 using System.IO.Ports;
 
 namespace ANG24.Core.Devices
 {
     public abstract class DeviceBase : IDevice
     {
-        
+
         protected SerialPort _port;                                                       //непосредственно порт подключения
         private Timer _reconnectTimer;                                          //таймер для попытки подключиться снова
         public string _portName;                                              //именованный источник (имя порта)
@@ -21,6 +22,7 @@ namespace ANG24.Core.Devices
 
         public event EventHandler? Connected;
         public event EventHandler? Disconnected;
+        public event DREventHandler DeviceDataReceived;
 
         //device online state
         public bool Online => _port?.IsOpen ?? false;
@@ -64,6 +66,7 @@ namespace ANG24.Core.Devices
                                 if (action.ExecutedOnce)
                                     processedActions.Remove(action);
                             }
+                        DeviceDataReceived?.Invoke(cur_data);
                     }
                 }
                 catch (InvalidOperationException)

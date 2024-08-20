@@ -1,5 +1,5 @@
 ﻿
-using ANG24.Core.Devices.DeviceBehaviors.MEA;
+using ANG24.Core.Devices.DeviceBehaviors.Base;
 
 namespace ANG24.Core.Devices.DeviceBehaviors.Interfaces
 {

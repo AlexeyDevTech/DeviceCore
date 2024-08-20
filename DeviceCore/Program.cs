@@ -11,12 +11,11 @@ namespace DeviceCore
             Console.WriteLine("Hello, World!");
             var device = new MEADevice();
             device.Connect();
-            device.EnterKeys([1, 1, 1, 1]);
-            //device.SetModule(LabModules.HVMAC);
-            //device.PowerOn();
-            //await Task.Delay(10000);
-            //device.PowerOff();
-            //device.SetModule(LabModules.HVMDC);
+            device.SetModule(LabModules.HVMAC);
+            device.PowerOn();
+            await Task.Delay(10000);
+            device.PowerOff();
+            device.SetModule(LabModules.HVMDC);
             //await Task.Delay(10000);
             ////device.PowerOff();
             //device.ResetModule();
