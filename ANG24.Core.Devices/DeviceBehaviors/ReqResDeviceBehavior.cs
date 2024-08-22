@@ -8,21 +8,18 @@ using System.Threading.Tasks;
 
 namespace ANG24.Core.Devices.DeviceBehaviors
 {
-   /// <summary>
-   /// behavior для управления поведением "подключенности" устройства, предполагая, 
-   /// что оно само отправляет сообщения
-   /// </summary>
-    public class AutoCallbackDeviceBehavior : IDeviceBehavior
+    public class ReqResDeviceBehavior : IDeviceBehavior
     {
-        private IDevice device;
+        IDevice device;
         Timer timer;
-        public int CallBackMilliseconds { get; set; } //время ожидания ответа
-        public AutoCallbackDeviceBehavior()
+
+        public int CallBackMilliseconds { get; set; } = 1000;//время ожидания ответа
+
+        public ReqResDeviceBehavior()
         {
             timer = new Timer(Reconnect, null, Timeout.Infinite, Timeout.Infinite);
         }
 
-        public void SetDevice(IDevice device) => this.device = device;
         private void Reconnect(object? state)
         {
             device.Disconnect();
@@ -32,12 +29,17 @@ namespace ANG24.Core.Devices.DeviceBehaviors
 
         public void HandleData(string data)
         {
-            timer.Change(CallBackMilliseconds, Timeout.Infinite);
+            timer.Change(Timeout.Infinite, Timeout.Infinite);
         }
 
         public void RequestData(string data)
         {
-            Console.WriteLine($"request data -> {data}");
+            timer.Change(CallBackMilliseconds, Timeout.Infinite);
+        }
+
+        public void SetDevice(IDevice device)
+        {
+            this.device = device;
         }
     }
 }

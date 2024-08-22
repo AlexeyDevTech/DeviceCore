@@ -26,8 +26,8 @@ namespace ANG24.Core.Devices.DeviceBehaviors
 
         Timer callbackTimeoutTimer;
         private object _syncRoot = new object();
+        private bool FailureCommand;
 
-        
         IDevice Device { get; set; }
         public bool AutoResponse { get; set; } = true;
         public int Attempts { get; set; } = 3;
@@ -65,12 +65,15 @@ namespace ANG24.Core.Devices.DeviceBehaviors
         {
             if (Busy) return;       //если занят или пустая очередь -- пропустить
             var _command = commandQueue.Peek();
+            Console.WriteLine($"command set(lost = {commandQueue.Count})");
             Command = _command;                                 //устанавливаем текущую команду
             OnProcessing();                                     //задаем сигнал, чтобы не допускать повторной отправки команды
             var tb = 0;                                         //значение для задержки перед отправкой
             var tm = 500;                                         //значение для таймера таймаута
             messageAttempts = MessageAttempts;
+            
             attempts = Attempts;
+
             if(Command.Settings != null)
             {
                 tm = Command.Settings.Timeout;
@@ -206,18 +209,21 @@ namespace ANG24.Core.Devices.DeviceBehaviors
         }
         public void OnFailure()
         {
+            callbackTimeoutTimer.Change(Timeout.Infinite, Timeout.Infinite);
             attempts--;
-            if (attempts == 0)
+            if (attempts < 0)
             {
-               DropCommand();
+                Console.WriteLine("{{{{{{{{{{{{}}}}}}}}}}}}");
+                DropCommand();
             }
             Console.WriteLine($"[[Fail(Attempts = {attempts})]]");
-            Busy = false; //впускает для повторения операции
+           
         }
         public void DropCommand()
         {
             commandQueue.Dequeue();
             Command = null;
+            Busy = false; //впускает для повторения операции
         }
 
        

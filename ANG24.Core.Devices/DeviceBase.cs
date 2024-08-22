@@ -83,6 +83,7 @@ namespace ANG24.Core.Devices
                 if (Online)
                 {
                     _port.Write(command); //попытка отправить данные
+                    _behavior.RequestData(command);
                 }
             }
             catch (InvalidOperationException ioex)
