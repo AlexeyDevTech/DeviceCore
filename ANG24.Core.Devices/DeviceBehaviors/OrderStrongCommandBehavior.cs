@@ -71,7 +71,6 @@ namespace ANG24.Core.Devices.DeviceBehaviors
             var tb = 0;                                         //значение для задержки перед отправкой
             var tm = 500;                                         //значение для таймера таймаута
             messageAttempts = MessageAttempts;
-            
             attempts = Attempts;
 
             if(Command.Settings != null)
@@ -210,6 +209,7 @@ namespace ANG24.Core.Devices.DeviceBehaviors
         public void OnFailure()
         {
             callbackTimeoutTimer.Change(Timeout.Infinite, Timeout.Infinite);
+
             attempts--;
             if (attempts < 0)
             {
@@ -217,13 +217,12 @@ namespace ANG24.Core.Devices.DeviceBehaviors
                 DropCommand();
             }
             Console.WriteLine($"[[Fail(Attempts = {attempts})]]");
-           
+            Busy = false; //впускает для повторения операции
         }
         public void DropCommand()
         {
             commandQueue.Dequeue();
             Command = null;
-            Busy = false; //впускает для повторения операции
         }
 
         public void RequestData(string data)
