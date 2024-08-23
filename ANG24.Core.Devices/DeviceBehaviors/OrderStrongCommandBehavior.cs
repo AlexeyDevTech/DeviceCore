@@ -27,6 +27,7 @@ namespace ANG24.Core.Devices.DeviceBehaviors
         Timer callbackTimeoutTimer;
         private object _syncRoot = new object();
         private bool FailureCommand;
+        private bool CommandFailProcess;
 
         IDevice Device { get; set; }
         public bool AutoResponse { get; set; } = true;
@@ -71,13 +72,15 @@ namespace ANG24.Core.Devices.DeviceBehaviors
             var tb = 0;                                         //значение для задержки перед отправкой
             var tm = 500;                                         //значение для таймера таймаута
             messageAttempts = MessageAttempts;
-            attempts = Attempts;
+            if(!CommandFailProcess)
+               attempts = Attempts;
 
             if(Command.Settings != null)
             {
                 tm = Command.Settings.Timeout;
                 messageAttempts = Command.Settings.MessageAttempts;
-                attempts = Command.Settings.Attempts;
+                if(!CommandFailProcess)
+                   attempts = Command.Settings.Attempts;
             }
             if (Command.Redirected) Command.Behavior.Start();
             //if (tb > 0)
@@ -209,13 +212,14 @@ namespace ANG24.Core.Devices.DeviceBehaviors
         public void OnFailure()
         {
             callbackTimeoutTimer.Change(Timeout.Infinite, Timeout.Infinite);
-
-            attempts--;
-            if (attempts < 0)
+            CommandFailProcess = true;
+            if (attempts <= 0)
             {
                 Console.WriteLine("{{{{{{{{{{{{}}}}}}}}}}}}");
                 DropCommand();
+                CommandFailProcess = false;
             }
+            attempts--;
             Console.WriteLine($"[[Fail(Attempts = {attempts})]]");
             Busy = false; //впускает для повторения операции
         }
