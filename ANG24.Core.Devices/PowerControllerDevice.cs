@@ -1,5 +1,6 @@
 ﻿using ANG24.Core.Devices.DeviceBehaviors;
 using ANG24.Core.Devices.DeviceBehaviors.Interfaces;
+using ANG24.Core.Devices.Helpers;
 using ANG24.Core.Devices.Types;
 using System;
 using System.Collections.Generic;
@@ -26,12 +27,12 @@ namespace ANG24.Core.Devices
         protected override void ProcessData(string data)
         {
             CurrentData = new ControllerData(data);
-            Debug.WriteLine($"device callback: {data}");
+            ControllerLogger.WriteString($"device callback: {data}");
             if (data.Contains("mode"))
             {
                 var m = data.Split('=')[1].Replace('\r', ' ').Replace('\n', ' ').Trim();
                 CurrentMode = Convert.ToInt32(m);
-                Debug.WriteLine($"[PS]Mode: {CurrentMode}");
+                ControllerLogger.WriteString($"[PS]Mode: {CurrentMode}");
             }
         }
 

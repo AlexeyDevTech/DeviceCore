@@ -20,7 +20,7 @@ namespace ANG24.Core.Devices
 
         public override async void Connect()
         {
-            if (await Find("#LAB?", "Bridge", 115200))
+            if (await Find("#LAB?", "BridgeCommutator", 115200))
                 base.Connect();
         }
         protected override void ProcessData(string data)
