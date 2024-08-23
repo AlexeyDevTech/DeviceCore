@@ -10,22 +10,19 @@ namespace ANG24.Core.Devices.DeviceBehaviors
     public class ReqResWithTimeCallBackDeviceBehavior : ReqResDeviceBehavior
     {
         Timer timerCallback;
-        string command = "";
+        
         public int ReqResMilliseconds { get; set; } = 10000;
-        public ReqResWithTimeCallBackDeviceBehavior(string command) : base()
+        public ReqResWithTimeCallBackDeviceBehavior() : base()
         {
-            this.command = command;
-            timerCallback = new(GetCommand, null, base.CallBackMilliseconds, ReqResMilliseconds);
+            timerCallback = new Timer(GetCommand, null, CallBackMilliseconds, ReqResMilliseconds);
         }
 
         public void GetCommand(object? state)
         {
-            base.device.SetCommand(command);
+            base.device.Ping();
         }
-        public void HandleData(string data)
-        {
-            base.HandleData(data);
-            timerCallback.Change(CallBackMilliseconds,ReqResMilliseconds);
-        }
+
+      
+       
     }
 }

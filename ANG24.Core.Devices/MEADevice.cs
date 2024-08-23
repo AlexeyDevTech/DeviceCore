@@ -306,5 +306,10 @@ namespace ANG24.Core.Devices
             var voltageOverloadManager = this.GetOptionalBehavior<VoltageOverloadManagerBehavior>("VoltageOverloadManagerBehavior");
             voltageOverloadManager.SetDefault();
         }
+        //AutoCallBack
+        public override void Ping()
+        {
+            
+        }
     }
 }

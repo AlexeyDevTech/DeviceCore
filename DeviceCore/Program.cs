@@ -12,7 +12,14 @@ namespace DeviceCore
 
             var device = new PowerControllerDevice();
             device.Connect();
-            device.GetMode();
+            
+
+
+            //Task.Run(async () =>
+            //{
+            //    await Task.Delay(4000);
+            //    device.GetMode();
+            //});
             //Console.WriteLine("Hello, World!");
             //var device = new MEADevice();
             //device.Connect();
@@ -47,6 +54,6 @@ namespace DeviceCore
 
         }
     }
-   
+
 }
-   
+

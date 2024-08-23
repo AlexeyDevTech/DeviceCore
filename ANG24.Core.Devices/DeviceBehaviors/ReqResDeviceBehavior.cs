@@ -27,7 +27,7 @@ namespace ANG24.Core.Devices.DeviceBehaviors
             timer.Change(Timeout.Infinite, Timeout.Infinite);
         }
 
-        public void HandleData(string data)
+        public virtual void HandleData(string data)
         {
             timer.Change(Timeout.Infinite, Timeout.Infinite);
         }

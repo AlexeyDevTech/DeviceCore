@@ -74,12 +74,10 @@ namespace ANG24.Core.Devices
             }
         }
 
-
-
-
-
-
-
+        public override void Ping()
+        {
+            
+        }
 
         public enum BridgeCommutatorState : int
         {
