@@ -10,7 +10,7 @@ namespace ANG24.Core.Devices.DeviceBehaviors
 {
     public class ReqResDeviceBehavior : IDeviceBehavior
     {
-        IDevice device;
+        public IDevice device;
         Timer timer;
 
         public int CallBackMilliseconds { get; set; } = 1000;//время ожидания ответа
@@ -20,7 +20,7 @@ namespace ANG24.Core.Devices.DeviceBehaviors
             timer = new Timer(Reconnect, null, Timeout.Infinite, Timeout.Infinite);
         }
 
-        private void Reconnect(object? state)
+        public void Reconnect(object? state)
         {
             device.Disconnect();
             (device as DeviceBase).StartReconnectTimer();

@@ -226,7 +226,10 @@ namespace ANG24.Core.Devices.DeviceBehaviors
             Busy = false; //впускает для повторения операции
         }
 
-       
+        public void RequestData(string data)
+        {
+            
+        }
     }
     #region Command element realization (and conditions)
     public class CommandElement
