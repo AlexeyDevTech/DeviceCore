@@ -77,6 +77,11 @@ namespace ANG24.Core.Devices.DeviceBehaviors.Base
         {
             State = OptionalBehaviorState.NotStarted;
         }
+
+        public void RequestData(string data)
+        {
+            
+        }
     }
     public enum OptionalBehaviorState : int
     {

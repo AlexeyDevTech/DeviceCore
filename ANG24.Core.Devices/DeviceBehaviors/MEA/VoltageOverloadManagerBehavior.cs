@@ -124,5 +124,10 @@ namespace ANG24.Core.Devices.DeviceBehaviors.MEA
         {
             _device = (device as MEADevice);
         }
+
+        public void RequestData(string data)
+        {
+           
+        }
     }
 }

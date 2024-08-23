@@ -11,6 +11,7 @@
         void Connect();
         void Disconnect();
         void SetCommand(string command);
+        void Ping();
     }
     
 

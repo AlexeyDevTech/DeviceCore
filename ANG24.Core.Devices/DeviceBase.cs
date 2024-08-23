@@ -214,6 +214,7 @@ namespace ANG24.Core.Devices
         internal void StopReconnectTimer() => _reconnectTimer.Change(Timeout.Infinite, Timeout.Infinite);
         #endregion
 
+        public abstract void Ping();
     }
 
     public class ProcessAction
