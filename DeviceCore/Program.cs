@@ -11,9 +11,7 @@ namespace DeviceCore
        
         static async Task Main(string[] args)
         {
-            var device = new MEADevice();
-            var dev = device.SelectDevice<CompensationControllerDevice>();
-            Console.WriteLine(dev.ToString());
+
             //var device = new PowerControllerDevice();
             //device.Connect();
 

@@ -11,7 +11,9 @@ namespace ANG24.Core.Devices
     public class VoltageSyncroControllerDevice : DeviceBase
     {
         public int Mode { get; set; }
-        public VoltageSyncroControllerDevice() : base(new ReqResDeviceBehavior(), new OrderStrongCommandBehavior())
+        //[Prozorov] здесь предпочтителен способ с пингом
+        //[Prozorov] указать параметры behavior
+        public VoltageSyncroControllerDevice() : base(new ReqResWithTimeCallBackDeviceBehavior() { CallBackMilliseconds = 1000, ReqResMilliseconds = 2000}, new OrderStrongCommandBehavior())
         {
         }
         public override async void Connect()
@@ -21,7 +23,8 @@ namespace ANG24.Core.Devices
         }
         public override void Ping()
         {
-
+            //[Prozorov] указать метод пинга
+            GetMode();
         }
 
         protected override void ProcessData(string data)
@@ -38,7 +41,8 @@ namespace ANG24.Core.Devices
         }
         public void SetMode(int mode)
         {
-            Execute($"#SETMODE,{mode};");
+            //[Prozorov] указать ответ 
+            Execute($"#SETMODE,{mode};", () => Mode == mode);
         }
 
     }
