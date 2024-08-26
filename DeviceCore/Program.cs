@@ -1,4 +1,5 @@
 ﻿using ANG24.Core.Devices;
+using ANG24.Core.Devices.Interfaces;
 using ANG24.Core.Devices.Types;
 using static ANG24.Core.Devices.BridgeCommutatorDevice;
 
@@ -7,9 +8,9 @@ namespace DeviceCore
 
     internal class Program
     {
+       
         static async Task Main(string[] args)
         {
-
             //var device = new PowerControllerDevice();
             //device.Connect();
 
@@ -18,13 +19,13 @@ namespace DeviceCore
             //    await Task.Delay(4000);
             //    device.GetMode();
             //});
-            Console.WriteLine("Hello, World!");
-            var device = new MEADevice();
-            device.Connect();
-            device.SetModule(LabModules.HVMAC);
-            device.PowerOn();
-            await Task.Delay(10000);
-            device.PowerOff();
+            //Console.WriteLine("Hello, World!");
+            //var device = new MEADevice();
+            //device.Connect();
+            //device.SetModule(LabModules.HVMAC);
+            //device.PowerOn();
+            //await Task.Delay(10000);
+            //device.PowerOff();
             //device.SetModule(LabModules.HVMDC);
             //await Task.Delay(10000);
             //device.PowerOff();

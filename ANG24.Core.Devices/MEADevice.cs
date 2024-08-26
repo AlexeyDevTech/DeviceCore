@@ -3,15 +3,20 @@ using ANG24.Core.Devices.DeviceBehaviors.Interfaces;
 using ANG24.Core.Devices.DeviceBehaviors.MEA;
 using ANG24.Core.Devices.DeviceBehaviors.MEA.CommandBehaviors;
 using ANG24.Core.Devices.Helpers;
+using ANG24.Core.Devices.Interfaces;
 using ANG24.Core.Devices.Types;
 
 namespace ANG24.Core.Devices
 {
 
 
-    public class MEADevice : DeviceBase
+    public class MEADevice : DeviceBase, IRootDevice
     {
+
+        List<DeviceBase> _devices;
+
         public ControllerData CurrentData { get; set; }
+
         public bool ModulePower { get; set; } = false;
         public bool Trial { get; set; } = true;
         public FazeType CurrentFazeType { get; set; } = FazeType.ThreeFaze;
@@ -310,6 +315,12 @@ namespace ANG24.Core.Devices
         public override void Ping()
         {
             
+        }
+
+        public T SelectDevice<T>() where T : class, IDevice
+        {
+            var dev = _devices.First(x => x is T);
+            return dev as T;
         }
     }
 }
