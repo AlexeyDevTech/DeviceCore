@@ -1,6 +1,8 @@
 ﻿using ANG24.Core.Devices.DeviceBehaviors;
 using ANG24.Core.Devices.DeviceBehaviors.Compensation;
 using ANG24.Core.Devices.DeviceBehaviors.Interfaces;
+using ANG24.Core.Devices.Helpers;
+using ANG24.Core.Devices.Types;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,7 +13,11 @@ namespace ANG24.Core.Devices
 {
     public class CompensationControllerDevice : DeviceBase
     {
-        public CompensationControllerDevice(): base(new ReqResDeviceBehavior() , new OrderStrongCommandBehavior())
+        public int Voltage { get; set; }
+        public int Current { get; set; }
+        public int Combination { get; set; }
+        public bool IsMatched { get; set; }
+        public CompensationControllerDevice() : base(new ReqResDeviceBehavior(), new OrderStrongCommandBehavior())
         {
         }
         public override async void Connect()
@@ -22,11 +28,42 @@ namespace ANG24.Core.Devices
 
         protected override void ProcessData(string data)
         {
-            
+
+            ControllerLogger.WriteString($"device callback: {data}");
+            if (data.Contains("Voltage="))
+            {
+                Voltage = Int32.Parse(data.Split('=')[1]);
+            }
+            if (data.Contains("Current="))
+            {
+                Current = Int32.Parse(data.Split('=')[1]);
+            }
+            if (data.Contains("Voltage must by 15..25V"))
+            {
+
+            }
+            if (data.Contains("Set"))
+            {
+                var spl = data.Split(' ');
+                Voltage = Int32.Parse(spl[3]);
+                Combination = Int32.Parse(spl[1]);
+            }
+            if (data.Contains("Error"))
+            {
+                var spl = data.Split(' ');
+                Voltage = Int32.Parse(spl[3]);
+                Combination = Int32.Parse(spl[1]);
+            }
+            if (data.Contains("Result"))
+            {
+                var spl = data.Split(' ');
+                Voltage = Int32.Parse(spl[3]);
+                Combination = Int32.Parse(spl[1]);
+            }
         }
         public override void Ping()
         {
-            
+
         }
 
         public void GetVoltage()
@@ -45,9 +82,15 @@ namespace ANG24.Core.Devices
         {
             Execute("#START_COIL_SELECT", new CompensationControllerOptionalBehavior()
             {
-                
+                ProcessingAction = () => { },
+                FailureAction = a => { },
+                SuccessAction = () =>
+                {
+                    IsMatched = true;
+                },
+
             });
-            
+
         }
     }
 }

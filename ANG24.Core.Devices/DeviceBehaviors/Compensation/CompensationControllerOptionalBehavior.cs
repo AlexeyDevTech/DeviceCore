@@ -15,7 +15,7 @@ namespace ANG24.Core.Devices.DeviceBehaviors.Compensation
         {
             if (data.Contains("Voltage must by 15..25V"))
             {
-                OnFail();
+                OnProcess();
             }
             if (data.Contains("Error"))
             {
