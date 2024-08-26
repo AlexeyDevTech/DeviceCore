@@ -13,7 +13,7 @@ namespace ANG24.Core.Devices
     public class MEADevice : DeviceBase, IRootDevice
     {
 
-        List<DeviceBase> _devices;
+        List<IDevice> _devices;
 
         public ControllerData CurrentData { get; set; }
 
@@ -291,7 +291,7 @@ namespace ANG24.Core.Devices
             });
         }
 
-        public void SetVoltageLimit(double voltageLimit, double hysteresis) 
+        public void SetVoltageLimit(double voltageLimit, double hysteresis)
         {
             var voltageOverloadManager = this.GetOptionalBehavior<VoltageOverloadManagerBehavior>("VoltageOverloadManagerBehavior");
             voltageOverloadManager.SetVoltageLimit(voltageLimit, hysteresis);
@@ -317,9 +317,22 @@ namespace ANG24.Core.Devices
 
         }
 
-        public T SelectDevice<T>() where T : class, IDevice
+        public T SelectDevice<T>() where T : class, IDevice, new()
         {
-            var dev = _devices.First(x => x is T);
+            if (_devices == null)
+            {
+                _devices = new();
+            }
+            var dev = _devices.FirstOrDefault(x => x is T);
+            if (dev == null)
+            {
+                T obj = new();
+                if (!_devices.Contains(obj))
+                {
+                    _devices.Add(obj);
+                    dev = _devices.FirstOrDefault(x => x is T);
+                }
+            }
             return dev as T;
         }
     }

@@ -1,5 +1,6 @@
 ﻿using ANG24.Core.Devices.DeviceBehaviors;
 using ANG24.Core.Devices.DeviceBehaviors.Interfaces;
+using ANG24.Core.Devices.Helpers;
 using ANG24.Core.Devices.Types;
 using System;
 using System.Collections.Generic;
@@ -20,13 +21,13 @@ namespace ANG24.Core.Devices
 
         public override async void Connect()
         {
-            if (await Find("#LAB?", "Bridge", 115200))
+            if (await Find("#LAB?", "BridgeCommutator", 115200))
                 base.Connect();
         }
         protected override void ProcessData(string data)
         {
             CurrentData = new ControllerData(data);
-            Console.WriteLine($"device callback: {data}");
+            ControllerLogger.WriteString($"device callback: {data}");
             //нужна информация о том что прилетает с устройства
             
             //if (data.Contains("State"))
