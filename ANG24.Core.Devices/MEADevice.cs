@@ -314,7 +314,7 @@ namespace ANG24.Core.Devices
         //AutoCallBack
         public override void Ping()
         {
-            
+
         }
 
         public T SelectDevice<T>() where T : class, IDevice
