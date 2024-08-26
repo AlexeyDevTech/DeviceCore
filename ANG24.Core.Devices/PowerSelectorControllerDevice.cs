@@ -11,11 +11,11 @@ using System.Threading.Tasks;
 
 namespace ANG24.Core.Devices
 {
-    public class PowerControllerDevice : DeviceBase
+    public class PowerSelectorControllerDevice : DeviceBase
     {
         public ControllerData CurrentData { get; set; }
         public int CurrentMode { get; set; }
-        public PowerControllerDevice() : base(new ReqResWithTimeCallBackDeviceBehavior() { ReqResMilliseconds = 1000 }, new OrderStrongCommandBehavior())
+        public PowerSelectorControllerDevice() : base(new ReqResWithTimeCallBackDeviceBehavior() { ReqResMilliseconds = 1000 }, new OrderStrongCommandBehavior())
         {
 
         }

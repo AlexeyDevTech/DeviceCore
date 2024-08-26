@@ -13,6 +13,6 @@
     {
         public int Timeout { get; set; }
         public int MessageAttempts { get; set; }
-        public int Attempts { get; internal set; }
+        public int Attempts { get; internal set; } = 3;
     }
 }
