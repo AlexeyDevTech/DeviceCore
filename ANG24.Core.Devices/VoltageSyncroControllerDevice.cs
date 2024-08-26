@@ -1,11 +1,12 @@
-﻿using ANG24.Core.Devices.DeviceBehaviors.Interfaces;
+﻿using ANG24.Core.Devices.DeviceBehaviors;
+using ANG24.Core.Devices.DeviceBehaviors.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ANG24.Core.Devices.DeviceBehaviors
+namespace ANG24.Core.Devices
 {
     public class VoltageSyncroControllerDevice : DeviceBase
     {
@@ -20,14 +21,14 @@ namespace ANG24.Core.Devices.DeviceBehaviors
         }
         public override void Ping()
         {
-            
+
         }
 
         protected override void ProcessData(string data)
         {
             if (data.Contains("RNSMODE"))
             {
-                Mode = Int32.Parse(data.Split(':')[1]);
+                Mode = int.Parse(data.Split(':')[1]);
             }
         }
 
