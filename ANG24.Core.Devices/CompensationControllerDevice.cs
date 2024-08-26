@@ -38,6 +38,10 @@ namespace ANG24.Core.Devices
             {
                 Current = Int32.Parse(data.Split('=')[1]);
             }
+            if (data.Contains("CoilState="))
+            {
+                Combination = Int32.Parse(data.Split('=')[1]);
+            }
             if (data.Contains("Voltage must by 15..25V"))
             {
 
@@ -45,19 +49,16 @@ namespace ANG24.Core.Devices
             if (data.Contains("Set"))
             {
                 var spl = data.Split(' ');
-                Voltage = Int32.Parse(spl[3]);
                 Combination = Int32.Parse(spl[1]);
             }
             if (data.Contains("Error"))
             {
                 var spl = data.Split(' ');
-                Voltage = Int32.Parse(spl[3]);
                 Combination = Int32.Parse(spl[1]);
             }
             if (data.Contains("Result"))
             {
                 var spl = data.Split(' ');
-                Voltage = Int32.Parse(spl[3]);
                 Combination = Int32.Parse(spl[1]);
             }
         }
@@ -78,15 +79,26 @@ namespace ANG24.Core.Devices
         {
             Execute($"#SET_COIL_COMBINATION:{combination};");
         }
+        public void GetCoilState()
+        {
+            Execute($"#GET_COIL_STATE");
+        }
         public void StartCoilSelect()
         {
             Execute("#START_COIL_SELECT", new CompensationControllerOptionalBehavior()
             {
-                ProcessingAction = () => { },
-                FailureAction = a => { },
+                ProcessingAction = () =>
+                {
+                    Console.WriteLine("[??? Processing Action ???]");
+                },
+                FailureAction = a =>
+                {
+                    Console.WriteLine("[--- Failure Action ---]");
+                },
                 SuccessAction = () =>
                 {
                     IsMatched = true;
+                    Console.WriteLine("[+++ Success Action +++]");
                 },
 
             });
