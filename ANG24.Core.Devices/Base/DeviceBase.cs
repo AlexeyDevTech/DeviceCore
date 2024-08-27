@@ -1,15 +1,12 @@
-﻿using ANG24.Core.Devices;
-using ANG24.Core.Devices.DeviceBehaviors.Interfaces;
+﻿using ANG24.Core.Devices.DeviceBehaviors.Interfaces;
 using ANG24.Core.Devices.Helpers;
 using ANG24.Core.Devices.Interfaces;
-using System.Diagnostics.Tracing;
 using System.IO.Ports;
 
-namespace ANG24.Core.Devices
+namespace ANG24.Core.Devices.Base
 {
     public abstract class DeviceBase : IDevice
     {
-
         protected SerialPort _port;                                                       //непосредственно порт подключения
         private Timer _reconnectTimer;                                          //таймер для попытки подключиться снова
         public string _portName;                                              //именованный источник (имя порта)
@@ -26,7 +23,7 @@ namespace ANG24.Core.Devices
 
         //device online state
         public bool Online => _port?.IsOpen ?? false;
-        
+
         protected DeviceBase(IDeviceBehavior behavior, ICommandBehavior commandBeahvior)
         {
             _reconnectTimer = new Timer(Reconnect, null, Timeout.Infinite, Timeout.Infinite);
@@ -91,7 +88,7 @@ namespace ANG24.Core.Devices
                 //когда порт закрыт (да, такое бывает)
                 OnDisconnected();
             }
-            catch (TimeoutException tex) 
+            catch (TimeoutException tex)
             {
                 //когда время отправки команды истекло
                 //(или когда входной буфер занят)
@@ -115,7 +112,7 @@ namespace ANG24.Core.Devices
         {
             _commandBehavior.ExecuteCommand(command, predicate, ifTrue, ifFalse, settings);
         }
-        protected void Execute(string command, IOptionalCommandBehavior behavior, CommandElementSettings? settings = null) => _commandBehavior.ExecuteCommand(command, behavior, settings); 
+        protected void Execute(string command, IOptionalCommandBehavior behavior, CommandElementSettings? settings = null) => _commandBehavior.ExecuteCommand(command, behavior, settings);
 
         #region Option management
         protected void Option(string Name, Action<string> action, bool isExecutedOnce = false, bool Active = true) => processedActions.Add(new ProcessAction
@@ -181,7 +178,7 @@ namespace ANG24.Core.Devices
             {
                 //обрабатывать нечего пока, поэтому пусто  (29.07)
             }
-            
+
         }
         protected async Task<bool> Find(string exceptedRequest, string exceptedResponce, int baudRate = 9600)
         {
@@ -192,7 +189,7 @@ namespace ANG24.Core.Devices
             _portName = name;
             return true;
         }
-            
+
         private void Reconnect(object? state) => Connect();
         #endregion 
 

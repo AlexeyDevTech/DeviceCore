@@ -1,4 +1,5 @@
-﻿using ANG24.Core.Devices.DeviceBehaviors;
+﻿using ANG24.Core.Devices.Base;
+using ANG24.Core.Devices.DeviceBehaviors;
 using ANG24.Core.Devices.DeviceBehaviors.Interfaces;
 using ANG24.Core.Devices.DeviceBehaviors.MEA;
 using ANG24.Core.Devices.DeviceBehaviors.MEA.CommandBehaviors;
@@ -10,10 +11,10 @@ namespace ANG24.Core.Devices
 {
 
 
-    public class MEADevice : DeviceBase, IRootDevice
+    public class MEADevice : ParallelDeviceBase, IRootDevice
     {
 
-        List<IDevice> _devices;
+        List<IDevice> _devices = new List<IDevice>();
 
         public ControllerData CurrentData { get; set; }
 
