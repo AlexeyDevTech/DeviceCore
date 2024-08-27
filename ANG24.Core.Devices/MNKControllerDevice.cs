@@ -1,4 +1,5 @@
-﻿using ANG24.Core.Devices.DeviceBehaviors;
+﻿using ANG24.Core.Devices.Base;
+using ANG24.Core.Devices.DeviceBehaviors;
 using ANG24.Core.Devices.DeviceBehaviors.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -14,7 +15,7 @@ namespace ANG24.Core.Devices
         public MNKActionTypes MNKConnection;
         public bool OperationSuccess { get; set; } = false;
         public bool Error { get; set; } = false;
-        public MNKControllerDevice() : base(new ReqResDeviceBehavior(), new OrderStrongCommandBehavior())
+        public MNKControllerDevice() : base(new ReqResWithTimeCallBackDeviceBehavior() { CallBackMilliseconds = 1000, ReqResMilliseconds = 500}, new OrderStrongCommandBehavior())
         {
         }
 
@@ -26,7 +27,7 @@ namespace ANG24.Core.Devices
 
         public override void Ping()
         {
-
+            GetState();
         }
 
         protected override void ProcessData(string data)
