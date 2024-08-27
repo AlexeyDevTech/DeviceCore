@@ -14,7 +14,7 @@ namespace ANG24.Core.Devices
         public MNKActionTypes MNKConnection;
         public bool OperationSuccess { get; set; } = false;
         public bool Error { get; set; } = false;
-        public MNKControllerDevice() : base(new ReqResDeviceBehavior(), new OrderStrongCommandBehavior())
+        public MNKControllerDevice() : base(new ReqResWithTimeCallBackDeviceBehavior(), new OrderStrongCommandBehavior())
         {
         }
 
@@ -26,7 +26,7 @@ namespace ANG24.Core.Devices
 
         public override void Ping()
         {
-
+            GetState();
         }
 
         protected override void ProcessData(string data)
