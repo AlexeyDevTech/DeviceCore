@@ -1,4 +1,5 @@
-﻿using ANG24.Core.Devices.DeviceBehaviors;
+﻿using ANG24.Core.Devices.Base;
+using ANG24.Core.Devices.DeviceBehaviors;
 using ANG24.Core.Devices.DeviceBehaviors.Interfaces;
 using System;
 using System.Collections.Generic;

@@ -1,4 +1,5 @@
-﻿using ANG24.Core.Devices.DeviceBehaviors.Interfaces;
+﻿using ANG24.Core.Devices.Base;
+using ANG24.Core.Devices.DeviceBehaviors.Interfaces;
 using ANG24.Core.Devices.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -8,10 +9,10 @@ using System.Threading.Tasks;
 
 namespace ANG24.Core.Devices.DeviceBehaviors
 {
-   /// <summary>
-   /// behavior для управления поведением "подключенности" устройства, предполагая, 
-   /// что оно само отправляет сообщения
-   /// </summary>
+    /// <summary>
+    /// behavior для управления поведением "подключенности" устройства, предполагая, 
+    /// что оно само отправляет сообщения
+    /// </summary>
     public class AutoCallbackDeviceBehavior : IDeviceBehavior
     {
         private IDevice device;
