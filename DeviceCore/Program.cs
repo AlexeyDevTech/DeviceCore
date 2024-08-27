@@ -11,7 +11,6 @@ namespace DeviceCore
        
         static async Task Main(string[] args)
         {
-
             //var device = new PowerControllerDevice();
             //device.Connect();
 
