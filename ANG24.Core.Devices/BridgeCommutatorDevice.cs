@@ -15,7 +15,7 @@ namespace ANG24.Core.Devices
         public ControllerData CurrentData { get; set; }
         public BridgeCommutatorState CurrentState { get; set; } = BridgeCommutatorState.Zero_State;
         public BridgeCommutatorPhase CurrentPhase { get; set; } = BridgeCommutatorPhase.Normal;
-        public BridgeCommutatorDevice() : base(new ReqResDeviceBehavior(), new OrderStrongCommandBehavior() )
+        public BridgeCommutatorDevice() : base(new ReqResDeviceBehavior(), new OrderStrongCommandBehavior())
         {
         }
 
@@ -29,18 +29,18 @@ namespace ANG24.Core.Devices
             CurrentData = new ControllerData(data);
             ControllerLogger.WriteString($"device callback: {data}");
             //нужна информация о том что прилетает с устройства
-            
+
             //if (data.Contains("State"))
             //{
             //    var splt = data.Split('=');
             //    var stateStr = splt[1].Replace('\r', ' ').Replace('\n', ' ').Trim();
             //    if(Int32.TryParse(stateStr, out int state))
             //    {
-                    
+
             //    }
-                
+
             //}
-            
+
 
         }
 
@@ -56,28 +56,30 @@ namespace ANG24.Core.Devices
 
         public void ResetPhase()
         {
-            Execute("#RESET_PHASE");
-            if (CurrentPhase == BridgeCommutatorPhase.Reverse)
-            {
-                CurrentPhase = BridgeCommutatorPhase.Normal;
-            }
+            Execute("#RESET_PHASE", () => CurrentPhase == BridgeCommutatorPhase.Reverse, () => CurrentPhase = BridgeCommutatorPhase.Normal);
+            //if (CurrentPhase == BridgeCommutatorPhase.Reverse)
+            //{
+            //    CurrentPhase = BridgeCommutatorPhase.Normal;
+            //}
         }
         public void FlopPhase()
         {
-            Execute("#FLOP_PHASE");
-            if (CurrentPhase == BridgeCommutatorPhase.Normal)
-            {
-                CurrentPhase = BridgeCommutatorPhase.Reverse;
-            }
-            else
-            {
-                CurrentPhase = BridgeCommutatorPhase.Normal;
-            }
+            Execute("#FLOP_PHASE", () => CurrentPhase == BridgeCommutatorPhase.Normal,
+                                   () => CurrentPhase = BridgeCommutatorPhase.Reverse,
+                                   () => CurrentPhase = BridgeCommutatorPhase.Normal);
+            //if (CurrentPhase == BridgeCommutatorPhase.Normal)
+            //{
+            //    CurrentPhase = BridgeCommutatorPhase.Reverse;
+            //}
+            //else
+            //{
+            //    CurrentPhase = BridgeCommutatorPhase.Normal;
+            //}
         }
 
         public override void Ping()
         {
-            
+
         }
 
         public enum BridgeCommutatorState : int
