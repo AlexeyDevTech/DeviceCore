@@ -1,6 +1,8 @@
 ﻿using ANG24.Core.Devices;
 using ANG24.Core.Devices.Interfaces;
 using ANG24.Core.Devices.Types;
+using System.IO.Ports;
+using System;
 using static ANG24.Core.Devices.BridgeCommutatorDevice;
 
 namespace DeviceCore
@@ -11,6 +13,10 @@ namespace DeviceCore
        
         static async Task Main(string[] args)
         {
+
+            byte[] data = [0x02, 0xBB];
+            Console.WriteLine(BitConverter.ToString(data,0,data.Length));
+            
             //var device = new PowerControllerDevice();
             //device.Connect();
 
