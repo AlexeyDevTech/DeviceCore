@@ -215,7 +215,6 @@ namespace ANG24.Core.Devices.DeviceBehaviors
             CommandFailProcess = true;
             if (attempts <= 0)
             {
-                Console.WriteLine("{{{{{{{{{{{{}}}}}}}}}}}}");
                 DropCommand();
                 CommandFailProcess = false;
             }

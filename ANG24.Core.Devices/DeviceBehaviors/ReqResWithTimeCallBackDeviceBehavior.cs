@@ -14,12 +14,12 @@ namespace ANG24.Core.Devices.DeviceBehaviors
         public int ReqResMilliseconds { get; set; } = 10000;
         public ReqResWithTimeCallBackDeviceBehavior() : base()
         {
-            timerCallback = new Timer(GetCommand, null, CallBackMilliseconds, ReqResMilliseconds);
+            timerCallback = new Timer(GetCommand, null, 1000, ReqResMilliseconds);
         }
 
         public void GetCommand(object? state)
         {
-            base.device.Ping();
+            device.Ping();
         }
 
       

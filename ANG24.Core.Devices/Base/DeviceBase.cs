@@ -44,7 +44,7 @@ namespace ANG24.Core.Devices.Base
                 {
                     while (_port.BytesToRead > 0) //пока в буфере количество байт не будет равно 0
                     {
-                        string cur_data = _port.ReadLine();     //чтение по строке
+                        string cur_data = _port.ReadLine().Replace('\r', ' ').Replace('\n', ' ').Trim();     //чтение по строке
                         ProcessData(cur_data);                  //в зависимости от реализации, вызываем пост-обработку данных 
                         _behavior.HandleData(cur_data);         //в зависимости от поведения -- производим обработку данных
                         _commandBehavior.HandleData(cur_data);  //для обработчика команд -- то же самое
