@@ -7,7 +7,7 @@ namespace ANG24.Core.Devices.Base
 {
     public abstract class DeviceBase : IDevice
     {
-        protected SerialPort _port;                                                       //непосредственно порт подключения
+        //protected SerialPort _port;                                                       //непосредственно порт подключения
         private Timer _reconnectTimer;                                          //таймер для попытки подключиться снова
         public string _portName;                                              //именованный источник (имя порта)
         private readonly IDeviceBehavior _behavior;                             //хендл поведения устройства
@@ -17,12 +17,12 @@ namespace ANG24.Core.Devices.Base
         public string DeviceStatus { get; } = "None";
         public string DataBuffer { get; private set; } = string.Empty; //для хранения полученных сообщений по требованию    
 
-        public event EventHandler? Connected;
-        public event EventHandler? Disconnected;
-        public event DREventHandler DeviceDataReceived;
+        //public event EventHandler? Connected;
+        //public event EventHandler? Disconnected;
+        //public event DREventHandler DeviceDataReceived;
 
         //device online state
-        public bool Online => _port?.IsOpen ?? false;
+        //public bool Online => _port?.IsOpen ?? false;
 
         protected DeviceBase(IDeviceBehavior behavior, ICommandBehavior commandBeahvior)
         {
@@ -32,8 +32,8 @@ namespace ANG24.Core.Devices.Base
             _behavior.SetDevice(this);
             _commandBehavior = commandBeahvior;
             _commandBehavior.SetDevice(this);
-            _port = new SerialPort();
-            _port.DataReceived += OnDataReceived;
+            //_port = new SerialPort();
+            //_port.DataReceived += OnDataReceived;
         }
 
         protected void OnDataReceived(object sender, SerialDataReceivedEventArgs e)
@@ -73,36 +73,36 @@ namespace ANG24.Core.Devices.Base
             }
         }
         protected abstract void ProcessData(string data); //абстрактный метод для обработки полученных данных
-        public virtual void SetCommand(string command)
-        {
-            try
-            {
-                if (Online)
-                {
-                    _port.Write(command); //попытка отправить данные
-                    _behavior.RequestData(command);
-                }
-            }
-            catch (InvalidOperationException ioex)
-            {
-                //когда порт закрыт (да, такое бывает)
-                OnDisconnected();
-            }
-            catch (TimeoutException tex)
-            {
-                //когда время отправки команды истекло
-                //(или когда входной буфер занят)
-                Console.WriteLine("Timeout write command");
-                //ничего не делаем
-                //(технически, можно считать количество неудачных попыток)
-            }
-            catch (Exception ex)
-            {
-                //во всех остальных случаях 
-                //считаем, что устройство сломалось
-                OnDisconnected();
-            }
-        }
+        //public virtual void SetCommand(string command)
+        //{
+        //    try
+        //    {
+        //        if (Online)
+        //        {
+        //            _port.Write(command); //попытка отправить данные
+        //            _behavior.RequestData(command);
+        //        }
+        //    }
+        //    catch (InvalidOperationException ioex)
+        //    {
+        //        //когда порт закрыт (да, такое бывает)
+        //        OnDisconnected();
+        //    }
+        //    catch (TimeoutException tex)
+        //    {
+        //        //когда время отправки команды истекло
+        //        //(или когда входной буфер занят)
+        //        Console.WriteLine("Timeout write command");
+        //        //ничего не делаем
+        //        //(технически, можно считать количество неудачных попыток)
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        //во всех остальных случаях 
+        //        //считаем, что устройство сломалось
+        //        OnDisconnected();
+        //    }
+        //}
         protected void Execute(string command) => _commandBehavior.ExecuteCommand(command, null);
         protected void Execute(string command, Func<bool>? predicate = null, Action? ifTrue = null, Action? ifFalse = null, CommandElementSettings? settings = null)
         {
@@ -148,38 +148,38 @@ namespace ANG24.Core.Devices.Base
         #endregion
 
         #region connection logic
-        public virtual void Connect()
-        {
-            try
-            {
+        //public virtual void Connect()
+        //{
+        //    try
+        //    {
 
-                //примитивная реализация подключения
-                if (!_port.IsOpen)
-                {
-                    _port.Open();
-                    OnConnected();
-                }
-            }
-            catch
-            {
-                StartReconnectTimer();
-            }
-        }
-        public void Disconnect()
-        {
-            //примитивная реализация отключения
-            try
-            {
-                if (_port.IsOpen)
-                    _port.Close();
-                StopReconnectTimer();
-            }
-            catch
-            {
-                //обрабатывать нечего пока, поэтому пусто  (29.07)
-            }
+        //        //примитивная реализация подключения
+        //        if (!_port.IsOpen)
+        //        {
+        //            _port.Open();
+        //            OnConnected();
+        //        }
+        //    }
+        //    catch
+        //    {
+        //        StartReconnectTimer();
+        //    }
+        //}
+        //public void Disconnect()
+        //{
+        //    //примитивная реализация отключения
+        //    try
+        //    {
+        //        if (_port.IsOpen)
+        //            _port.Close();
+        //        StopReconnectTimer();
+        //    }
+        //    catch
+        //    {
+        //        //обрабатывать нечего пока, поэтому пусто  (29.07)
+        //    }
 
-        }
+        //}
         protected async Task<bool> Find(string exceptedRequest, string exceptedResponce, int baudRate = 9600)
         {
             var name = await SerialPortFinder.FindDeviceAsync(exceptedRequest, exceptedResponce, baudRate);
@@ -190,7 +190,7 @@ namespace ANG24.Core.Devices.Base
             return true;
         }
 
-        private void Reconnect(object? state) => Connect();
+       // private void Reconnect(object? state) => Connect();
         #endregion 
 
         #region connect reactions
