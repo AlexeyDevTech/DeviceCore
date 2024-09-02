@@ -144,7 +144,7 @@ namespace ANG24.Core.Devices.DeviceBehaviors
             });
         }
         #endregion
-        public void HandleData(string data)
+        public void HandleData(object data)
         {
             if (Command != null)
             {
@@ -153,7 +153,7 @@ namespace ANG24.Core.Devices.DeviceBehaviors
             }
         }
 
-        private void Check(string msg)
+        private void Check(object msg)
         {
             var result = Command.Execute(msg);
             if (!Command.Redirected) //если команда простая
@@ -241,7 +241,7 @@ namespace ANG24.Core.Devices.DeviceBehaviors
         public CommandCondition? Condition { get; set; }
         public IOptionalCommandBehavior Behavior { get; set; }
         public bool Redirected => Behavior != null;
-        public virtual bool Execute(string data = "")
+        public virtual bool Execute(object data = "")
         {
             if(Behavior == null)
                return Condition?.Execute(data) ?? true;
@@ -270,7 +270,7 @@ namespace ANG24.Core.Devices.DeviceBehaviors
             this.ifFalse = ifFalse;
         }
 
-        public virtual bool Execute(string data)
+        public virtual bool Execute(object data)
         {
             bool result = condition?.Invoke() ?? true;
             if (result) ifTrue?.Invoke();
@@ -280,15 +280,15 @@ namespace ANG24.Core.Devices.DeviceBehaviors
     }
     public class ParametrizedCommandCondition : CommandCondition
     {
-        private readonly Func<string, bool>? condition;
+        private readonly Func<object, bool>? condition;
 
-        public ParametrizedCommandCondition(Func<string, bool>? condition, Action? ifTrue, Action? ifFalse)
+        public ParametrizedCommandCondition(Func<object, bool>? condition, Action? ifTrue, Action? ifFalse)
             : base(null, ifTrue, ifFalse)
         {
             this.condition = condition;
         }
 
-        public override bool Execute(string data)
+        public override bool Execute(object data)
         {
             bool result = condition?.Invoke(data) ?? true;
             if (result) ifTrue?.Invoke();

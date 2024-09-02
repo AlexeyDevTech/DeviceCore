@@ -31,12 +31,12 @@ namespace ANG24.Core.Devices.DeviceBehaviors
             timer.Change(Timeout.Infinite, Timeout.Infinite);
         }
 
-        public void HandleData(string data)
+        public void HandleData(object data)
         {
             timer.Change(CallBackMilliseconds, Timeout.Infinite);
         }
 
-        public void RequestData(string data)
+        public void RequestData(object data)
         {
             Console.WriteLine($"request data -> {data}");
         }

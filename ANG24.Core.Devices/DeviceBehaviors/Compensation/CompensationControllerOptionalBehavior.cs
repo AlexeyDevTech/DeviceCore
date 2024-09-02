@@ -11,17 +11,19 @@ namespace ANG24.Core.Devices.DeviceBehaviors.Compensation
     {
         public override string Name => nameof(CompensationControllerOptionalBehavior);
 
-        public override void ProcessData(string data)
+        public override void ProcessData(object data)
         {
-            if (data.Contains("Voltage must by 15..25V"))
+            var res = string.Empty;
+            if(data is string) res = data as string;
+            if (res.Contains("Voltage must by 15..25V"))
             {
                 OnProcess();
             }
-            if (data.Contains("Error"))
+            if (res.Contains("Error"))
             {
                 OnFail();
             }
-            if (data.Contains("Result"))
+            if (res.Contains("Result"))
             {
                 OnSuccess();
             }

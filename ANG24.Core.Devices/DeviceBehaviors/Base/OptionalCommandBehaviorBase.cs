@@ -22,7 +22,7 @@ namespace ANG24.Core.Devices.DeviceBehaviors.Base
 
 
 
-        public virtual void HandleData(string data)
+        public virtual void HandleData(object data)
         {
             if (IsUsage)
             {
@@ -32,7 +32,7 @@ namespace ANG24.Core.Devices.DeviceBehaviors.Base
                 }
             }
         }
-        public abstract void ProcessData(string data);
+        public abstract void ProcessData(object data);
 
         public virtual void Off()
         {
@@ -61,7 +61,7 @@ namespace ANG24.Core.Devices.DeviceBehaviors.Base
             ProcessingAction?.Invoke();
         }
 
-        public virtual OptionalBehaviorState OperationCheck(string data) => State;
+        public virtual OptionalBehaviorState OperationCheck(object data) => State;
 
         public void SetDevice(IDevice device)
         {
@@ -78,7 +78,7 @@ namespace ANG24.Core.Devices.DeviceBehaviors.Base
             State = OptionalBehaviorState.NotStarted;
         }
 
-        public void RequestData(string data)
+        public void RequestData(object data)
         {
             
         }

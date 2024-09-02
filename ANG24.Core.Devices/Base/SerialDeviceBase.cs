@@ -1,4 +1,5 @@
-﻿using ANG24.Core.Devices.Helpers;
+﻿using ANG24.Core.Devices.DeviceBehaviors.Interfaces;
+using ANG24.Core.Devices.Helpers;
 using ANG24.Core.Devices.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -6,20 +7,24 @@ using System.IO.Ports;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices.Marshalling;
+using System.Security.AccessControl;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace ANG24.Core.Devices.Base
 {
 
-
+    //public delegate void ProcessDataEventHandler
 
     public abstract class BlankDeviceBase
     {
+
+        public string DeviceStatus { get; set; } = string.Empty;
+
         public event EventHandler? Connected;
         public event EventHandler? Disconnected;
         public event DREventHandler DeviceDataReceived;
-
+        public Action<object> ProcessData;
         protected BlankDeviceBase() { }
         public virtual bool Online { get; set; }
         public string Name { get; set; }
@@ -41,13 +46,12 @@ namespace ANG24.Core.Devices.Base
     
     public abstract class SerialDeviceBase : BlankDeviceBase
     {
-
         public override bool Online => _port?.IsOpen ?? false;
 
         protected SerialPort _port;
         private bool _autoDR;
 
-        public string DeviceStatus { get; set; } = string.Empty;
+        
 
         //для обобщения свойство вынесено в базу
         public Action<SerialPort> ReadProcessAction { get; set; }
@@ -74,10 +78,6 @@ namespace ANG24.Core.Devices.Base
         private void OnAutoDR() => _port.DataReceived += port_DR;
         private void OffAutoDR() => _port.DataReceived -= port_DR;
 
-        private void _port_DataReceived(object sender, SerialDataReceivedEventArgs e)
-        {
-            throw new NotImplementedException();
-        }
 
         //реализация будет зависеть от способа чтения данных
         private void port_DR(object sender, SerialDataReceivedEventArgs e)
@@ -225,7 +225,7 @@ namespace ANG24.Core.Devices.Base
         public void SetReadProcess(Action<SerialPort> action) => ReadProcessAction = action;
         
     }
-    public abstract class StringSerialDeviceBase : SerialDeviceBase
+    public class StringSerialDeviceBase : SerialDeviceBase
     {
         public StringSerialReadMode ReadMode { get; set; } = StringSerialReadMode.Line;
         public string TerminatorString { get; set; } = "\n";
@@ -233,6 +233,7 @@ namespace ANG24.Core.Devices.Base
         
         protected StringSerialDeviceBase()
         {
+
         }
         protected override void DRProcess()
         {
@@ -261,7 +262,7 @@ namespace ANG24.Core.Devices.Base
                             ReadProcessAction?.Invoke(_port);
                             break;
                     }
-                    ProcessData(dat);
+                    ProcessData?.Invoke(dat);
                 }
             }
             catch (InvalidOperationException ioex)
@@ -269,7 +270,7 @@ namespace ANG24.Core.Devices.Base
 
             }
         }
-        protected abstract void ProcessData(string data);
+        //protected abstract void ProcessData(string data);
         public enum StringSerialReadMode : int
         {
             Line,
@@ -279,7 +280,7 @@ namespace ANG24.Core.Devices.Base
             Action,
         }
     }
-    public abstract class ByteSerialDeviceBase : SerialDeviceBase
+    public class ByteSerialDeviceBase : SerialDeviceBase
     {
         public ByteSerialReadMode ReadMode { get; set; } = ByteSerialReadMode.Signal;
         public int ReadCount { get; set; } = 1;
@@ -291,22 +292,21 @@ namespace ANG24.Core.Devices.Base
                 switch (ReadMode)
                 {
                     case ByteSerialReadMode.Signal:
-                        ProcessData(new byte[1]);
+                        ProcessData?.Invoke(new byte[1]);
                         break;
                     case ByteSerialReadMode.Packet:
                         var buf = new byte[ReadCount];
                         _port.Read(buf, 0, ReadCount);
-                        ProcessData(buf);
+                        ProcessData?.Invoke(buf);
                         break;
                     case ByteSerialReadMode.Action:
                         ReadProcessAction?.Invoke(_port);
-                        ProcessData(new byte[1]);
+                        ProcessData?.Invoke(new byte[1]);
                         break;
                 }
             }
             catch (InvalidOperationException ioex) { }
         }
-        protected abstract void ProcessData(byte[] data);
         public enum ByteSerialReadMode : int
         {
             Signal,
@@ -314,6 +314,27 @@ namespace ANG24.Core.Devices.Base
             Action
         }
     }
+
+    public class ManagedDevice
+    {
+        public BlankDeviceBase Device { get; }
+        private readonly IDeviceBehavior _behavior;                             //хендл поведения устройства
+        private readonly ICommandBehavior _commandBehavior;                     //хендл поведения отправки команд устройством
+
+
+        protected ManagedDevice(IDeviceBehavior manageBehavior, ICommandBehavior commandBehavior)
+        {
+            Device.ProcessData = Process;
+            _behavior = manageBehavior;
+            _commandBehavior = commandBehavior;
+        }
+
+        private void Process(object obj)
+        {
+            _behavior.HandleData()
+        }
+    }
+
 
 
 

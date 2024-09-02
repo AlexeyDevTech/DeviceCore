@@ -14,7 +14,7 @@ namespace ANG24.Core.Devices.DeviceBehaviors.Interfaces
     {
         OptionalBehaviorState State { get; }
         public int FaultCallback { get; set; }
-        OptionalBehaviorState OperationCheck(string data);
+        OptionalBehaviorState OperationCheck(object data);
         Action ProcessingAction { get; set; }
         Action SuccessAction { get; set; }
         Action<IOptionalCommandBehavior> FailureAction { get; set; }

@@ -28,7 +28,7 @@ namespace ANG24.Core.Devices.DeviceBehaviors.MEA
         public double TargetVoltageLimit { get; private set; }
         public double TargetVoltage { get; set; }
 
-        public void HandleData(string data)
+        public void HandleData(object data)
         {
             if (IsUsage)
             {
@@ -125,7 +125,7 @@ namespace ANG24.Core.Devices.DeviceBehaviors.MEA
             _device = (device as MEADevice);
         }
 
-        public void RequestData(string data)
+        public void RequestData(object data)
         {
            
         }
