@@ -241,7 +241,7 @@ namespace ANG24.Core.Devices.DeviceBehaviors
         public CommandCondition? Condition { get; set; }
         public IOptionalCommandBehavior Behavior { get; set; }
         public bool Redirected => Behavior != null;
-        public virtual bool Execute(object data = "")
+        public virtual bool Execute(object data)
         {
             if(Behavior == null)
                return Condition?.Execute(data) ?? true;

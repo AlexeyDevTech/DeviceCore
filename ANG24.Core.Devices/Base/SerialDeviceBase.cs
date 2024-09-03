@@ -3,6 +3,7 @@ using ANG24.Core.Devices.Helpers;
 using ANG24.Core.Devices.Interfaces;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.IO.Ports;
 using System.Linq;
 using System.Runtime.CompilerServices;
@@ -10,6 +11,7 @@ using System.Runtime.InteropServices.Marshalling;
 using System.Security.AccessControl;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Input;
 
 namespace ANG24.Core.Devices.Base
 {
@@ -337,22 +339,33 @@ namespace ANG24.Core.Devices.Base
 
     public interface IPort
     {
-        
+        IDeviceOperational deviceReader { get; }
+        IDeviceOperational deviceWriter { get; }
+
+        public event Action Connected;
+        public event Action Disconnected;
+        event Action OnData;
+        bool Online { get; }
+        bool DataExist { get; }
         void Connect();
         void Disconnect();
+        T Read<T>();
+        void Write<T>(T msg);
     }
     public interface IDeviceReader<T> : IDeviceOperational
     {
-        public event Action<T> OnDataReceived;
+        event Action<T> OnDataReceived;
     }
     public interface IDeviceWriter<T> : IDeviceOperational
     {
         void Write(T message);
+        event Action OnDataRequested;
     }
     public interface IDeviceOperational
     {
         IPort port { get; }
         void SetPort(IPort port);
+        void Command(object command);
     }
 
 
@@ -361,25 +374,115 @@ namespace ANG24.Core.Devices.Base
     public abstract class BlankDeviceBase
     {
         IPort port;
-        IDeviceOperational deviceReader;
-        IDeviceOperational deviceWriter;
+        protected BlankDeviceBase()
+        {
+
+        }
 
         public void SetPort(IPort port)
         {
             this.port = port;
-            if(deviceWriter != null) deviceWriter.SetPort(port);
-            if(deviceReader != null) deviceReader.SetPort(port);
         }
-        public void SetReader<T>(IDeviceReader<T> deviceReader)
+
+        protected abstract void ProcessData(object data);
+        protected abstract void RequestData();
+    }
+    public abstract class ManagedDeviceBase : BlankDeviceBase
+    {
+        DeviceBehaviorManager dbm = new DeviceBehaviorManager();
+        public ManagedDeviceBase(IDeviceBehavior deviceBehavior, ICommandBehavior commandBehavior)
         {
-            this.deviceReader = deviceReader;
-            this.deviceReader.SetPort(port);
+            dbm.deviceBehavior = deviceBehavior;
+            dbm.commandBehavior = commandBehavior;
+            dbm.device = this;
         }
-        public void SetWriter<T>(IDeviceWriter<T> deviceWriter)
+        protected override void ProcessData(object data)
         {
-            this.deviceWriter = deviceWriter;
-            this.deviceWriter.SetPort(port);
+            dbm.DataProcess(data);
         }
+        protected override void RequestData()
+        {
+            dbm.RequestData();
+        }
+
+
+    }
+    public class DeviceBehaviorManager
+    {
+        public IDeviceBehavior deviceBehavior;
+        public ICommandBehavior commandBehavior;
+        public ManagedDeviceBase device;
+        public List<IOptionalBehavior> _optionalBehaviors;
+        List<ProcessAction> processedActions = new List<ProcessAction>();       //список действий-опций для пост-обработки (помимо основного действия)
+
+        public DeviceBehaviorManager()
+        {
+            _optionalBehaviors = new List<IOptionalBehavior>();
+        }
+        public void DataProcess(object data)
+        {
+            deviceBehavior.HandleData(data);
+            commandBehavior.HandleData(data);
+            if (_optionalBehaviors.Count > 0)
+                foreach (var behavior in _optionalBehaviors) behavior.HandleData(data);
+            if (processedActions.Count > 0)
+                foreach (ProcessAction action in processedActions)
+                {
+                    action.Execute(data);
+                    if (action.ExecutedOnce)
+                        processedActions.Remove(action);
+                }
+
+        }
+
+        public void RequestData()
+        {
+        }
+
+        protected void Execute(string command) => _commandBehavior.ExecuteCommand(command, null);
+        protected void Execute(string command, Func<bool>? predicate = null, Action? ifTrue = null, Action? ifFalse = null, CommandElementSettings? settings = null)
+        {
+            _commandBehavior.ExecuteCommand(command, predicate, ifTrue, ifFalse, settings);
+        }
+        protected void Execute(string command, Func<string, bool>? predicate = null, Action? ifTrue = null, Action? ifFalse = null, CommandElementSettings? settings = null)
+        {
+            _commandBehavior.ExecuteCommand(command, predicate, ifTrue, ifFalse, settings);
+        }
+        protected void Execute(string command, IOptionalCommandBehavior behavior, CommandElementSettings? settings = null) => _commandBehavior.ExecuteCommand(command, behavior, settings);
+
+        #region Option management
+        protected void Option(string Name, Action<object> action, bool isExecutedOnce = false, bool Active = true) => processedActions.Add(new ProcessAction
+        {
+            Name = Name,
+            ProcessedAction = action,
+            ExecutedOnce = isExecutedOnce,
+            Usage = Active
+        });
+        protected void PredicatedOption(string Name, Func<object, bool> predicate, Action<object> action, bool isExecutedOnce = false, bool Active = true) => processedActions.Add(new PredicatedProcessAction
+        {
+            Name = Name,
+            Predicate = predicate,
+            ProcessedAction = action,
+            ExecutedOnce = isExecutedOnce,
+            Usage = Active
+        });
+        protected void OptionClear() => processedActions.Clear();
+        protected void OptionRemove(string Name)
+        {
+            processedActions.Remove(processedActions.First(x => x.Name == Name));
+        }
+        protected void OptionOff(string Name)
+        {
+            var r = processedActions.FirstOrDefault(x => x.Name == Name);
+            if (r != null) r.Usage = false;
+        }
+        protected void OptionOn(string Name)
+        {
+            var r = processedActions.FirstOrDefault(x => x.Name == Name);
+            if (r != null) r.Usage = true;
+        }
+        #endregion
+
     }
 
     public class StringDeviceReader : IDeviceReader<string>
@@ -388,16 +491,201 @@ namespace ANG24.Core.Devices.Base
 
         public event Action<string> OnDataReceived;
 
+        public void Command(object command)
+        {
+            //emtpy...
+        }
+
+        public void SetPort(IPort port)
+        {
+            this.port = port;
+            this.port.OnData += DR;
+        }
+
+        private void DR()
+        {
+            while (port.DataExist)
+            {
+                var data = port.Read<string>();
+                OnDataReceived?.Invoke(data);
+            }
+        }
+    }
+    public class StringDeviceWriter : IDeviceWriter<string>
+    {
+        public IPort port { get; private set; }
+
+        public event Action OnDataRequested;
+
+        public void Command(object command)
+        {
+            Write(command as string);
+        }
 
         public void SetPort(IPort port)
         {
             this.port = port;
         }
+
+        public void Write(string message)
+        {
+            port.Write(message);
+            OnDataRequested?.Invoke();
+        }
+    }
+    public class PortSerial : PortBase
+    {
+        SerialPort _port;
+        public bool Online => _port.IsOpen;
+        public bool DataExist => _port.BytesToRead > 0;
+
+
+        public event Action OnData;
+
+        public PortSerial()
+        {
+            _port = new SerialPort();
+            _port.DataReceived += _port_DataReceived;
+        }
+
+        private void _port_DataReceived(object sender, SerialDataReceivedEventArgs e)
+        {
+            OnData?.Invoke();
+        }
+
+        public override void Connect()
+        {
+            if (!Online)
+            {
+                try
+                {
+                    _port.Open();
+                    base.Connect();
+                }
+                catch
+                {
+
+                }
+            }
+        }
+
+        public override void Disconnect()
+        {
+            if (Online)
+            {
+                try
+                {
+                    _port.Close();
+                    base.Disconnect();
+                }
+                catch
+                {
+
+                }
+            }
+        }
+
+        public override T Read<T>()
+        {
+            if (Online && _port.BytesToRead > 0)
+            {
+                try
+                {
+                    if (typeof(T) == typeof(string))
+                    {
+                        return (T)(object)_port.ReadLine();
+                    }
+                    else if (typeof(T) == typeof(byte[]))
+                    {
+                        var buf = new byte[_port.BytesToRead];
+                        _port.Read(buf, 0, _port.BytesToRead);
+                        return (T)(object)buf;
+                    }
+                    else
+                    {
+                        return default;
+                    }
+                }
+                catch
+                {
+                    return default;
+                }
+            }
+            else return default;
+        }
+
+        public override void Write<T>(T msg)
+        {
+            if (Online)
+            {
+                try
+                {
+                    if (typeof(T) == typeof(string))
+                    {
+                        var m = msg as string;
+                        _port.Write(m);
+                    }
+                    else if (typeof(T) == typeof(byte[]))
+                    {
+                        _port.Write(msg as byte[], 0, (msg as byte[]).Length);
+                    }
+                }
+                catch (InvalidOperationException ioex)
+                {
+
+                }
+                catch (NullReferenceException nrex)
+                {
+
+                }
+                catch (Exception ex)
+                {
+
+                }
+
+            }
+        }
+    }
+    public abstract class PortBase : IPort
+    {
+        public bool Online { get; }
+        public bool DataExist { get; }
+        public IDeviceOperational deviceReader { get; }
+        public IDeviceOperational deviceWriter { get; }
+
+        public event Action Connected;
+        public event Action Disconnected;
+        public event Action OnData;
+        protected PortBase(IDeviceOperational reader, IDeviceOperational writer)
+        {
+            reader.SetPort(this);
+            deviceReader = reader;
+            writer.SetPort(this);
+            deviceWriter = writer;
+        }
+        public virtual void Connect()
+        {
+            Connected?.Invoke();
+        }
+
+        public virtual void Disconnect()
+        {
+            Disconnected?.Invoke();
+        }
+
+        public abstract T Read<T>();
+
+        public abstract void Write<T>(T msg);
     }
 
+    public class DeviceSettings
+    {
+       public required IPort Port { get; set; }
+       public required IDeviceOperational Reader { get; set; }
+       public required IDeviceOperational Writer { get; set; }
+       public required ICommandBehavior commandBehavior { get; set; }
+       public required IDeviceBehavior DeviceBehavior { get; set; }
 
 
-
-
-
+    }
 }

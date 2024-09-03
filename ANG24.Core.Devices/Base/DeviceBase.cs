@@ -36,42 +36,42 @@ namespace ANG24.Core.Devices.Base
             //_port.DataReceived += OnDataReceived;
         }
 
-        protected void OnDataReceived(object sender, SerialDataReceivedEventArgs e)
-        {
-            if (_port.IsOpen)
-            {
-                try
-                {
-                    while (_port.BytesToRead > 0) //пока в буфере количество байт не будет равно 0
-                    {
-                        string cur_data = _port.ReadLine().Replace('\r', ' ').Replace('\n', ' ').Trim();     //чтение по строке
-                        ProcessData(cur_data);                  //в зависимости от реализации, вызываем пост-обработку данных 
-                        _behavior.HandleData(cur_data);         //в зависимости от поведения -- производим обработку данных
-                        _commandBehavior.HandleData(cur_data);  //для обработчика команд -- то же самое
-                        if (_optionalBehaviors.Count > 0)
-                        {
-                            foreach (var behavior in _optionalBehaviors)
-                            {
-                                behavior.HandleData(cur_data);
-                            }
-                        }
-                        //экспериментальная функция, выполняет дополнительные действия, добавляемые и включаемые по требованию
-                        if (processedActions.Count > 0)
-                            foreach (ProcessAction action in processedActions)
-                            {
-                                action.Execute(cur_data);
-                                if (action.ExecutedOnce)
-                                    processedActions.Remove(action);
-                            }
-                        DeviceDataReceived?.Invoke(cur_data);
-                    }
-                }
-                catch (InvalidOperationException)
-                {
+        //protected void OnDataReceived(object sender, SerialDataReceivedEventArgs e)
+        //{
+        //    if (_port.IsOpen)
+        //    {
+        //        try
+        //        {
+        //            while (_port.BytesToRead > 0) //пока в буфере количество байт не будет равно 0
+        //            {
+        //                string cur_data = _port.ReadLine().Replace('\r', ' ').Replace('\n', ' ').Trim();     //чтение по строке
+        //                ProcessData(cur_data);                  //в зависимости от реализации, вызываем пост-обработку данных 
+        //                _behavior.HandleData(cur_data);         //в зависимости от поведения -- производим обработку данных
+        //                _commandBehavior.HandleData(cur_data);  //для обработчика команд -- то же самое
+        //                if (_optionalBehaviors.Count > 0)
+        //                {
+        //                    foreach (var behavior in _optionalBehaviors)
+        //                    {
+        //                        behavior.HandleData(cur_data);
+        //                    }
+        //                }
+        //                //экспериментальная функция, выполняет дополнительные действия, добавляемые и включаемые по требованию
+        //                if (processedActions.Count > 0)
+        //                    foreach (ProcessAction action in processedActions)
+        //                    {
+        //                        action.Execute(cur_data);
+        //                        if (action.ExecutedOnce)
+        //                            processedActions.Remove(action);
+        //                    }
+        //                DeviceDataReceived?.Invoke(cur_data);
+        //            }
+        //        }
+        //        catch (InvalidOperationException)
+        //        {
 
-                }
-            }
-        }
+        //        }
+        //    }
+        //}
         protected abstract void ProcessData(string data); //абстрактный метод для обработки полученных данных
         //public virtual void SetCommand(string command)
         //{
@@ -114,38 +114,38 @@ namespace ANG24.Core.Devices.Base
         }
         protected void Execute(string command, IOptionalCommandBehavior behavior, CommandElementSettings? settings = null) => _commandBehavior.ExecuteCommand(command, behavior, settings);
 
-        #region Option management
-        protected void Option(string Name, Action<string> action, bool isExecutedOnce = false, bool Active = true) => processedActions.Add(new ProcessAction
-        {
-            Name = Name,
-            ProcessedAction = action,
-            ExecutedOnce = isExecutedOnce,
-            Usage = Active
-        });
-        protected void PredicatedOption(string Name, Func<string, bool> predicate, Action<string> action, bool isExecutedOnce = false, bool Active = true) => processedActions.Add(new PredicatedProcessAction
-        {
-            Name = Name,
-            Predicate = predicate,
-            ProcessedAction = action,
-            ExecutedOnce = isExecutedOnce,
-            Usage = Active
-        });
-        protected void OptionClear() => processedActions.Clear();
-        protected void OptionRemove(string Name)
-        {
-            processedActions.Remove(processedActions.First(x => x.Name == Name));
-        }
-        protected void OptionOff(string Name)
-        {
-            var r = processedActions.FirstOrDefault(x => x.Name == Name);
-            if (r != null) r.Usage = false;
-        }
-        protected void OptionOn(string Name)
-        {
-            var r = processedActions.FirstOrDefault(x => x.Name == Name);
-            if (r != null) r.Usage = true;
-        }
-        #endregion
+        //#region Option management
+        //protected void Option(string Name, Action<string> action, bool isExecutedOnce = false, bool Active = true) => processedActions.Add(new ProcessAction
+        //{
+        //    Name = Name,
+        //    ProcessedAction = action,
+        //    ExecutedOnce = isExecutedOnce,
+        //    Usage = Active
+        //});
+        //protected void PredicatedOption(string Name, Func<string, bool> predicate, Action<string> action, bool isExecutedOnce = false, bool Active = true) => processedActions.Add(new PredicatedProcessAction
+        //{
+        //    Name = Name,
+        //    Predicate = predicate,
+        //    ProcessedAction = action,
+        //    ExecutedOnce = isExecutedOnce,
+        //    Usage = Active
+        //});
+        //protected void OptionClear() => processedActions.Clear();
+        //protected void OptionRemove(string Name)
+        //{
+        //    processedActions.Remove(processedActions.First(x => x.Name == Name));
+        //}
+        //protected void OptionOff(string Name)
+        //{
+        //    var r = processedActions.FirstOrDefault(x => x.Name == Name);
+        //    if (r != null) r.Usage = false;
+        //}
+        //protected void OptionOn(string Name)
+        //{
+        //    var r = processedActions.FirstOrDefault(x => x.Name == Name);
+        //    if (r != null) r.Usage = true;
+        //}
+        //#endregion
 
         #region connection logic
         //public virtual void Connect()
@@ -180,15 +180,15 @@ namespace ANG24.Core.Devices.Base
         //    }
 
         //}
-        protected async Task<bool> Find(string exceptedRequest, string exceptedResponce, int baudRate = 9600)
-        {
-            var name = await SerialPortFinder.FindDeviceAsync(exceptedRequest, exceptedResponce, baudRate);
-            if (name == null) return false;
-            if (name.Contains("device not found")) return false;
-            _port.PortName = name;
-            _portName = name;
-            return true;
-        }
+        //protected async Task<bool> Find(string exceptedRequest, string exceptedResponce, int baudRate = 9600)
+        //{
+        //    var name = await SerialPortFinder.FindDeviceAsync(exceptedRequest, exceptedResponce, baudRate);
+        //    if (name == null) return false;
+        //    if (name.Contains("device not found")) return false;
+        //    _port.PortName = name;
+        //    _portName = name;
+        //    return true;
+        //}
 
        // private void Reconnect(object? state) => Connect();
         #endregion 
@@ -217,11 +217,11 @@ namespace ANG24.Core.Devices.Base
     public class ProcessAction
     {
         public string Name { get; set; }
-        public Action<string> ProcessedAction { get; set; }
+        public Action<object> ProcessedAction { get; set; }
         public bool ExecutedOnce { get; set; }
         public bool Usage { get; set; }
 
-        public virtual void Execute(string val)
+        public virtual void Execute(object val)
         {
             if (Usage)
                 ProcessedAction?.Invoke(val);
@@ -229,9 +229,9 @@ namespace ANG24.Core.Devices.Base
     }
     public class PredicatedProcessAction : ProcessAction
     {
-        public Func<string, bool> Predicate { get; set; }
+        public Func<object, bool> Predicate { get; set; }
 
-        public override void Execute(string val)
+        public override void Execute(object val)
         {
             if (Usage)
                 if (Predicate != null && Predicate.Invoke(val))
