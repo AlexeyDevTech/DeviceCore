@@ -501,7 +501,7 @@ namespace ANG24.Core.Devices.Base
             this.port = port;
             this.port.OnData += DR;
         }
-
+        //DataReceived
         private void DR()
         {
             while (port.DataExist)
