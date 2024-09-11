@@ -7,6 +7,22 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="DeviceBehaviors\**" />
+    <EmbeddedResource Remove="DeviceBehaviors\**" />
+    <None Remove="DeviceBehaviors\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Remove="BridgeCommutatorDevice.cs" />
+    <Compile Remove="CompensationControllerDevice.cs" />
+    <Compile Remove="MEADevice.cs" />
+    <Compile Remove="MNKControllerDevice.cs" />
+    <Compile Remove="PowerSelectorControllerDevice.cs" />
+    <Compile Remove="SynthesizerDevice.cs" />
+    <Compile Remove="VoltageSyncroControllerDevice.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="System.IO.Ports" Version="7.0.0" />
   </ItemGroup>
 
