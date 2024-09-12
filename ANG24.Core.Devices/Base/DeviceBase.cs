@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Globalization;
 using System.IO.Ports;
 using System.Linq;
@@ -13,12 +14,22 @@ namespace ANG24.Core.Devices.Base
         IDataSource source;
     }
 
+
+    public interface IConnectable 
+    {
+        event Action OnConnect;
+        event Action OnDisconnect;
+        void Connect();
+        void Disconnect();
+
+    }
     public interface IDataSource
     {
         string Name { get; }
-        Type DataReceivedType { get; set; }
+        Type DataReceivedType { get; }
         event Action OnData;
         T Read<T>();
+        object Read(Type type);
         void Write<T>(T data);
 
     }
@@ -27,95 +38,78 @@ namespace ANG24.Core.Devices.Base
         T Read();
         void Write(T data);
     }
-
-
-    //абстракция для обобщения устройств для COM порта 
-    public abstract class SerialAdapter<T> : IDataSourceAdapter<T>
-    {
-        protected SerialPort port;
-        protected SerialAdapter(SerialPort port)
-        {
-          this.port = port;
-        }
-
-        public abstract T Read();
-
-        public abstract void Write(T data);
-    }
-    public class StringSerialAdapter : SerialAdapter<string>
-    {
-
-        public StringSerialAdapter(SerialPort port) : base(port) { }
-
-        public override string Read()
-        {
-           return port.ReadLine();
-        }
-
-        public override void Write(string data)
-        {
-            port.Write(data);
-        }
-    }
-    public class ByteSerialAdapter : SerialAdapter<byte[]>
-    {
-        public ByteSerialAdapter(SerialPort port) : base(port) { }
-
-        public override byte[] Read()
-        {
-
-            var arr = new byte[port.BytesToRead];
-            port.Read(arr, 0, arr.Length);
-            return arr;
-        }
-
-        public override void Write(byte[] data)
-        {
-            port.Write(data, 0, data.Length);
-        }
-    }
+   
 
     public class SerialDataSource : DataSourceBase
     {
         SerialPort port;
         public string Name { get; }
+        public override bool Online => port.IsOpen;
 
         public event Action OnData;
 
         public SerialDataSource(SerialPort port) : base() 
         {
             this.port = port;
+            port.DataReceived += Port_DataReceived;
             adapters = new Dictionary<Type, object>
             {
                 { typeof(string), new StringSerialAdapter(port) },
                 { typeof(byte[]), new ByteSerialAdapter(port) },
             };
         }
-        public SerialDataSource(string portName, int baudRate = 9600) : this(new SerialPort(portName, baudRate)) { }
-        public override T Read<T>()
+        private void Port_DataReceived(object sender, SerialDataReceivedEventArgs e)
         {
-            return GetAdapter<T>().Read();
+            while(port.BytesToRead > 0)
+            {
+                Console.WriteLine(Read(DataReceivedType)); 
+            }
         }
-
-        public override void Write<T>(T data)
+        public SerialDataSource(string portName, int baudRate = 9600) : this(new SerialPort(portName, baudRate)) { }
+       
+        public override void Connect()
         {
-            GetAdapter<T>().Write(data);
+            if (!Online)
+            {
+                try
+                {
+                    port.Open();
+                    base.Connect();
+                }
+                catch { Console.WriteLine("device connect with error"); }
+            }
+        }
+        public override void Disconnect()
+        {
+            if (Online)
+            {
+                try
+                {
+                    port.Close();
+                    base.Disconnect();
+                }
+                catch { Console.WriteLine("device offline with error"); }
+            }
         }
     }
 
-    public abstract class DataSourceBase : IDataSource
+    public abstract class DataSourceBase : IDataSource, IConnectable
     {
         public string Name { get; }
-        public Type DataReceivedType { get; set; }
+        public abstract bool Online { get; }
+        public Type DataReceivedType { get; protected set; }
+
 
         public event Action OnData;
-        protected Dictionary<Type, object> adapters;
+        public event Action OnConnect;
+        public event Action OnDisconnect;
 
+
+        protected Dictionary<Type, object> adapters;
         protected DataSourceBase()
         {
-          adapters = new Dictionary<Type, object>();
+            adapters = new Dictionary<Type, object>();
         }
-
         protected IDataSourceAdapter<T> GetAdapter<T>()
         {
             if (adapters.TryGetValue(typeof(T), out var adapter))
@@ -125,10 +119,42 @@ namespace ANG24.Core.Devices.Base
 
             throw new InvalidOperationException($"No adapter found for type {typeof(T).Name}");
         }
+        protected object GetAdapter(Type type)
+        {
+            if (adapters.TryGetValue(type, out var adapter))
+            {
+                return adapter;
+            }
 
-        public abstract T Read<T>();
+            throw new InvalidOperationException($"No adapter found for type {type.Name}");
+        }
+        public void SetDataReceivedType(Type type) => DataReceivedType = type;
+        public virtual T Read<T>()
+        {
+            return GetAdapter<T>().Read();
+        }
+        public virtual object Read(Type type)
+        {
+            var adapter = GetAdapter(type);
 
-        public abstract void Write<T>(T data);
+            // Используем reflection, чтобы вызвать метод Read у адаптера
+            var method = adapter.GetType().GetMethod("Read");
+            var result = method.Invoke(adapter, null);
+            // Приводим результат к нужному типу
+            return Convert.ChangeType(result, type);
+        }
+        public virtual void Write<T>(T data)
+        {
+            GetAdapter<T>().Write(data);
+        }
+        public virtual void Connect()
+        {
+            OnConnect?.Invoke();
+        }
+        public virtual void Disconnect()
+        {
+            OnDisconnect?.Invoke();
+        }
     }
 
 
