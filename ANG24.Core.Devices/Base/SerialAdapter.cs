@@ -2,6 +2,12 @@
 
 namespace ANG24.Core.Devices.Base
 {
+    public interface IDataSourceAdapter<T>
+    {
+        T Read();
+        void Write(T data);
+    }
+
     //абстракция для обобщения устройств для COM порта 
     public abstract class SerialAdapter<T> : IDataSourceAdapter<T>
     {

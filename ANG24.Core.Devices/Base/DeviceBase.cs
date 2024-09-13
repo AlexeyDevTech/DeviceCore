@@ -1,162 +1,98 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Diagnostics;
 using System.Globalization;
-using System.IO.Ports;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace ANG24.Core.Devices.Base
 {
-    public class DeviceBase
+    public abstract class DeviceBase
     {
-        IDataSource source;
+        protected IDataSource source;
+
+        public DeviceBase()
+        {
+            
+        }
+
+        private void Source_OnData(object obj)
+        {
+            Console.WriteLine($"device received data: {obj}");
+        }
+        private void DeviceBase_OnDisconnect()
+        {
+            Console.WriteLine("device offline");
+        }
+        private void DeviceBase_OnConnect()
+        {
+            Console.WriteLine("device online");
+        }
+
+        public void SetDataSource(IDataSource source)
+        {
+            if(this.source != null)
+            {
+                this.source.OnData -= Source_OnData;
+                ((IConnectable)this.source).OnConnect -= DeviceBase_OnConnect;
+                ((IConnectable)this.source).OnDisconnect -= DeviceBase_OnDisconnect;
+            }
+
+            this.source = source;
+            this.source.OnData += Source_OnData;
+            ((IConnectable)this.source).OnConnect += DeviceBase_OnConnect;
+            ((IConnectable)this.source).OnDisconnect += DeviceBase_OnDisconnect;
+        }
+
+        public void Connect()
+        {
+            ((IConnectable)source)?.Connect();
+        }
+        public void Disconnect()
+        {
+            ((IConnectable)source)?.Disconnect();
+        }
+
+        public void Write<T>(T msg) => source.Write(msg);
     }
 
-
-    public interface IConnectable 
+    public abstract class ManagedDeviceBase : DeviceBase
     {
-        event Action OnConnect;
-        event Action OnDisconnect;
-        void Connect();
-        void Disconnect();
+        IConnectionDeviceBehavior ConnectionBehavior;
+        ICommandDeviceBehavior CommandBehavior;
 
-    }
-    public interface IDataSource
-    {
-        string Name { get; }
-        Type DataReceivedType { get; }
-        event Action OnData;
-        T Read<T>();
-        object Read(Type type);
-        void Write<T>(T data);
 
+        protected ManagedDeviceBase() { }
     }
-    public interface IDataSourceAdapter<T>
-    {
-        T Read();
-        void Write(T data);
-    }
+
+    /// <summary>
+    /// Стандартный интерфейс для реализации классов поведения подключения
+    /// </summary>
    
-
-    public class SerialDataSource : DataSourceBase
+    /// <summary>
+    /// Ответвление, предлагающее методы для переопределяемых командных паттернов 
+    /// </summary>
+    public interface IOptionalCommandBehavior : IOptionalBehavior
     {
-        SerialPort port;
-        public string Name { get; }
-        public override bool Online => port.IsOpen;
-
-        public event Action OnData;
-
-        public SerialDataSource(SerialPort port) : base() 
-        {
-            this.port = port;
-            port.DataReceived += Port_DataReceived;
-            adapters = new Dictionary<Type, object>
-            {
-                { typeof(string), new StringSerialAdapter(port) },
-                { typeof(byte[]), new ByteSerialAdapter(port) },
-            };
-        }
-        private void Port_DataReceived(object sender, SerialDataReceivedEventArgs e)
-        {
-            while(port.BytesToRead > 0)
-            {
-                Console.WriteLine(Read(DataReceivedType)); 
-            }
-        }
-        public SerialDataSource(string portName, int baudRate = 9600) : this(new SerialPort(portName, baudRate)) { }
-       
-        public override void Connect()
-        {
-            if (!Online)
-            {
-                try
-                {
-                    port.Open();
-                    base.Connect();
-                }
-                catch { Console.WriteLine("device connect with error"); }
-            }
-        }
-        public override void Disconnect()
-        {
-            if (Online)
-            {
-                try
-                {
-                    port.Close();
-                    base.Disconnect();
-                }
-                catch { Console.WriteLine("device offline with error"); }
-            }
-        }
+        OptionalBehaviorState State { get; }
+        public int FaultCallback { get; set; }
+        OptionalBehaviorState OperationCheck(object data);
+        Action ProcessingAction { get; set; }
+        Action SuccessAction { get; set; }
+        Action<IOptionalCommandBehavior> FailureAction { get; set; }
+        void Start();
+        void Stop();
+        void OnSuccess();
+        void OnFail();
     }
-
-    public abstract class DataSourceBase : IDataSource, IConnectable
+    public enum OptionalBehaviorState : int
     {
-        public string Name { get; }
-        public abstract bool Online { get; }
-        public Type DataReceivedType { get; protected set; }
-
-
-        public event Action OnData;
-        public event Action OnConnect;
-        public event Action OnDisconnect;
-
-
-        protected Dictionary<Type, object> adapters;
-        protected DataSourceBase()
-        {
-            adapters = new Dictionary<Type, object>();
-        }
-        protected IDataSourceAdapter<T> GetAdapter<T>()
-        {
-            if (adapters.TryGetValue(typeof(T), out var adapter))
-            {
-                return (IDataSourceAdapter<T>)adapter;
-            }
-
-            throw new InvalidOperationException($"No adapter found for type {typeof(T).Name}");
-        }
-        protected object GetAdapter(Type type)
-        {
-            if (adapters.TryGetValue(type, out var adapter))
-            {
-                return adapter;
-            }
-
-            throw new InvalidOperationException($"No adapter found for type {type.Name}");
-        }
-        public void SetDataReceivedType(Type type) => DataReceivedType = type;
-        public virtual T Read<T>()
-        {
-            return GetAdapter<T>().Read();
-        }
-        public virtual object Read(Type type)
-        {
-            var adapter = GetAdapter(type);
-
-            // Используем reflection, чтобы вызвать метод Read у адаптера
-            var method = adapter.GetType().GetMethod("Read");
-            var result = method.Invoke(adapter, null);
-            // Приводим результат к нужному типу
-            return Convert.ChangeType(result, type);
-        }
-        public virtual void Write<T>(T data)
-        {
-            GetAdapter<T>().Write(data);
-        }
-        public virtual void Connect()
-        {
-            OnConnect?.Invoke();
-        }
-        public virtual void Disconnect()
-        {
-            OnDisconnect?.Invoke();
-        }
+        NotStarted = 0,
+        Starting = 1,
+        Processing = 2,
+        Success = 3,
+        Fail = 4
     }
-
-
-
 }

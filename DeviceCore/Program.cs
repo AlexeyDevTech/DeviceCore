@@ -8,15 +8,9 @@ namespace DeviceCore
 
         static async Task Main(string[] args)
         {
-            var main = new SerialDataSource("COM3");
-            main.SetDataReceivedType(typeof(string));
-            main.OnConnect += () => Console.WriteLine("device <MAIN> connected");
-            main.OnDisconnect += () => Console.WriteLine("device <MAIN> offline");
+            var main = new MEADevice();
             main.Connect();
-            new Timer(state =>
-            {
-                main.SetDataReceivedType(typeof(byte[]));
-            }).Change(5000, Timeout.Infinite);
+            main.Write("#HVM:STOP");
             Console.ReadKey();
 
         }
