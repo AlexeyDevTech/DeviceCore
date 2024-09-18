@@ -21,6 +21,7 @@ namespace ANG24.Core.Devices.Base
         private void Source_OnData(object obj)
         {
             Console.WriteLine($"device received data: {obj}");
+            OnData(obj);
         }
         private void DeviceBase_OnDisconnect()
         {
@@ -56,15 +57,33 @@ namespace ANG24.Core.Devices.Base
         }
 
         public void Write<T>(T msg) => source.Write(msg);
+        protected abstract void OnData(object data);
     }
 
     public abstract class ManagedDeviceBase : DeviceBase
     {
         IConnectionDeviceBehavior ConnectionBehavior;
-        ICommandDeviceBehavior CommandBehavior;
+        public CommandDeviceBehaviorBase CommandBehavior;
+        public OptionalBehaviorManager OptionalBehavior;
 
+        protected ManagedDeviceBase() : base()
+        { 
+        
+        }
 
-        protected ManagedDeviceBase() { }
+        protected override void OnData(object data)
+        {
+            CommandBehavior.HandleData(data);               //для команд-менеджера
+            ConnectionBehavior.HandleData(data);            //для коннект-менеджера
+            OptionalBehavior.HandleData(data);              //для опционал менеджера
+        }
+    }
+    public abstract class ExecutableManagedDeviceBase : ManagedDeviceBase
+    {
+        public void Execute<T>(T command) => CommandBehavior.ExecuteCommand(command);
+        public void Execute<T>(T command, Func<bool>? predicate, Action? IfTrue, Action? IfFalse) => CommandBehavior.ExecuteCommand(command, predicate, IfTrue, IfFalse);
+        public void Execute<T>(T command, Func<object, bool> predicate, Action? IfTrue, Action? IfFalse) => CommandBehavior.ExecuteCommand(command, predicate, IfTrue, IfFalse);
+        public void Execute<T>(T command, IOptionalCommandBehavior behavior) => CommandBehavior.ExecuteCommand(command, behavior);
     }
 
     /// <summary>

@@ -5,7 +5,10 @@
     /// </summary>
     public interface IDeviceBehavior
     {
-        void HandleData();
+        void HandleData(object data);
+
+        void SetDevice(DeviceBase device);
+
     }
     public interface IConnectionDeviceBehavior : IDeviceBehavior
     {
