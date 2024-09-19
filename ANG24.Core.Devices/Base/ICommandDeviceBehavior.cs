@@ -1,4 +1,6 @@
-﻿namespace ANG24.Core.Devices.Base
+﻿using System.ComponentModel.Design;
+
+namespace ANG24.Core.Devices.Base
 {
 
     #region interfaces CommandDeviceBehavior
@@ -34,10 +36,18 @@
     #endregion
 
     #region implements CommandDeviceBehavior
+    /*
+     * Это базовый класс для реализации паттернов поведения при обработке команд
+     */
     public abstract class CommandDeviceBehaviorBase : ICommandDeviceBehavior, ISimpleCommandDeviceBehavior, IConditionalCommandDeviceBehavior, IRedirectedCommandDeviceBehavior
     {
         protected Queue<CommandElement> cmds;
         protected DeviceBase device;
+
+        bool Active = false;
+        Task _commandTask;
+        CancellationTokenSource CT_cts;
+
         protected CommandDeviceBehaviorBase()
         {
           cmds = new Queue<CommandElement>();
@@ -77,6 +87,45 @@
 
         public abstract void HandleData(object data);
         public abstract void RequestData();
+
+        public virtual void OnSuccess()
+        {
+
+        }
+
+        public virtual void OnFailure()
+        {
+
+        }
+        public virtual void OnProcessing()
+        {
+
+        }
+        public virtual void Clear()
+        {
+            cmds.Clear();
+        }
+        public void DropCommand()
+        {
+            cmds.Dequeue();
+        }
+
+        public void Start()
+        {
+            if (!Active) 
+            {
+                CT_cts = new CancellationTokenSource();
+                _commandTask = Task.Factory.StartNew(CommandProcess, CT_cts.Token, TaskCreationOptions.LongRunning, TaskScheduler.Default);
+            }
+        }
+
+        private void CommandProcess()
+        {
+
+        }
+
+        protected abstract void CommandTick();
+
         public void SetDevice(DeviceBase device) => this.device = device;
     }
 
@@ -254,7 +303,7 @@
             if (item != null) item.Off();
             return device;
         }
-        public static T GetOptionalBehavior<T>(this DeviceBase device, string Name) where T : class, IOptionalBehavior
+        public static T GetBehavior<T>(this DeviceBase device, string Name) where T : class, IOptionalBehavior
         {
             var item = (device as ManagedDeviceBase).OptionalBehavior._optionalBehaviors.FirstOrDefault(x => x.Name == Name);
             if (item != null)
