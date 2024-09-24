@@ -8,21 +8,5 @@
         void HandleData(object data);
 
         void SetDevice(DeviceBase device);
-
-    }
-    public interface IConnectionDeviceBehavior : IDeviceBehavior
-    {
-        void Reconnect();
-    }
-
-    /// <summary>
-    /// Интерфейс для реализации всех опциональных паттернов
-    /// </summary>
-    public interface IOptionalBehavior : IDeviceBehavior
-    {
-        public string Name { get; }
-        bool IsUsage { get; set; }
-        void On();
-        void Off();
     }
 }

@@ -62,9 +62,9 @@ namespace ANG24.Core.Devices.Base
 
     public abstract class ManagedDeviceBase : DeviceBase
     {
-        IConnectionDeviceBehavior ConnectionBehavior;
-        public CommandDeviceBehaviorBase CommandBehavior;
-        public OptionalBehaviorManager OptionalBehavior;
+        IConnectionDeviceBehavior ConnectionBehavior; //операция Reconnect
+        public CommandDeviceBehaviorBase CommandBehavior; //операции SetCommand, Check
+        public OptionalBehaviorManager OptionalBehavior; //дополнительный анализ 
 
         protected ManagedDeviceBase() : base()
         { 
@@ -73,8 +73,8 @@ namespace ANG24.Core.Devices.Base
 
         protected override void OnData(object data)
         {
-            CommandBehavior.HandleData(data);               //для команд-менеджера
             ConnectionBehavior.HandleData(data);            //для коннект-менеджера
+            CommandBehavior.HandleData(data);               //для команд-менеджера
             OptionalBehavior.HandleData(data);              //для опционал менеджера
         }
     }
@@ -86,13 +86,12 @@ namespace ANG24.Core.Devices.Base
         public void Execute<T>(T command, IOptionalCommandBehavior behavior) => CommandBehavior.ExecuteCommand(command, behavior);
     }
 
-    /// <summary>
-    /// Стандартный интерфейс для реализации классов поведения подключения
-    /// </summary>
-   
-    /// <summary>
-    /// Ответвление, предлагающее методы для переопределяемых командных паттернов 
-    /// </summary>
+    public class BehaviorManager
+    {
+        protected BehaviorManager() { }
+
+    }
+
     public interface IOptionalCommandBehavior : IOptionalBehavior
     {
         OptionalBehaviorState State { get; }

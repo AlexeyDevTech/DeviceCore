@@ -41,6 +41,12 @@ namespace ANG24.Core.Devices.Base
      */
     public abstract class CommandDeviceBehaviorBase : ICommandDeviceBehavior, ISimpleCommandDeviceBehavior, IConditionalCommandDeviceBehavior, IRedirectedCommandDeviceBehavior
     {
+        public event Action OnSuccessEvent;
+        public event Action OnProcessingEvent;
+        public event Action OnFailureEvent;
+
+
+
         protected Queue<CommandElement> cmds;
         protected DeviceBase device;
 
@@ -88,26 +94,32 @@ namespace ANG24.Core.Devices.Base
         public abstract void HandleData(object data);
         public abstract void RequestData();
 
+
+        #region output events
         public virtual void OnSuccess()
         {
-
+            OnSuccessEvent?.Invoke();
         }
 
         public virtual void OnFailure()
         {
-
+            OnFailureEvent?.Invoke();
         }
         public virtual void OnProcessing()
         {
-
+            OnProcessingEvent?.Invoke();
         }
+        #endregion
         public virtual void Clear()
         {
             cmds.Clear();
         }
         public void DropCommand()
         {
-            cmds.Dequeue();
+            if (cmds.Count > 0)
+            {
+                cmds.Dequeue();
+            }
         }
 
         public void Start()
