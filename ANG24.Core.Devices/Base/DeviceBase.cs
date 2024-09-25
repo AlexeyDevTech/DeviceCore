@@ -1,4 +1,7 @@
-﻿using System;
+﻿using ANG24.Core.Devices.Base.Abstract;
+using ANG24.Core.Devices.Base.Interfaces;
+using ANG24.Core.Devices.Base.Interfaces.Behaviors;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Diagnostics;

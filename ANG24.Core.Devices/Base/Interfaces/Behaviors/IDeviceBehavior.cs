@@ -1,4 +1,4 @@
-﻿namespace ANG24.Core.Devices.Base
+﻿namespace ANG24.Core.Devices.Base.Interfaces.Behaviors
 {
     /// <summary>
     /// Стандартный интерфейс всех паттернов поведения
