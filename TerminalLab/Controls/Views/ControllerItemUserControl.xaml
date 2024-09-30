@@ -123,10 +123,9 @@
                 <ColumnDefinition Width="71"/>
                 <ColumnDefinition Width="24"/>
             </Grid.ColumnDefinitions>
-            <TextBlock Text="MainController" FontSize="13" Padding="5,0,0,0" VerticalAlignment="Center"/>
-            <TextBox Grid.Column="1" Text="123" FontSize="13" VerticalContentAlignment="Center" Padding="0,-1,0,0" Margin="0,2,0,2"/>
+            <TextBlock Text="{Binding ControllerName}" FontSize="13" Padding="5,0,0,0" VerticalAlignment="Center"/>
+            <TextBox Grid.Column="1" Text="{Binding PortName}" FontSize="13" VerticalContentAlignment="Center" Padding="0,-1,0,0" Margin="0,2,0,2"/>
             <CheckBox x:Name="scrollcheck" Style="{DynamicResource CheckBoxStyle1}" Grid.Column="2" RenderTransformOrigin="0.5 0.5"/>
-
         </Grid>
         <Grid Grid.Row="1">
             <Grid.ColumnDefinitions>
@@ -139,6 +138,9 @@
             </Grid>
             <Grid Grid.Column="1" Margin="5 3">
                 <Button Content="Close"/>
+            </Grid>
+            <Grid Grid.Column="2" Margin="5 3">
+                <Button Content="Settings"/>
             </Grid>
 
         </Grid>

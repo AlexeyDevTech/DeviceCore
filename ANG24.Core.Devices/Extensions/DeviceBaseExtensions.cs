@@ -3,7 +3,7 @@ using ANG24.Core.Devices.Base.Interfaces.Behaviors;
 
 namespace ANG24.Core.Devices.Extensions
 {
-#endregion
+
 
 
     #region Extensions for DeviceBase
@@ -73,5 +73,4 @@ namespace ANG24.Core.Devices.Extensions
 
     }
     #endregion
-
 }

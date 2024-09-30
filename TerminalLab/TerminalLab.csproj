@@ -14,7 +14,12 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="Autofac" Version="8.1.0" />
     <PackageReference Include="Prism.Core" Version="8.1.97" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\ANG24.Core.Devices\ANG24.Core.Devices.csproj" />
   </ItemGroup>
 
 </Project>
