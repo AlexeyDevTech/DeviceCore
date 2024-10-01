@@ -4,15 +4,19 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:vm="clr-namespace:TerminalLab.ViewModels"
+        xmlns:helper="clr-namespace:TerminalLab.Helpers"
         xmlns:local="clr-namespace:TerminalLab"
         xmlns:controls="clr-namespace:TerminalLab.Controls.Views"
         xmlns:controlsVm="clr-namespace:TerminalLab.Controls.ViewModels"
         d:DataContext="{d:DesignInstance vm:MainWindowViewModel}"
         mc:Ignorable="d"
-        Title="MainWindow" Height="600" Width="1200">
+        Title="MainWindow" MinHeight="600" MinWidth="1200">
     <Window.DataContext>
         <vm:MainWindowViewModel/>
     </Window.DataContext>
+    <Window.InputBindings>
+        <KeyBinding Key="Enter" Command="{Binding EnterKeyCommand}"/>
+    </Window.InputBindings>
     <Window.Resources>
         <ResourceDictionary Source="/StyleDictionary.xaml"/>
     </Window.Resources>
@@ -25,8 +29,8 @@
         <Grid Grid.Row="1" Margin="0,0,0,15">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition/>
-                <ColumnDefinition Width="250"/>
-                <ColumnDefinition Width="800"/>
+                <ColumnDefinition Width="300"/>
+                <ColumnDefinition Width="850"/>
                 <ColumnDefinition/>
             </Grid.ColumnDefinitions>
             <Grid Grid.Column="0"/>
@@ -66,22 +70,28 @@
                 <TabControl Grid.Row="0" Background="#FF181A25">
                     <TabItem Header="Raw">
                         <Grid x:Name="MainFrame" Grid.Row="0" >
-                            <TextBlock x:Name="MainText"/>
-                            <Grid VerticalAlignment="Bottom">
+                            <Grid.RowDefinitions>
+                                <RowDefinition/>
+                                <RowDefinition Height="auto"/>
+                            </Grid.RowDefinitions>
+                            <ScrollViewer Grid.Row="0" helper:AutoScrollHelper.AutoScroll="True" VerticalScrollBarVisibility="Auto">
+                                <TextBlock x:Name="MainText" Text="{Binding RawText}" FontFamily="Consolas"/>
+                            </ScrollViewer>
+                            <Grid VerticalAlignment="Bottom" Grid.Row="1">
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="150"/>
                                     <ColumnDefinition MaxWidth="20"/>
                                     <ColumnDefinition/>
                                 </Grid.ColumnDefinitions>
                                 <TextBlock Grid.Column="1" Text=">>" SnapsToDevicePixels="True" TextAlignment="Center" FontFamily="Consolas" Foreground="White" IsEnabled="False" FontSize="14" Margin="0,1,0,1"/>
-                                <ComboBox Style="{DynamicResource SelectedInputControllerComboBoxStyle}" ItemsSource="{Binding Controllers}">
+                                <ComboBox Style="{DynamicResource SelectedInputControllerComboBoxStyle}" SelectedValue="{Binding SelController}" ItemsSource="{Binding Controllers}">
                                     <ComboBox.ItemTemplate>
                                         <DataTemplate>
                                             <TextBlock FontFamily="Consolas" Text="{Binding ControllerName}"/>
                                         </DataTemplate>
                                     </ComboBox.ItemTemplate>
                                 </ComboBox>
-                                <TextBox Grid.Column="2" FontFamily="Consolas" BorderThickness="0,0,0,0" Background="#FF1C1E27"/>
+                                <TextBox Grid.Column="2" Text="{Binding InputText, Mode=TwoWay, NotifyOnSourceUpdated=True, UpdateSourceTrigger=PropertyChanged}" FontFamily="Consolas" BorderThickness="0,0,0,0" Background="#FF1C1E27"/>
                             </Grid>
                         </Grid>
                     </TabItem>

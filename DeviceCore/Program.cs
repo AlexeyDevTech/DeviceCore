@@ -1,4 +1,5 @@
 ﻿using ANG24.Core.Devices.Base;
+using System;
 
 namespace DeviceCore
 {
@@ -6,11 +7,10 @@ namespace DeviceCore
     internal class Program
     {
 
-
-
+      
         static async Task Main(string[] args)
         {
-            Console.ReadKey();
+          
         }
     }
 }

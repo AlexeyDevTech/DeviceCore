@@ -88,6 +88,15 @@
     <SolidColorBrush x:Key="ComboBox.Disabled.Editable.Border" Color="#FFBFBFBF"/>
     <SolidColorBrush x:Key="ComboBox.Disabled.Editable.Button.Background" Color="Transparent"/>
     <SolidColorBrush x:Key="ComboBox.Disabled.Editable.Button.Border" Color="Transparent"/>
+    <Style x:Key="ConnectionRectangleStyle" TargetType="{x:Type Rectangle}">
+        <Setter Property="Fill" Value="Red"/>
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding Online}" Value="True">
+                <Setter Property="Fill" Value="Green"/>
+            </DataTrigger>
+        </Style.Triggers>
+    </Style>
+
     <Style x:Key="ComboBoxToggleButton" TargetType="{x:Type ToggleButton}">
         <Setter Property="OverridesDefaultStyle" Value="true"/>
         <Setter Property="IsTabStop" Value="false"/>

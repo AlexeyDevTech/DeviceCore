@@ -53,7 +53,7 @@
                     <Setter.Value>
                         <ControlTemplate TargetType="{x:Type CheckBox}">
                             <Grid x:Name="templateRoot" Background="Transparent" SnapsToDevicePixels="True">
-                                
+
                                 <Border x:Name="checkBoxBorder" Background="Transparent" BorderBrush="Transparent" Margin="1">
                                     <Grid x:Name="markGrid">
                                         <Path Grid.Column="2" Stroke="#FFABADB3" Data="M 0 7 L 7 0 L 14 7" HorizontalAlignment="Center" VerticalAlignment="Center"/>
@@ -91,7 +91,7 @@
                                             </TransformGroup>
                                         </Setter.Value>
                                     </Setter>
-                                    
+
                                 </Trigger>
                                 <Trigger Property="IsChecked" Value="{x:Null}">
                                     <!--<Setter Property="Opacity" TargetName="optionMark" Value="0"/>
@@ -120,12 +120,14 @@
         <Grid Grid.Row="0">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition/>
+                <ColumnDefinition Width="20"/>
                 <ColumnDefinition Width="71"/>
                 <ColumnDefinition Width="24"/>
             </Grid.ColumnDefinitions>
             <TextBlock Text="{Binding ControllerName}" FontSize="13" Padding="5,0,0,0" VerticalAlignment="Center"/>
-            <TextBox Grid.Column="1" Text="{Binding PortName}" FontSize="13" VerticalContentAlignment="Center" Padding="0,-1,0,0" Margin="0,2,0,2"/>
-            <CheckBox x:Name="scrollcheck" Style="{DynamicResource CheckBoxStyle1}" Grid.Column="2" RenderTransformOrigin="0.5 0.5"/>
+            <Rectangle Style="{DynamicResource ConnectionRectangleStyle}" Grid.Column="1"  Margin="2.5 5" RadiusX="7.5" RadiusY="7.5"/>
+            <TextBox Grid.Column="2" Text="{Binding PortName}" FontSize="13" VerticalContentAlignment="Center" Padding="0,-1,0,0" Margin="0,2,0,2"/>
+            <CheckBox Grid.Column="3" x:Name="scrollcheck" Style="{DynamicResource CheckBoxStyle1}" RenderTransformOrigin="0.5 0.5"/>
         </Grid>
         <Grid Grid.Row="1">
             <Grid.ColumnDefinitions>
@@ -134,10 +136,10 @@
                 <ColumnDefinition/>
             </Grid.ColumnDefinitions>
             <Grid Grid.Column="0" Margin="5 3">
-                <Button Content="Open"/>
+                <Button Content="Open" Command="{Binding OpenCommand}"/>
             </Grid>
             <Grid Grid.Column="1" Margin="5 3">
-                <Button Content="Close"/>
+                <Button Content="Close" Command="{Binding CloseCommand}"/>
             </Grid>
             <Grid Grid.Column="2" Margin="5 3">
                 <Button Content="Settings"/>

@@ -8,6 +8,6 @@ namespace ANG24.Core.Devices.Interfaces
 {
     public interface IDeviceCreator
     {
-        T Create<T>();
+        T Create<T>() where T : class, new();
     }
 }

@@ -1,17 +1,18 @@
 ﻿using Prism.Commands;
 using Prism.Mvvm;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using PubSub;
 using System.Windows.Input;
+using TerminalLab.PubSubTypes;
 
 namespace TerminalLab.Controls.ViewModels
 {
     public partial class ControllerItemUserControlViewModel : BindableBase
     {
-        
+        public bool Online
+        {
+            get => _online;
+            set => SetProperty(ref _online, value);
+        }
 
         public string PortName
         {
@@ -39,17 +40,26 @@ namespace TerminalLab.Controls.ViewModels
 
         private void CloseCmd()
         {
-
+            Online = false;
+            hub.Publish(new ClosePortPubSubObject { Controller = ControllerName, PortName = PortName });
         }
 
         private void OpenCmd()
         {
+            Online = true;
+            hub.Publish(new OpenPortPubSubObject { Controller = ControllerName, PortName = PortName});
+        }
 
+        public void Send(string value)
+        {
+            hub.Publish(new SelectControllerSendCommandPubSubObject { Controller = ControllerName, PortName = PortName, Command = value});
         }
     }
 
     public partial class ControllerItemUserControlViewModel 
-    { 
+    {
+        Hub hub = Hub.Default;
+        private bool _online;
         string _portName;
         string _controllerName;
 

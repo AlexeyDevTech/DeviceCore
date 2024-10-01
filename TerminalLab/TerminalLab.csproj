@@ -10,12 +10,12 @@
 
   <ItemGroup>
     <Folder Include="Design\" />
-    <Folder Include="Helpers\" />
   </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Autofac" Version="8.1.0" />
     <PackageReference Include="Prism.Core" Version="8.1.97" />
+    <PackageReference Include="PubSub" Version="4.0.2" />
   </ItemGroup>
 
   <ItemGroup>

@@ -21,6 +21,7 @@ namespace TerminalLab
             base.OnStartup(e);
             var builder = new ContainerBuilder();
             builder.RegisterType<DeviceCreator>().As<IDeviceCreator>().SingleInstance();
+            builder.Build();
         }
     }
 
