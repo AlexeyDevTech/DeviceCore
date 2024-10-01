@@ -83,10 +83,7 @@ namespace TerminalLab.ViewModels
                   new ControllerItemUserControlViewModel() { ControllerName = "AOT", PortName = "COM2" },
                   new ControllerItemUserControlViewModel() { ControllerName = "Sync", PortName = "COM3" },
                   new ControllerItemUserControlViewModel() { ControllerName = "Ref", PortName = "COM4" },
-                  new ControllerItemUserControlViewModel() { ControllerName = "Ref2", PortName = "COM5" },
-                  new ControllerItemUserControlViewModel() { ControllerName = "Ref3", PortName = "COM6" },
-                  new ControllerItemUserControlViewModel() { ControllerName = "Ref4", PortName = "COM7" },
-                  new ControllerItemUserControlViewModel() { ControllerName = "Ref5", PortName = "COM8" }
+                  
 
               };
             hub.Subscribe<OpenPortPubSubObject>(x =>
