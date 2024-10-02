@@ -3,6 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:sys="clr-namespace:System;assembly=mscorlib"
              xmlns:local="clr-namespace:TerminalLab.Controls.Views"
              xmlns:vm="clr-namespace:TerminalLab.Controls.ViewModels"
              mc:Ignorable="d" 
@@ -26,7 +27,15 @@
                         <ColumnDefinition/>
                     </Grid.ColumnDefinitions>
                 <TextBlock Text="BaudRate"/>
-                    <ComboBox Style="{DynamicResource GeneralComboBoxStyle}" Grid.Column="1"/>
+                    <ComboBox Style="{DynamicResource GeneralComboBoxStyle}" Grid.Column="1" Foreground="#FFCCCCCC" SelectedItem="{Binding BaudRate, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, NotifyOnSourceUpdated=True}" SelectedIndex="5">
+                        <sys:Int32>9600</sys:Int32>
+                        <sys:Int32>19200</sys:Int32>
+                        <sys:Int32>38400</sys:Int32>
+                        <sys:Int32>57600</sys:Int32>
+                        <sys:Int32>76800</sys:Int32>
+                        <sys:Int32>115200</sys:Int32>
+                        <sys:Int32>230400</sys:Int32>
+                    </ComboBox>
                 </Grid>
             </GroupBox>
         </StackPanel>
