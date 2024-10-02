@@ -142,7 +142,7 @@
                 <Button Content="Close" Command="{Binding CloseCommand}"/>
             </Grid>
             <Grid Grid.Column="2" Margin="5 3">
-                <Button Content="Settings"/>
+                <Button Content="Settings" Command="{Binding SettingsCommand}"/>
             </Grid>
 
         </Grid>

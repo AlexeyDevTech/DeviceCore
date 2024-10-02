@@ -2,6 +2,7 @@
 using Prism.Mvvm;
 using PubSub;
 using System.Windows.Input;
+using TerminalLab.Controls.Views;
 using TerminalLab.PubSubTypes;
 
 namespace TerminalLab.Controls.ViewModels
@@ -35,7 +36,8 @@ namespace TerminalLab.Controls.ViewModels
 
         private void SettingsCmd()
         {
-
+            var w = new ControllerSettingsView();
+            w.ShowDialog();
         }
 
         private void CloseCmd()
