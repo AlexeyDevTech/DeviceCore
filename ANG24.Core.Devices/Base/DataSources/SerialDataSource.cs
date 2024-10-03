@@ -1,4 +1,5 @@
-﻿using System.IO.Ports;
+﻿using ANG24.Core.Devices.Base.DataAdapters;
+using System.IO.Ports;
 
 namespace ANG24.Core.Devices.Base.DataSources
 {
