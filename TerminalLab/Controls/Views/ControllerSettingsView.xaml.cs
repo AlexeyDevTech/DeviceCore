@@ -23,6 +23,18 @@ namespace TerminalLab.Controls.Views
         public ControllerSettingsView()
         {
             InitializeComponent();
+            
+        }
+
+        private void ButtonApply_Click(object sender, RoutedEventArgs e)
+        {
+            DialogResult = true;
+            Close();
+        }
+        private void ButtonCancel_Click(object sender, RoutedEventArgs e)
+        {
+            DialogResult = true;
+            Close();
         }
     }
 }

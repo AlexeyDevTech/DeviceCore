@@ -1,13 +1,12 @@
-﻿using ANG24.Core.Devices.Base.Interfaces;
-using System.IO.Ports;
+﻿using System.IO.Ports;
 
-namespace ANG24.Core.Devices.Base
+namespace ANG24.Core.Devices.Base.DataSources
 {
     public class SerialDataSource : DataSourceBase
     {
         SerialPort port;
         public override bool Online => port.IsOpen;
-        public SerialDataSource(SerialPort port) : base() 
+        public SerialDataSource(SerialPort port) : base()
         {
             this.port = port;
             port.DataReceived += Port_DataReceived;
@@ -19,7 +18,7 @@ namespace ANG24.Core.Devices.Base
         }
         private void Port_DataReceived(object sender, SerialDataReceivedEventArgs e)
         {
-            while(port.BytesToRead > 0)
+            while (port.BytesToRead > 0)
             {
                 var d = Read(DataReceivedType);
                 Convert.ChangeType(d, DataReceivedType);
@@ -53,7 +52,7 @@ namespace ANG24.Core.Devices.Base
         }
     }
 
-   
+
 
 
 

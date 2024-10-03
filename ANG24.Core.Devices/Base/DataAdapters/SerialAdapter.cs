@@ -1,6 +1,6 @@
 ﻿using System.IO.Ports;
 
-namespace ANG24.Core.Devices.Base
+namespace ANG24.Core.Devices.Base.DataAdapters
 {
     public interface IDataSourceAdapter<T>
     {
@@ -14,7 +14,7 @@ namespace ANG24.Core.Devices.Base
         protected SerialPort port;
         protected SerialAdapter(SerialPort port)
         {
-          this.port = port;
+            this.port = port;
         }
 
         public abstract T Read();
@@ -33,10 +33,10 @@ namespace ANG24.Core.Devices.Base
             try
             {
                 res = port.ReadLine();
-            } 
-            catch(UnauthorizedAccessException uaex) { }
-            catch(InvalidOperationException ioex) { }
-            catch(Exception ex) { }
+            }
+            catch (UnauthorizedAccessException uaex) { }
+            catch (InvalidOperationException ioex) { }
+            catch (Exception ex) { }
             return res;
         }
 

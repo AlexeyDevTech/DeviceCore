@@ -1,6 +1,8 @@
-﻿using Prism.Commands;
+﻿using Microsoft.Win32;
+using Prism.Commands;
 using Prism.Mvvm;
 using PubSub;
+using System.Diagnostics;
 using System.Windows.Input;
 using TerminalLab.Controls.Views;
 using TerminalLab.PubSubTypes;
@@ -29,15 +31,27 @@ namespace TerminalLab.Controls.ViewModels
 
         public ControllerItemUserControlViewModel()
         {
+            
+
             OpenCommand = new DelegateCommand(OpenCmd);
             CloseCommand = new DelegateCommand(CloseCmd);
             SettingsCommand = new DelegateCommand(SettingsCmd);
         }
 
+        private void CloseSettings(SettingsEvent @event)
+        {
+            //set baudrate...
+            var br = @event.BaudRate;
+            Debug.WriteLine($"{br} -> {ControllerName}");
+            hub.Unsubscribe<SettingsEvent>();
+        }
+
         private void SettingsCmd()
         {
-            var w = new ControllerSettingsView();
-            w.ShowDialog();
+            Debug.WriteLine($"{ControllerName} -> Open dialog");
+            hub.Subscribe<SettingsEvent>(CloseSettings);
+            var settings = new ControllerSettingsView();
+            var g = settings.ShowDialog();
         }
 
         private void CloseCmd()
@@ -64,6 +78,7 @@ namespace TerminalLab.Controls.ViewModels
         private bool _online;
         string _portName;
         string _controllerName;
+
 
         public ICommand OpenCommand { get; set; }
         public ICommand CloseCommand { get; set; }
