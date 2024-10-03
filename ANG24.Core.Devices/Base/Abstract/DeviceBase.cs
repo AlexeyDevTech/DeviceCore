@@ -1,4 +1,5 @@
-﻿using ANG24.Core.Devices.Base.Interfaces;
+﻿using ANG24.Core.Devices.Base.DataSources;
+using ANG24.Core.Devices.Base.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -12,7 +13,7 @@ namespace ANG24.Core.Devices.Base.Abstract
 {
     public abstract class DeviceBase
     {
-        protected IDataSource source;
+        protected DataSourceBase source;
 
         public DeviceBase()
         {
@@ -42,7 +43,7 @@ namespace ANG24.Core.Devices.Base.Abstract
                 ((IConnectable)this.source).OnDisconnect -= DeviceBase_OnDisconnect;
             }
 
-            this.source = source;
+            this.source = (DataSourceBase)source;
             this.source.OnData += Source_OnData;
             ((IConnectable)this.source).OnConnect += DeviceBase_OnConnect;
             ((IConnectable)this.source).OnDisconnect += DeviceBase_OnDisconnect;
@@ -56,6 +57,7 @@ namespace ANG24.Core.Devices.Base.Abstract
         {
             ((IConnectable)source)?.Disconnect();
         }
+        public bool Online => source.Online;
 
         public void Write<T>(T msg) => source.Write(msg);
         protected abstract void OnData(object data);

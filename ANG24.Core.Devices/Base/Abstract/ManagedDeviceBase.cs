@@ -1,4 +1,5 @@
-﻿using ANG24.Core.Devices.Base.Interfaces.Behaviors.ConnectionDeviceBehaviors;
+﻿using ANG24.Core.Devices.Base.Behaviors;
+using ANG24.Core.Devices.Base.Interfaces.Behaviors.ConnectionDeviceBehaviors;
 
 namespace ANG24.Core.Devices.Base.Abstract
 {
@@ -10,7 +11,6 @@ namespace ANG24.Core.Devices.Base.Abstract
 
         protected ManagedDeviceBase() : base()
         {
-
         }
 
         protected override void OnData(object data)
