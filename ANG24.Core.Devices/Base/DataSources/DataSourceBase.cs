@@ -1,5 +1,4 @@
-﻿using ANG24.Core.Devices.Base.DataAdapters;
-using ANG24.Core.Devices.Base.Interfaces;
+﻿using ANG24.Core.Devices.Base.Interfaces;
 
 namespace ANG24.Core.Devices.Base.DataSources
 {

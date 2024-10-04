@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ANG24.Core.Devices.Base.Behaviors
+namespace ANG24.Core.Devices.Base.Behaviors.CommandBehavior
 {
     public class OrderStrongCommandDeviceBehavior : CommandDeviceBehaviorBase
     {

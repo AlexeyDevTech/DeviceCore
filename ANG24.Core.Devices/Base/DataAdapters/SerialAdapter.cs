@@ -1,12 +1,8 @@
-﻿using System.IO.Ports;
+﻿using ANG24.Core.Devices.Base.Interfaces;
+using System.IO.Ports;
 
 namespace ANG24.Core.Devices.Base.DataAdapters
 {
-    public interface IDataSourceAdapter<T>
-    {
-        T Read();
-        void Write(T data);
-    }
 
     //абстракция для обобщения устройств для COM порта 
     public abstract class SerialAdapter<T> : IDataSourceAdapter<T>
