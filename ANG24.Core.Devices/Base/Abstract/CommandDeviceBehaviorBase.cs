@@ -197,7 +197,7 @@ namespace ANG24.Core.Devices.Base.Abstract
             {
                 Console.WriteLine($"[task] -> cmds Count = {cmds.Count}");
                 await Task.Delay(CommandTickTime);
-                if (cmds.Count > 0 || token.IsCancellationRequested) break;
+                if (!(cmds.Count > 0 || token.IsCancellationRequested)) break;
                 if (!device.Online) continue;
                 if (Command == null) //то, что команды не установлено, означает, что ничего не выполняется
                 {

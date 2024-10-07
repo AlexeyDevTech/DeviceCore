@@ -5,7 +5,7 @@ namespace ANG24.Core.Devices.Base.DataSources
     public abstract class DataSourceBase : IDataSource, IConnectable
     {
         public string Name { get; }
-        public abstract bool Online { get; }
+        public abstract bool Online { get; protected set; }
         public Type DataReceivedType { get; protected set; }
 
 

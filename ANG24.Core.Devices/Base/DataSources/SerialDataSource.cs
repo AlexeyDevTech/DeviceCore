@@ -6,7 +6,7 @@ namespace ANG24.Core.Devices.Base.DataSources
     public class SerialDataSource : DataSourceBase
     {
         SerialPort port;
-        public override bool Online => port.IsOpen;
+        public override bool Online { get => port.IsOpen; protected set => Online = value; }
         public SerialDataSource(SerialPort port) : base()
         {
             this.port = port;
