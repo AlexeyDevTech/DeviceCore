@@ -60,6 +60,7 @@ namespace ANG24.Core.Devices.Base.Abstract
         public bool Online => source.Online;
 
         public void Write<T>(T msg) => source.Write(msg);
+        public void Write(Type type, object msg) => source.Write(type, msg);
         protected abstract void OnData(object data);
     }
 }

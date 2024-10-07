@@ -8,6 +8,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\ANG24.Core.Devices.External\ANG24.Core.Devices.External.csproj" />
     <ProjectReference Include="..\ANG24.Core.Devices\ANG24.Core.Devices.csproj" />
   </ItemGroup>
 

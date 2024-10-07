@@ -1,7 +1,7 @@
 ﻿using ANG24.Core.Devices.Base.Abstract;
 using ANG24.Core.Devices.Base.Interfaces.Behaviors.ConnectionDeviceBehaviors;
 
-namespace ANG24.Core.Devices.Base.Behaviors.ConnectionBehavior
+namespace ANG24.Core.Devices.External.Behaviors.ConnectionBehavior
 {
     public class AutoCallbackConnectionDeviceBehavior : IConnectionDeviceBehavior
     {

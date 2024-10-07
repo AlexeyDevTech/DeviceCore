@@ -10,6 +10,7 @@
         T Read<T>();
         object Read(Type type);
         void Write<T>(T data);
+        void Write(Type type, object data);
 
     }
 }
