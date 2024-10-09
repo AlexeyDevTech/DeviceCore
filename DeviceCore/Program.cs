@@ -10,6 +10,7 @@ namespace DeviceCore
         static async Task Main(string[] args)
         {
             Console.SetOut(new LoggedConsole("log.log"));
+
             //var d = new TestDevice();
             //d.Connect();
             //await Task.Delay(3000);
@@ -18,11 +19,11 @@ namespace DeviceCore
             //Console.WriteLine("set 'reset' command");
             //d.ResetModule();
             //Console.ReadLine();
-            var d = new MockDevice();
-            d.Connect();
-            await Task.Delay(3000);
-            d.Ping();
-            Console.ReadLine();
+            //var d = new MockDevice();
+            //d.Connect();
+            //await Task.Delay(3000);
+            //d.Ping();
+            //Console.ReadLine();
         }
     }
 

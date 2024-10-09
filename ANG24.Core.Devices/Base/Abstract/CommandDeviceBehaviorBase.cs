@@ -195,7 +195,7 @@ namespace ANG24.Core.Devices.Base.Abstract
             Stopwatch sw = new Stopwatch();
             while (cmds.Count > 0 || token.IsCancellationRequested)
             {
-                Console.WriteLine($"[task] -> cmds Count = {cmds.Count}");
+                //Console.WriteLine($"[task] -> cmds Count = {cmds.Count}");
                 await Task.Delay(CommandTickTime);
                 if (!(cmds.Count > 0 || token.IsCancellationRequested)) break;
                 if (!device.Online) continue;
@@ -207,7 +207,7 @@ namespace ANG24.Core.Devices.Base.Abstract
                         Command = Set();
                         if (Command.Redirected) Command.Behavior.Start(); //задаем сигнал для переопределяемого обработчика команды
                         sw.Restart();
-                        Console.WriteLine($"Command -> {Command.Command}");
+                        //Console.WriteLine($"Command -> {Command.Command}");
                         Busy = true; //не допускаем выполнение нового CommandTick
                         CommandTick(); //"тиккер" команды
                     }
