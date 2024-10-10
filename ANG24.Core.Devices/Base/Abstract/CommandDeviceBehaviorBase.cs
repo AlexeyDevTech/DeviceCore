@@ -4,6 +4,7 @@ using ANG24.Core.Devices.Base.Interfaces.Behaviors.CommandDeviceBehaviors;
 using ANG24.Core.Devices.Types;
 using System.Diagnostics;
 using System.Reflection.Metadata;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace ANG24.Core.Devices.Base.Abstract
 {
@@ -28,7 +29,7 @@ namespace ANG24.Core.Devices.Base.Abstract
 
 
 
-        protected int CommandTickTime = 1000;
+        protected int CommandTickTime = 300;
 
         protected Queue<CommandElement> cmds;
         protected DeviceBase device;
@@ -94,6 +95,8 @@ namespace ANG24.Core.Devices.Base.Abstract
         {
             if (Busy && Command != null)
             {
+                Console.WriteLine($"data for check: {msg}");
+                Console.WriteLine("[[check]]");
                 var result = Command.Execute(msg);
                 if (!Command.Redirected) //если команда простая
                 {
@@ -139,13 +142,15 @@ namespace ANG24.Core.Devices.Base.Abstract
         #region output events
         public virtual void OnSuccess()
         {
+            Console.WriteLine("[[success]]");
             Reset();
             OnSuccessEvent?.Invoke();
         }
 
         public virtual void OnFailure()
         {
-            if(attempt_lost <= 0) //пока попытки не исчерпались
+            Console.WriteLine($"[[fail --> attempts = {attempt_lost}]]");
+            if (attempt_lost >= 0) //пока попытки не исчерпались
             {
                 attempt_lost--;
             }
@@ -203,7 +208,7 @@ namespace ANG24.Core.Devices.Base.Abstract
                 {
                     if (!Busy)
                     {
-                        Console.WriteLine($"[CDBB] -> PROCESS ITERATION");
+                        //Console.WriteLine($"[CDBB] -> PROCESS ITERATION");
                         Command = Set();
                         if (Command.Redirected) Command.Behavior.Start(); //задаем сигнал для переопределяемого обработчика команды
                         sw.Restart();
@@ -216,11 +221,13 @@ namespace ANG24.Core.Devices.Base.Abstract
                 {
                    if(sw.ElapsedMilliseconds > timeout_milliseconds) //если команда опоздала, но ещё не выполнилась
                    {
+                        Console.WriteLine("[[timeout]]");
                         OnFailure();
                    }
                 }
             }
-            Console.WriteLine($"[CDBB] -> command process stop. queue is empty or cancel operation");
+            Active = false;
+            Console.WriteLine($"[CDBB] -> command process stop");
         }
         /// <summary>
         /// собственно, "тиккер" команды
@@ -230,6 +237,7 @@ namespace ANG24.Core.Devices.Base.Abstract
             if(Command != null)
             {
                 var type = Command.Command.GetType();
+                Console.WriteLine($"[[Send -> {Command.Command}]]");
                 device.Write(type, Command.Command); //отправка команды
             }
 
@@ -249,7 +257,6 @@ namespace ANG24.Core.Devices.Base.Abstract
         }
         protected void Reset(bool dropCommand = true)
         {
-            Console.WriteLine("[CDBB] -> command reset");
             if (dropCommand)
                 DropCommand();
             MessageAttempts = 3;

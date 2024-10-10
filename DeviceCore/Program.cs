@@ -1,5 +1,7 @@
 ﻿using ANG24.Core.Devices.Base;
+using ANG24.Core.Devices.Base.DataSources;
 using ANG24.Core.Devices.External;
+using ANG24.Core.Devices.Types;
 using System;
 
 namespace DeviceCore
@@ -11,19 +13,20 @@ namespace DeviceCore
         {
             Console.SetOut(new LoggedConsole("log.log"));
 
-            //var d = new TestDevice();
-            //d.Connect();
-            //await Task.Delay(3000);
-            //d.SetModule(ANG24.Core.Devices.Types.LabModules.Burn);
-            //await Task.Delay(5000);
-            //Console.WriteLine("set 'reset' command");
-            //d.ResetModule();
-            //Console.ReadLine();
-            //var d = new MockDevice();
-            //d.Connect();
-            //await Task.Delay(3000);
-            //d.Ping();
-            //Console.ReadLine();
+            var d = new TestDevice();
+            d.Connect();
+            Task.Factory.StartNew(async () =>
+            {
+                while (true)
+                {
+                    d.SetModule(LabModules.Burn);
+                    d.SetModule(LabModules.HVBurn);
+                    d.SetModule(LabModules.Burn);
+                    d.SetModule(LabModules.HVMAC);
+                    await Task.Delay(5000);
+                }
+            });
+            Console.ReadLine();
         }
     }
 

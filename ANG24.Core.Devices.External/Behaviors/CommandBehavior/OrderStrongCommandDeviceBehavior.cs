@@ -26,7 +26,7 @@ namespace ANG24.Core.Devices.External.Behaviors.CommandBehavior
         {
             base.CommandTick();
             //set command...
-            Console.Write("[]");
+            //Console.Write("[]");
         }
 
        

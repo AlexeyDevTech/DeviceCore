@@ -22,7 +22,7 @@ namespace ANG24.Core.Devices.Base.Abstract
 
         private void Source_OnData(object obj)
         {
-            Console.WriteLine($"device received data: {obj}");
+            //Console.WriteLine($"device received data: {obj}");
             OnData(obj);
         }
         private void DeviceBase_OnDisconnect()

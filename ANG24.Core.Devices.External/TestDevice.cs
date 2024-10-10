@@ -21,9 +21,16 @@ namespace ANG24.Core.Devices.External
         }
         protected override void OnData(object data)
         {
-            base.OnData(data);
+            /*
+             * Если в условиях команд присутствуют локальные переменные контроллера -- необходимо
+             * сначала их обновить. Для этого прописать base.OnData(data) -- последним
+             * Иначе -- порядок не важен
+             */
+
+            //Console.WriteLine("[[data updated to controller]]");
             if(data != null)
                 CurrentData = new ControllerData(data as string);
+            base.OnData(data); //в этом случае -- сначала обновляем котроллер потом OnData
         }
         public void SetModule(LabModules module)
         {
