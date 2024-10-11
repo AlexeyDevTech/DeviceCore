@@ -111,6 +111,8 @@ namespace ANG24.Core.Devices.External
         public void ResetModule()
         {
             Execute("#HVM:STOP;", () => ControllerData.Module == LabModules.Main);
+            
         }
+        public void PowerOn() => Execute("#POWERUP", );
     }
 }

@@ -23,6 +23,7 @@ namespace DeviceCore
                     d.SetModule(LabModules.HVBurn);
                     d.SetModule(LabModules.Burn);
                     d.SetModule(LabModules.HVMAC);
+                    d.ResetModule();
                     await Task.Delay(5000);
                 }
             });
