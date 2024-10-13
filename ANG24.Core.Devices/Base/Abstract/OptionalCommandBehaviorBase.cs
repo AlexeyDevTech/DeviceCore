@@ -1,4 +1,5 @@
 ﻿using ANG24.Core.Devices.Base.Interfaces.Behaviors.CommandDeviceBehaviors;
+using ANG24.Core.Devices.Types;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,8 +19,6 @@ namespace ANG24.Core.Devices.Base.Abstract
         public Action<IOptionalCommandBehavior> FailureAction { get; set; }
         public abstract string Name { get; }
         public bool IsUsage { get; set; } = true;
-
-
 
         public virtual void HandleData(object data)
         {
@@ -81,13 +80,5 @@ namespace ANG24.Core.Devices.Base.Abstract
         {
 
         }
-    }
-    public enum OptionalBehaviorState : int
-    {
-        NotStarted = 0,
-        Starting = 1,
-        Processing = 2,
-        Success = 3,
-        Fail = 4
     }
 }

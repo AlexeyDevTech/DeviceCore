@@ -2,6 +2,7 @@
 using ANG24.Core.Devices.Base.DataSources;
 using ANG24.Core.Devices.External.Behaviors.CommandBehavior;
 using ANG24.Core.Devices.External.Behaviors.ConnectionBehavior;
+using ANG24.Core.Devices.External.Behaviors.RedirectOptionalCommandBehavior;
 using ANG24.Core.Devices.Types;
 
 namespace ANG24.Core.Devices.External
@@ -113,6 +114,6 @@ namespace ANG24.Core.Devices.External
             Execute("#HVM:STOP;", () => ControllerData.Module == LabModules.Main);
             
         }
-        public void PowerOn() => Execute("#POWERUP", );
+        public void PowerOn() => Execute("#POWERUP", new PowerControlOptionalBehavior());
     }
 }
