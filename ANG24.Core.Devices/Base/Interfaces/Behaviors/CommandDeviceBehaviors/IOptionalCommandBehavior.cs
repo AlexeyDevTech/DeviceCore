@@ -5,7 +5,7 @@ namespace ANG24.Core.Devices.Base.Interfaces.Behaviors.CommandDeviceBehaviors
 {
     public interface IOptionalCommandBehavior : IOptionalBehavior
     {
-        OptionalBehaviorState State { get; protected set; }
+        OptionalBehaviorState State { get; }
         public int FaultCallback { get; set; }
         OptionalBehaviorState OperationCheck(object data);
         Action ProcessingAction { get; set; }
