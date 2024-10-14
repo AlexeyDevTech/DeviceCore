@@ -83,6 +83,14 @@ namespace ANG24.Core.Devices.External.Behaviors.RedirectOptionalCommandBehavior
             }
 
         }
+        public override void OnSuccess()
+        {
+            new Timer(state =>
+            {
+                base.OnSuccess();
+            }).Change(300, Timeout.Infinite);
+            
+        }
 
     }
 }

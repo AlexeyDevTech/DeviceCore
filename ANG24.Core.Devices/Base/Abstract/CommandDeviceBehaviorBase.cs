@@ -4,6 +4,7 @@ using ANG24.Core.Devices.Base.Interfaces.Behaviors.CommandDeviceBehaviors;
 using ANG24.Core.Devices.Types;
 using System.Diagnostics;
 using System.Reflection.Metadata;
+using System.Resources;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace ANG24.Core.Devices.Base.Abstract
@@ -15,7 +16,7 @@ namespace ANG24.Core.Devices.Base.Abstract
     public abstract class CommandDeviceBehaviorBase : ICommandDeviceBehavior, ISimpleCommandDeviceBehavior, IConditionalCommandDeviceBehavior, IRedirectedCommandDeviceBehavior, IObjectiveCommandDeviceBehavior
     {
         protected CommandElement Command;
-        protected bool Busy;
+        //protected bool Busy;
         protected int attempts = 3;
         int attempt_lost = 3;
         int timeout_milliseconds = 5000;
@@ -93,7 +94,7 @@ namespace ANG24.Core.Devices.Base.Abstract
         }
         private void Check(object msg)
         {
-            if (Busy && Command != null)
+            if (Command != null)
             {
                 Console.WriteLine($"data for check: {msg}");
                 Console.WriteLine("[[check]]");
@@ -117,6 +118,7 @@ namespace ANG24.Core.Devices.Base.Abstract
                 }
                 else
                 {
+                    Command.Behavior.HandleData(msg);
                     var state = Command.GetState();
                     switch (state)
                     {
@@ -138,7 +140,6 @@ namespace ANG24.Core.Devices.Base.Abstract
         }
         public abstract void RequestData();
 
-
         #region output events
         public virtual void OnSuccess()
         {
@@ -153,9 +154,11 @@ namespace ANG24.Core.Devices.Base.Abstract
             if (attempt_lost >= 0) //пока попытки не исчерпались
             {
                 attempt_lost--;
+                Reset(false);
             }
             else                 //а вот когда исчерпались
             {
+                attempt_lost = attempts;
                 Reset();
                 OnFailureEvent?.Invoke();
             }
@@ -206,28 +209,36 @@ namespace ANG24.Core.Devices.Base.Abstract
                 if (!device.Online) continue;
                 if (Command == null) //то, что команды не установлено, означает, что ничего не выполняется
                 {
-                    if (!Busy)
-                    {
-                        //Console.WriteLine($"[CDBB] -> PROCESS ITERATION");
-                        Command = Set();
-                        if (Command.Redirected) Command.Behavior.Start(); //задаем сигнал для переопределяемого обработчика команды
-                        sw.Restart();
-                        //Console.WriteLine($"Command -> {Command.Command}");
-                        Busy = true; //не допускаем выполнение нового CommandTick
-                        CommandTick(); //"тиккер" команды
-                    }
+                    SetOperation(); //устанавливает команду
+                    CommandTick(); //"тиккер" команды
                 }
-                else //если команда не null и охарактеризованно её выполнение
+                else //если команда не null и охарактеризовано её выполнение
                 {
-                   if(sw.ElapsedMilliseconds > timeout_milliseconds) //если команда опоздала, но ещё не выполнилась
+                    //если команда опоздала, но ещё не выполнилась(случился таймаут)
+                   if (sw.ElapsedMilliseconds > timeout_milliseconds) 
                    {
+                        sw.Restart();
+                        //if (Command.Redirected)
+                        //    attempt_lost = -1;
                         Console.WriteLine("[[timeout]]");
                         OnFailure();
                    }
                 }
+                /*
+                 * 
+                 * 
+                 */
             }
             Active = false;
             Console.WriteLine($"[CDBB] -> command process stop");
+
+            void SetOperation()
+            {
+                Command = Set();
+                
+                if (Command.Redirected) Command.Behavior.Start(); //задаем сигнал для переопределяемого обработчика команды
+                sw.Restart();
+            }
         }
         /// <summary>
         /// собственно, "тиккер" команды
@@ -249,19 +260,19 @@ namespace ANG24.Core.Devices.Base.Abstract
             
             try
             {
-                attempt_lost = attempts;
+              
                 return cmds.Peek();
             } 
             catch { }
             return default(CommandElement);
         }
-        protected void Reset(bool dropCommand = true)
+        protected void Reset(bool dropCommand = true, bool resetMessageAttempts = true)
         {
             if (dropCommand)
                 DropCommand();
+            if(resetMessageAttempts)
             MessageAttempts = 3;
             Command = null;
-            Busy = false;
         }
        
 

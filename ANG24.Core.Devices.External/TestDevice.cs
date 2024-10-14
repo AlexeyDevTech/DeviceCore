@@ -115,5 +115,6 @@ namespace ANG24.Core.Devices.External
             
         }
         public void PowerOn() => Execute("#POWERUP", new PowerControlOptionalBehavior());
+        public void PowerOff() => Execute("#POWERDOWN", new PowerControlOptionalBehavior() { PowerMode = true});
     }
 }

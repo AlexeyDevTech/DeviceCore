@@ -15,18 +15,6 @@ namespace DeviceCore
 
             var d = new TestDevice();
             d.Connect();
-            Task.Factory.StartNew(async () =>
-            {
-                while (true)
-                {
-                    d.SetModule(LabModules.Burn);
-                    d.SetModule(LabModules.HVBurn);
-                    d.SetModule(LabModules.Burn);
-                    d.SetModule(LabModules.HVMAC);
-                    d.ResetModule();
-                    await Task.Delay(5000);
-                }
-            });
             Console.ReadLine();
         }
     }
