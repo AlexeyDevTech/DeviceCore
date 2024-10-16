@@ -1,5 +1,6 @@
 ﻿using ANG24.Core.Devices.Base.Abstract;
 using ANG24.Core.Devices.Base.DataSources;
+using ANG24.Core.Devices.Extensions;
 using ANG24.Core.Devices.External.Behaviors.CommandBehavior;
 using ANG24.Core.Devices.External.Behaviors.ConnectionBehavior;
 using ANG24.Core.Devices.External.Behaviors.RedirectOptionalCommandBehavior;
@@ -13,12 +14,16 @@ namespace ANG24.Core.Devices.External
 
         public TestDevice()
         {
-            SetDataSource(new SerialDataSource("COM4"));
-            source.SetDataReceivedType(typeof(string));
-            CommandBehavior = new OrderStrongCommandDeviceBehavior();
-            CommandBehavior.SetDevice(this);
-            ConnectionBehavior = new AutoCallbackConnectionDeviceBehavior();
-            ConnectionBehavior.SetDevice(this);
+            //SetDataSource(new SerialDataSource("COM4"));
+            //source.SetDataReceivedType(typeof(string));
+            //CommandBehavior = new OrderStrongCommandDeviceBehavior();
+            //CommandBehavior.SetDevice(this);
+            //ConnectionBehavior = new AutoCallbackConnectionDeviceBehavior();
+            //ConnectionBehavior.SetDevice(this);
+            this.SelectDataSource(new SerialDataSource("COM4"))
+                .SetDataReceivedType(typeof(string))
+                .SetCommandBehavior(new OrderStrongCommandDeviceBehavior())
+                .SetConnectionBehavior(new AutoCallbackConnectionDeviceBehavior());
         }
         protected override void OnData(object data)
         {
@@ -112,7 +117,6 @@ namespace ANG24.Core.Devices.External
         public void ResetModule()
         {
             Execute("#HVM:STOP;", () => ControllerData.Module == LabModules.Main);
-            
         }
         public void PowerOn() => Execute("#POWERUP", new PowerControlOptionalBehavior());
         public void PowerOff() => Execute("#POWERDOWN", new PowerControlOptionalBehavior() { PowerMode = true});

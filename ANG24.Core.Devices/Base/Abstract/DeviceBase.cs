@@ -13,7 +13,7 @@ namespace ANG24.Core.Devices.Base.Abstract
 {
     public abstract class DeviceBase
     {
-        protected DataSourceBase source;
+        internal protected DataSourceBase source;
 
         public DeviceBase()
         {
@@ -63,4 +63,7 @@ namespace ANG24.Core.Devices.Base.Abstract
         public void Write(Type type, object msg) => source.Write(type, msg);
         protected abstract void OnData(object data);
     }
+
+
+    
 }

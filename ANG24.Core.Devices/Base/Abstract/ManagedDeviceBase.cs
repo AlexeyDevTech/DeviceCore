@@ -4,7 +4,7 @@ namespace ANG24.Core.Devices.Base.Abstract
 {
     public abstract class ManagedDeviceBase : DeviceBase
     {
-        protected IConnectionDeviceBehavior ConnectionBehavior; //операция Reconnect
+        public IConnectionDeviceBehavior ConnectionBehavior; //операция Reconnect
         public CommandDeviceBehaviorBase CommandBehavior; //операции SetCommand, Check
         public OptionalBehaviorManager OptionalBehavior; //дополнительный анализ 
 

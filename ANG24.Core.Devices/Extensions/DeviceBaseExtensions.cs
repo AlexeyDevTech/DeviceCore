@@ -1,5 +1,7 @@
 ﻿using ANG24.Core.Devices.Base.Abstract;
+using ANG24.Core.Devices.Base.Interfaces;
 using ANG24.Core.Devices.Base.Interfaces.Behaviors;
+using ANG24.Core.Devices.Base.Interfaces.Behaviors.ConnectionDeviceBehaviors;
 
 namespace ANG24.Core.Devices.Extensions
 {
@@ -70,7 +72,28 @@ namespace ANG24.Core.Devices.Extensions
             (device as ManagedDeviceBase).OptionalBehavior.EnableOption(Name);
             return device;
         }
-
+        public static DeviceBase SelectDataSource(this DeviceBase device, IDataSource dataSource)
+        {
+            device.SetDataSource(dataSource);
+            return device;
+        }
+        public static DeviceBase SetDataReceivedType(this DeviceBase device, Type type)
+        {
+            device.source.SetDataReceivedType(type);
+            return device;
+        }
+        public static DeviceBase SetCommandBehavior(this DeviceBase device, CommandDeviceBehaviorBase commandDeviceBehavior)
+        {
+            (device as ManagedDeviceBase).CommandBehavior = commandDeviceBehavior;
+            (device as ManagedDeviceBase).CommandBehavior.SetDevice(device);
+            return device;
+        }
+        public static DeviceBase SetConnectionBehavior(this DeviceBase device, IConnectionDeviceBehavior connectionBehavior)
+        {
+            (device as ManagedDeviceBase).ConnectionBehavior = connectionBehavior;
+            (device as ManagedDeviceBase).ConnectionBehavior.SetDevice(device);
+            return device;
+        }
     }
     #endregion
 }
