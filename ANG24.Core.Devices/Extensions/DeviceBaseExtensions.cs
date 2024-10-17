@@ -88,7 +88,7 @@ namespace ANG24.Core.Devices.Extensions
             (device as ManagedDeviceBase).CommandBehavior.SetDevice(device);
             return device;
         }
-        public static DeviceBase SetConnectionBehavior(this DeviceBase device, IConnectionDeviceBehavior connectionBehavior)
+        public static DeviceBase SetConnectionBehavior(this DeviceBase device, IConnectionDeviceBehavior connectionBehavior, Action offlineAction, Action onlineAction)
         {
             (device as ManagedDeviceBase).ConnectionBehavior = connectionBehavior;
             (device as ManagedDeviceBase).ConnectionBehavior.SetDevice(device);

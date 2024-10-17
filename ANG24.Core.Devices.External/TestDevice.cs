@@ -23,7 +23,7 @@ namespace ANG24.Core.Devices.External
             this.SelectDataSource(new SerialDataSource("COM4"))
                 .SetDataReceivedType(typeof(string))
                 .SetCommandBehavior(new OrderStrongCommandDeviceBehavior())
-                .SetConnectionBehavior(new AutoCallbackConnectionDeviceBehavior());
+                .SetConnectionBehavior(new AutoCallbackConnectionDeviceBehavior(), Disconnect, Connect);
         }
         protected override void OnData(object data)
         {

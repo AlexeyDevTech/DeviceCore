@@ -2,6 +2,7 @@
 {
     public interface IConnectionDeviceBehavior : IDeviceBehavior
     {
-        void Reconnect();
+        Action OnlineAction { get; set; }
+        Action OfflineAction { get; set; }
     }
 }

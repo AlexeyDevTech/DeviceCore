@@ -5,21 +5,38 @@ namespace ANG24.Core.Devices.Types
 
     public class ControllerData
     {
+        //коэффициенты трансформации при расчете напряжения и тока в режиме работы "Прожиг"
         public static BurnKoef BurnKoefs { get; set; }
         private int oldBatteryVoltage;
         public static bool SVI_Power_On = false;
+        //текущий режим работы
         public static LabModules Module { get; set; }
+        //служебное значение
         public static int Step_Faze { get; set; }
+        //служебное значение
         public static WorkMode workMode { get; set; }
+        /* многофункциональное значение
+         * В режиме прожиг -- ступень
+         * В режиме ударный генератор -- ступень
+         */
         public static int Step { get; set; }
+        //напряжение
         public static double Voltage { get; set; }
+        //ток
         public static double Current { get; set; }
+        //расчетная величина тока прожига
         public static double BurnCurrent => GetBurnCurrent(Current);
+        //расчетная величина тока прожига на текущей ступени
         public static double BurnCurrentStep => GetBurnCurrent(Current, Step);
+        //расчетная величина напряжения прожига на текущей ступени
         public static double BurnVoltage => GetBurnVoltage(Voltage, Step, Current);
+        //Режим работы ударного генератора (одиночный разряд(1), серия(2), бесконечная серия(3))
         public static GVIFireMode FireMode { get; set; }
+        //напряжение аккумулятора СВИ
         public static int BatteryVoltage { get; set; }
+        //сообщения ошибок СВИ
         public static GVIErrorInfo GVIErrorMessage { get; set; }
+        //температура трансформатора прожига (в °C)
         public static double TempTransformator { get; set; }
         public static double PowerOutValue { get; set; }
         public static int CurrentProtect { get; set; }
