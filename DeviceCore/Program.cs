@@ -14,7 +14,8 @@ namespace DeviceCore
             Console.SetOut(new LoggedConsole("log.log"));
 
             var d = new TestDevice();
-            d.Connect();
+            d.Start();
+
             Console.ReadLine();
         }
     }

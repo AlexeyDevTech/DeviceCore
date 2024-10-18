@@ -36,6 +36,7 @@ namespace ANG24.Core.Devices.External
             //Console.WriteLine("[[data updated to controller]]");
             if(data != null)
                 CurrentData = new ControllerData(data as string);
+            Console.WriteLine(data);
             base.OnData(data); //в этом случае -- сначала обновляем котроллер потом OnData
         }
         public void SetModule(LabModules module)

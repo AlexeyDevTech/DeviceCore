@@ -90,6 +90,8 @@ namespace ANG24.Core.Devices.Extensions
         }
         public static DeviceBase SetConnectionBehavior(this DeviceBase device, IConnectionDeviceBehavior connectionBehavior, Action offlineAction, Action onlineAction)
         {
+            connectionBehavior.OnlineAction = onlineAction;
+            connectionBehavior.OfflineAction = offlineAction;
             (device as ManagedDeviceBase).ConnectionBehavior = connectionBehavior;
             (device as ManagedDeviceBase).ConnectionBehavior.SetDevice(device);
             return device;

@@ -4,5 +4,7 @@
     {
         Action OnlineAction { get; set; }
         Action OfflineAction { get; set; }
+        void Start();
+        void Stop();
     }
 }

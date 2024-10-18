@@ -20,7 +20,7 @@ namespace ANG24.Core.Devices.External.Behaviors.ConnectionBehavior
                     await Task.Delay(1000);
                     if (IsRunning)
                     {
-                        if (device.Online)
+                        if (device.Online) //открыт порт
                         {
                             if (attemptLost > 0)
                                 attemptLost--;
@@ -42,5 +42,15 @@ namespace ANG24.Core.Devices.External.Behaviors.ConnectionBehavior
         }
 
         public void SetDevice(DeviceBase device) => this.device = device;
+
+        public void Start()
+        {
+            IsRunning = true;
+        }
+
+        public void Stop()
+        {
+            IsRunning = false;
+        }
     }
 }

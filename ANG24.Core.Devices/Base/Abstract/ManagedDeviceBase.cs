@@ -18,5 +18,9 @@ namespace ANG24.Core.Devices.Base.Abstract
             CommandBehavior?.HandleData(data);               //для команд-менеджера
             OptionalBehavior?.HandleData(data);              //для опционал менеджера
         }
+
+        public void Start() => ConnectionBehavior?.Start();
+        public void Stop() => CommandBehavior?.Stop();
+
     }
 }
