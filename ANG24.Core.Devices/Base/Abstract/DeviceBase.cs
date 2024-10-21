@@ -1,11 +1,15 @@
 ﻿using ANG24.Core.Devices.Base.DataSources;
 using ANG24.Core.Devices.Base.Interfaces;
+using ANG24.Core.Devices.Interfaces.Base;
 
 namespace ANG24.Core.Devices.Base.Abstract
 {
-    public abstract class DeviceBase
+    public abstract class DeviceBase : IDevice
     {
         internal protected DataSourceBase source;
+
+        public event Action OnConnect;
+        public event Action OnDisconnect;
 
         public DeviceBase()
         {
@@ -44,10 +48,12 @@ namespace ANG24.Core.Devices.Base.Abstract
         public void Connect()
         {
             ((IConnectable)source)?.Connect();
+            OnConnect?.Invoke();
         }
         public void Disconnect()
         {
             ((IConnectable)source)?.Disconnect();
+            OnDisconnect?.Invoke();
         }
         public bool Online => source.Online;
 

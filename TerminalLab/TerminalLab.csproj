@@ -21,8 +21,4 @@
     <PackageReference Include="PubSub" Version="4.0.2" />
   </ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\ANG24.Core.Devices\ANG24.Core.Devices.csproj" />
-  </ItemGroup>
-
 </Project>
