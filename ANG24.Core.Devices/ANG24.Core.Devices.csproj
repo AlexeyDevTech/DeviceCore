@@ -26,8 +26,4 @@
     <PackageReference Include="System.IO.Ports" Version="7.0.0" />
   </ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\ANG24.Core.Devices.Interfaces\ANG24.Core.Devices.Interfaces.csproj" />
-  </ItemGroup>
-
 </Project>
