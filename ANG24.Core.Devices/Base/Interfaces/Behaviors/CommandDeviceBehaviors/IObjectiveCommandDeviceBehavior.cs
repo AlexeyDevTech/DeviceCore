@@ -2,7 +2,7 @@
 
 namespace ANG24.Core.Devices.Base.Interfaces.Behaviors.CommandDeviceBehaviors
 {
-    public interface IObjectiveCommandDeviceBehavior
+    public interface IObjectiveCommandDeviceBehavior : ICommandDeviceBehavior
     {
         void ExecuteCommand(CommandElement command);
     }

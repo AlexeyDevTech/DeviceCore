@@ -1,10 +1,9 @@
 ﻿using ANG24.Core.Devices.Base.DataSources;
 using ANG24.Core.Devices.Base.Interfaces;
-using ANG24.Core.Devices.Interfaces.Base;
 
 namespace ANG24.Core.Devices.Base.Abstract
 {
-    public abstract class DeviceBase : IDevice
+    public abstract class DeviceBase
     {
         internal protected DataSourceBase source;
 

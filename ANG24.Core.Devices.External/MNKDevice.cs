@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace ANG24.Core.Devices.External
 {
-    public class MNKDevice : ExecutableManagedDeviceBase, IMNKDevice
+    public class MNKDevice : ExecutableManagedDeviceBase
     {
         public MNKControllerTypes MNKControllerType;
         public MNKActionTypes MNKConnection;

@@ -1,16 +1,10 @@
 ﻿using ANG24.Core.Devices.Base.Abstract;
 using ANG24.Core.Devices.External.Behaviors.RedirectOptionalCommandBehavior;
 using ANG24.Core.Devices.Helpers;
-using ANG24.Core.Devices.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ANG24.Core.Devices.External
 {
-    public class CompensationDevice : ExecutableManagedDeviceBase, ICompensationDevice
+    public class CompensationDevice : ExecutableManagedDeviceBase
     {
         public int Voltage { get; set; }
         public int Current { get; set; }

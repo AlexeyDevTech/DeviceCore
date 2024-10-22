@@ -1,9 +1,8 @@
 ﻿using ANG24.Core.Devices.Base.Interfaces.Behaviors.ConnectionDeviceBehaviors;
-using ANG24.Core.Devices.Interfaces.Base;
 
 namespace ANG24.Core.Devices.Base.Abstract
 {
-    public abstract class ManagedDeviceBase : DeviceBase, IManagedDevice
+    public abstract class ManagedDeviceBase : DeviceBase
     {
         public IConnectionDeviceBehavior ConnectionBehavior; //операция Reconnect
         public CommandDeviceBehaviorBase CommandBehavior; //операции SetCommand, Check

@@ -7,7 +7,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\ANG24.Core.Devices.Interfaces\ANG24.Core.Devices.Interfaces.csproj" />
     <ProjectReference Include="..\ANG24.Core.Devices\ANG24.Core.Devices.csproj" />
   </ItemGroup>
 
