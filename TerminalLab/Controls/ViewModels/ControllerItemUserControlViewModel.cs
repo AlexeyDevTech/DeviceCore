@@ -1,5 +1,4 @@
-﻿using Microsoft.Win32;
-using Prism.Commands;
+﻿using Prism.Commands;
 using Prism.Mvvm;
 using PubSub;
 using System.Diagnostics;
@@ -31,7 +30,7 @@ namespace TerminalLab.Controls.ViewModels
 
         public ControllerItemUserControlViewModel()
         {
-            
+
 
             OpenCommand = new DelegateCommand(OpenCmd);
             CloseCommand = new DelegateCommand(CloseCmd);
@@ -63,16 +62,16 @@ namespace TerminalLab.Controls.ViewModels
         private void OpenCmd()
         {
             Online = true;
-            hub.Publish(new OpenPortPubSubObject { Controller = ControllerName, PortName = PortName});
+            hub.Publish(new OpenPortPubSubObject { Controller = ControllerName, PortName = PortName });
         }
 
         public void Send(string value)
         {
-            hub.Publish(new SelectControllerSendCommandPubSubObject { Controller = ControllerName, PortName = PortName, Command = value});
+            hub.Publish(new SelectControllerSendCommandPubSubObject { Controller = ControllerName, PortName = PortName, Command = value });
         }
     }
 
-    public partial class ControllerItemUserControlViewModel 
+    public partial class ControllerItemUserControlViewModel
     {
         Hub hub = Hub.Default;
         private bool _online;

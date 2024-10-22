@@ -1,10 +1,5 @@
 ﻿using ANG24.Core.Devices.Base.Abstract;
 using ANG24.Core.Devices.External.Types;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ANG24.Core.Devices.External
 {

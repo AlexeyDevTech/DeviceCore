@@ -1,11 +1,7 @@
 ﻿using ANG24.Core.Devices.Base.Abstract.Types;
-using ANG24.Core.Devices.Base.Interfaces;
 using ANG24.Core.Devices.Base.Interfaces.Behaviors.CommandDeviceBehaviors;
 using ANG24.Core.Devices.Types;
 using System.Diagnostics;
-using System.Reflection.Metadata;
-using System.Resources;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace ANG24.Core.Devices.Base.Abstract
 {
@@ -162,7 +158,7 @@ namespace ANG24.Core.Devices.Base.Abstract
                 Reset();
                 OnFailureEvent?.Invoke();
             }
-            
+
         }
         public virtual void OnProcessing()
         {
@@ -215,14 +211,14 @@ namespace ANG24.Core.Devices.Base.Abstract
                 else //если команда не null и охарактеризовано её выполнение
                 {
                     //если команда опоздала, но ещё не выполнилась(случился таймаут)
-                   if (sw.ElapsedMilliseconds > timeout_milliseconds) 
-                   {
+                    if (sw.ElapsedMilliseconds > timeout_milliseconds)
+                    {
                         sw.Restart();
                         //if (Command.Redirected)
                         //    attempt_lost = -1;
                         Console.WriteLine("[[timeout]]");
                         OnFailure();
-                   }
+                    }
                 }
                 /*
                  * 
@@ -235,7 +231,7 @@ namespace ANG24.Core.Devices.Base.Abstract
             void SetOperation()
             {
                 Command = Set();
-                
+
                 if (Command.Redirected) Command.Behavior.Start(); //задаем сигнал для переопределяемого обработчика команды
                 sw.Restart();
             }
@@ -245,7 +241,7 @@ namespace ANG24.Core.Devices.Base.Abstract
         /// </summary>
         protected virtual void CommandTick()
         {
-            if(Command != null)
+            if (Command != null)
             {
                 var type = Command.Command.GetType();
                 Console.WriteLine($"[[Send -> {Command.Command}]]");
@@ -253,16 +249,16 @@ namespace ANG24.Core.Devices.Base.Abstract
             }
 
 
-            
+
         }
         private CommandElement Set()
         {
-            
+
             try
             {
-              
+
                 return cmds.Peek();
-            } 
+            }
             catch { }
             return default(CommandElement);
         }
@@ -270,14 +266,14 @@ namespace ANG24.Core.Devices.Base.Abstract
         {
             if (dropCommand)
                 DropCommand();
-            if(resetMessageAttempts)
-            MessageAttempts = 3;
+            if (resetMessageAttempts)
+                MessageAttempts = 3;
             Command = null;
         }
-       
+
 
         public void SetDevice(DeviceBase device) => this.device = device;
     }
 
-#endregion
+    #endregion
 }

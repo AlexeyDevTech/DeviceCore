@@ -1,10 +1,9 @@
-﻿using Prism.Mvvm;
+﻿using Prism.Commands;
+using Prism.Mvvm;
+using PubSub;
 using System.Collections.ObjectModel;
 using TerminalLab.Controls.ViewModels;
-using PubSub;
-using System.Diagnostics;
 using TerminalLab.PubSubTypes;
-using Prism.Commands;
 
 namespace TerminalLab.ViewModels
 {
@@ -17,7 +16,7 @@ namespace TerminalLab.ViewModels
         private ControllerItemUserControlViewModel _selController;
         private string _inputText;
 
-        public string RawText 
+        public string RawText
         {
             get => _rawText;
             set
@@ -37,12 +36,13 @@ namespace TerminalLab.ViewModels
                             l = NS;
                             localFaultOperationCounter++;
                         }
-                    } else NS = value;
+                    }
+                    else NS = value;
                 }
                 else NS = value;
                 SetProperty(ref _rawText, NS);
             }
-        
+
         }
 
         public ObservableCollection<ControllerItemUserControlViewModel> Controllers { get; set; }

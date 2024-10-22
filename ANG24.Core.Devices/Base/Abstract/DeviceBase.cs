@@ -5,7 +5,7 @@ namespace ANG24.Core.Devices.Base.Abstract
 {
     public abstract class DeviceBase
     {
-        internal protected DataSourceBase source;
+        protected internal DataSourceBase source;
 
         public event Action OnConnect;
         public event Action OnDisconnect;
@@ -62,5 +62,5 @@ namespace ANG24.Core.Devices.Base.Abstract
     }
 
 
-    
+
 }

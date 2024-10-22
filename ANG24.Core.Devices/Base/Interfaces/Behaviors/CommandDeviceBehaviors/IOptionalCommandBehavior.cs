@@ -1,5 +1,4 @@
-﻿using ANG24.Core.Devices.Base.Interfaces.Behaviors;
-using ANG24.Core.Devices.Types;
+﻿using ANG24.Core.Devices.Types;
 
 namespace ANG24.Core.Devices.Base.Interfaces.Behaviors.CommandDeviceBehaviors
 {

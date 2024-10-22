@@ -1,6 +1,4 @@
-﻿using System.ComponentModel.Design;
-
-namespace ANG24.Core.Devices.Base.Interfaces.Behaviors.CommandDeviceBehaviors
+﻿namespace ANG24.Core.Devices.Base.Interfaces.Behaviors.CommandDeviceBehaviors
 {
     /// <summary>
     /// Стандартный интерфейс командных интерфейсов

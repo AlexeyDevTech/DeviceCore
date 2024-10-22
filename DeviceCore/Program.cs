@@ -1,8 +1,4 @@
-﻿using ANG24.Core.Devices.Base;
-using ANG24.Core.Devices.Base.DataSources;
-using ANG24.Core.Devices.External;
-using ANG24.Core.Devices.Types;
-using System;
+﻿using ANG24.Core.Devices.External;
 
 namespace DeviceCore
 {

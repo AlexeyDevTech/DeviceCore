@@ -60,7 +60,7 @@ namespace ANG24.Core.Devices.Base.DataSources
         {
             var adapter = GetAdapter(type);
             var method = adapter.GetType().GetMethod("Write");
-            var result = method?.Invoke(adapter, [ data ]);
+            var result = method?.Invoke(adapter, [data]);
         }
         public virtual void DataRec(object data) => OnData?.Invoke(data);
         public virtual void Connect()

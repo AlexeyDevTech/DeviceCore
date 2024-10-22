@@ -34,7 +34,7 @@ namespace ANG24.Core.Devices.External
              */
 
             //Console.WriteLine("[[data updated to controller]]");
-            if(data != null)
+            if (data != null)
                 CurrentData = new ControllerData(data as string);
             Console.WriteLine(data);
             base.OnData(data); //в этом случае -- сначала обновляем котроллер потом OnData
@@ -81,7 +81,7 @@ namespace ANG24.Core.Devices.External
                     Execute("#HVPULSE:START,MANUAL;", () => ControllerData.Module == LabModules.GVI);
                     //SetVoltageLimit(9000, 500);
                     //SetVoltageRNLimit(230);
-                   // SetCurrentRNLimit(260);
+                    // SetCurrentRNLimit(260);
                     break;
                 case LabModules.GP500:
                     Execute("#GP500:START,MANUAL;", () => ControllerData.Module == LabModules.GP500);
@@ -120,6 +120,6 @@ namespace ANG24.Core.Devices.External
             Execute("#HVM:STOP;", () => ControllerData.Module == LabModules.Main);
         }
         public void PowerOn() => Execute("#POWERUP", new PowerControlOptionalBehavior());
-        public void PowerOff() => Execute("#POWERDOWN", new PowerControlOptionalBehavior() { PowerMode = true});
+        public void PowerOff() => Execute("#POWERDOWN", new PowerControlOptionalBehavior() { PowerMode = true });
     }
 }

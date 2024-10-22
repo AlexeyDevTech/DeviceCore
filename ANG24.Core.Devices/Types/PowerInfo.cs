@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace ANG24.Core.Devices.Types
+﻿namespace ANG24.Core.Devices.Types
 {
     public class PowerInfo
     {
@@ -46,7 +44,7 @@ namespace ANG24.Core.Devices.Types
 
         public PowerInfo(string InputData) : this()
         {
-            
+
             try
             {
                 uint i = 0;

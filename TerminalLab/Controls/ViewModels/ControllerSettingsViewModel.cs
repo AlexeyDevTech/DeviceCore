@@ -9,7 +9,7 @@ namespace TerminalLab.Controls.ViewModels
     public class ControllerSettingsViewModel : BindableBase
     {
         Hub hub = Hub.Default;
-        
+
         private int _baudRate;
 
         public ICommand ApplyCommand { get; set; }
@@ -38,9 +38,9 @@ namespace TerminalLab.Controls.ViewModels
         private void Apply()
         {
             hub.Publish(new SettingsEvent { Apply = true, BaudRate = BaudRate });
-            
+
         }
 
-        
+
     }
 }

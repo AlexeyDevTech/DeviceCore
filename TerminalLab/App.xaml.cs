@@ -16,7 +16,7 @@ namespace TerminalLab
         {
             base.OnStartup(e);
             var builder = new ContainerBuilder();
-            
+
 
 
             Container = builder.Build();

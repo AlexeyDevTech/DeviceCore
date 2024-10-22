@@ -23,7 +23,7 @@ namespace ANG24.Core.Devices.External.Behaviors.CommandBehavior
             //Console.Write("[]");
         }
 
-       
+
 
     }
 }

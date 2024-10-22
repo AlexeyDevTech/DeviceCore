@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace ANG24.Core.Devices.Helpers
+﻿namespace ANG24.Core.Devices.Helpers
 {
     public static class ControllerLogger
     {

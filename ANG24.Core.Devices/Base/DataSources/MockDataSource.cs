@@ -6,7 +6,7 @@ namespace ANG24.Core.Devices.Base.DataSources
     {
         public override bool Online { get; protected set; }
 
-        public MockDataSource() 
+        public MockDataSource()
         {
             adapters = new Dictionary<Type, object>
             {

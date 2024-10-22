@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace ANG24.Core.Devices.Types
+﻿namespace ANG24.Core.Devices.Types
 {
     public class MKZStateInfo
     {

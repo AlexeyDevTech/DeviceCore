@@ -34,7 +34,7 @@ namespace ANG24.Core.Devices.External.Behaviors.ConnectionBehavior
             });
         }
 
-        
+
 
         public void HandleData(object data)
         {
