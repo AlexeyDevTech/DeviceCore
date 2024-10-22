@@ -1,4 +1,4 @@
-﻿namespace ANG24.Core.Devices.Base.Abstract.Types
+﻿namespace ANG24.Core.Entities.Logical
 {
     #region ProcessAction types
     public class ProcessAction

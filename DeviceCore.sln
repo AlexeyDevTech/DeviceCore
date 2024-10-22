@@ -15,6 +15,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TerminalLab", "TerminalLab\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ANG24.Core.Devices.External", "ANG24.Core.Devices.External\ANG24.Core.Devices.External.csproj", "{336412AD-D084-4BAD-A4A8-980ABDAE73E6}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ANG24.Core.Entities", "ANG24.Core.Entities\ANG24.Core.Entities.csproj", "{7D6BC5E5-7CC8-4A0C-86BA-310816E444AC}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -37,6 +39,10 @@ Global
 		{336412AD-D084-4BAD-A4A8-980ABDAE73E6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{336412AD-D084-4BAD-A4A8-980ABDAE73E6}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{336412AD-D084-4BAD-A4A8-980ABDAE73E6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7D6BC5E5-7CC8-4A0C-86BA-310816E444AC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7D6BC5E5-7CC8-4A0C-86BA-310816E444AC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7D6BC5E5-7CC8-4A0C-86BA-310816E444AC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7D6BC5E5-7CC8-4A0C-86BA-310816E444AC}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

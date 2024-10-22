@@ -1,5 +1,4 @@
-﻿using ANG24.Core.Devices.Base.Abstract.Types;
-using ANG24.Core.Devices.Base.Interfaces.Behaviors.CommandDeviceBehaviors;
+﻿using ANG24.Core.Devices.Base.Interfaces.Behaviors.CommandDeviceBehaviors;
 using ANG24.Core.Devices.Types;
 using System.Diagnostics;
 

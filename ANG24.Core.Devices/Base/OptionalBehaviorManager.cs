@@ -1,5 +1,4 @@
-﻿using ANG24.Core.Devices.Base.Abstract.Types;
-using ANG24.Core.Devices.Base.Interfaces.Behaviors;
+﻿using ANG24.Core.Devices.Base.Interfaces.Behaviors;
 
 namespace ANG24.Core.Devices.Base
 {
