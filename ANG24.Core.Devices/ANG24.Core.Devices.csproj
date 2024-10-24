@@ -7,8 +7,11 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Base\Abstract\Types\**" />
     <Compile Remove="DeviceBehaviors\**" />
+    <EmbeddedResource Remove="Base\Abstract\Types\**" />
     <EmbeddedResource Remove="DeviceBehaviors\**" />
+    <None Remove="Base\Abstract\Types\**" />
     <None Remove="DeviceBehaviors\**" />
   </ItemGroup>
 
@@ -24,10 +27,6 @@
 
   <ItemGroup>
     <PackageReference Include="System.IO.Ports" Version="7.0.0" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Base\Abstract\Types\" />
   </ItemGroup>
 
 </Project>
