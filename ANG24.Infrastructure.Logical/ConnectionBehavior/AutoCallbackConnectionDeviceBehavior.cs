@@ -1,4 +1,6 @@
-﻿namespace ANG24.Core.Devices.External.Behaviors.ConnectionBehavior
+﻿using ANG24.Core.Interfaces.ConnectionDeviceBehaviors;
+
+namespace ANG24.Infrastructure.Logical.ConnectionBehavior
 {
     public class AutoCallbackConnectionDeviceBehavior : IConnectionDeviceBehavior
     {

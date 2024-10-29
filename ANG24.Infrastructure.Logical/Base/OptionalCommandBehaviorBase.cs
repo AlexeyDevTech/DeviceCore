@@ -1,4 +1,7 @@
-﻿namespace ANG24.Infrastructure.Logical.Base
+﻿using ANG24.Core.Entities.DataTypes;
+using ANG24.Core.Interfaces.CommandBehaviors;
+
+namespace ANG24.Infrastructure.Logical.Base
 {
     public abstract class OptionalCommandBehaviorBase : IOptionalCommandBehavior
     {

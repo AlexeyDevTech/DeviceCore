@@ -1,6 +1,4 @@
-﻿using ANG24.Core.Devices.External.Types;
-
-namespace ANG24.Core.Devices.External
+﻿namespace ANG24.Core.External
 {
     public class MNKDevice : ExecutableManagedDeviceBase
     {

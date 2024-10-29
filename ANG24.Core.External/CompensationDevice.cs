@@ -1,7 +1,4 @@
-﻿using ANG24.Core.Devices.External.Behaviors.RedirectOptionalCommandBehavior;
-using ANG24.Core.Devices.Helpers;
-
-namespace ANG24.Core.Devices.External
+﻿namespace ANG24.Core.External
 {
     public class CompensationDevice : ExecutableManagedDeviceBase
     {
@@ -16,15 +13,15 @@ namespace ANG24.Core.Devices.External
             ControllerLogger.WriteString($"device callback: {data}");
             if ((data as string).Contains("Voltage="))
             {
-                Voltage = Int32.Parse((data as string).Split('=')[1]);
+                Voltage = int.Parse((data as string).Split('=')[1]);
             }
             if ((data as string).Contains("Current="))
             {
-                Current = Int32.Parse((data as string).Split('=')[1]);
+                Current = int.Parse((data as string).Split('=')[1]);
             }
             if ((data as string).Contains("CoilState="))
             {
-                Combination = Int32.Parse((data as string).Split('=')[1]);
+                Combination = int.Parse((data as string).Split('=')[1]);
             }
             if ((data as string).Contains("Voltage must by 15..25V"))
             {
@@ -33,17 +30,17 @@ namespace ANG24.Core.Devices.External
             if ((data as string).Contains("Set"))
             {
                 var spl = (data as string).Split(' ');
-                Combination = Int32.Parse(spl[1]);
+                Combination = int.Parse(spl[1]);
             }
             if ((data as string).Contains("Error"))
             {
                 var spl = (data as string).Split(' ');
-                Combination = Int32.Parse(spl[1]);
+                Combination = int.Parse(spl[1]);
             }
             if ((data as string).Contains("Result"))
             {
                 var spl = (data as string).Split(' ');
-                Combination = Int32.Parse(spl[1]);
+                Combination = int.Parse(spl[1]);
             }
 
             base.OnData(data);

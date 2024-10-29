@@ -1,4 +1,7 @@
-﻿namespace ANG24.Infrastructure.Logical.Base
+﻿using ANG24.Core.Entities.Logical;
+using ANG24.Core.Interfaces;
+
+namespace ANG24.Infrastructure.Logical.Base
 {
     #region implements CommandDeviceBehavior
 

@@ -1,4 +1,4 @@
-﻿namespace ANG24.Core.Devices.Helpers
+﻿namespace ANG24.Infrastructure.Physical.Helpers
 {
     public static class ControllerLogger
     {

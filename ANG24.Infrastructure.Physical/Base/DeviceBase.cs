@@ -1,6 +1,9 @@
-﻿namespace ANG24.Infrastructure.Physical.DeviceBase
+﻿using ANG24.Core.Interfaces;
+using ANG24.Infrastructure.Physical.DataSource;
+
+namespace ANG24.Infrastructure.Physical.Base
 {
-    public abstract class DeviceBase
+    public abstract class DeviceBase : IDeviceBase
     {
         protected internal DataSourceBase source;
 

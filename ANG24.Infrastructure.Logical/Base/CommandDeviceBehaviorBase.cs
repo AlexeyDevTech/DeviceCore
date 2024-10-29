@@ -1,4 +1,9 @@
-﻿using System.Diagnostics;
+﻿using ANG24.Core.Entities.Logical;
+using ANG24.Core.Interfaces;
+using ANG24.Core.Interfaces.CommandBehaviors;
+using ANG24.Core.Interfaces.CommandBehaviors.Realizations;
+using ANG24.Infrastructure.Physical.Base;
+using System.Diagnostics;
 
 namespace ANG24.Infrastructure.Logical.Base
 {
@@ -6,7 +11,7 @@ namespace ANG24.Infrastructure.Logical.Base
     /*
      * Это базовый класс для реализации паттернов поведения при обработке команд
      */
-    public abstract class CommandDeviceBehaviorBase : ICommandDeviceBehavior, ISimpleCommandDeviceBehavior, IConditionalCommandDeviceBehavior, IRedirectedCommandDeviceBehavior, IObjectiveCommandDeviceBehavior
+    public abstract class CommandDeviceBehaviorBase : ICommandDeviceBehaviorBase
     {
         protected CommandElement Command;
         //protected bool Busy;
@@ -26,7 +31,7 @@ namespace ANG24.Infrastructure.Logical.Base
         protected int CommandTickTime = 300;
 
         protected Queue<CommandElement> cmds;
-        protected DeviceBase device;
+        protected IDeviceBase device;
 
         bool Active = false;
         Task _commandTask;
@@ -269,7 +274,7 @@ namespace ANG24.Infrastructure.Logical.Base
         }
 
 
-        public void SetDevice(DeviceBase device) => this.device = device;
+        public void SetDevice(IDeviceBase device) => this.device = device;
     }
 
     #endregion

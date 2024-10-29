@@ -7,6 +7,6 @@
     {
         void HandleData(object data);
 
-        void SetDevice(DeviceBase device);
+        void SetDevice(IDeviceBase device);
     }
 }

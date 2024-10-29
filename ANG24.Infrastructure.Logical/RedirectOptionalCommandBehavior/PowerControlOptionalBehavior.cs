@@ -1,6 +1,4 @@
-﻿using ANG24.Core.Devices.Base.Abstract;
-
-namespace ANG24.Core.Devices.External.Behaviors.RedirectOptionalCommandBehavior
+﻿namespace ANG24.Infrastructure.Logical.RedirectOptionalCommandBehavior
 {
     public class PowerControlOptionalBehavior : OptionalCommandBehaviorBase
     {

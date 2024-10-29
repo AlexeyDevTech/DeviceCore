@@ -1,4 +1,4 @@
-﻿namespace ANG24.Core.Devices.External.Types
+﻿namespace ANG24.Core.Entities.DataTypes
 {
     public enum MNKActionTypes
     {

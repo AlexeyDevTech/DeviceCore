@@ -1,9 +1,12 @@
-﻿namespace ANG24.Infrastructure.Physical.DeviceBase
+﻿using ANG24.Core.Interfaces.CommandBehaviors.Realizations;
+using ANG24.Core.Interfaces.ConnectionDeviceBehaviors;
+
+namespace ANG24.Infrastructure.Physical.Base
 {
     public abstract class ManagedDeviceBase : DeviceBase
     {
         public IConnectionDeviceBehavior ConnectionBehavior; //операция Reconnect
-        public CommandDeviceBehaviorBase CommandBehavior; //операции SetCommand, Check
+        public ICommandDeviceBehaviorBase CommandBehavior; //операции SetCommand, Check
         public OptionalBehaviorManager OptionalBehavior; //дополнительный анализ 
 
         protected ManagedDeviceBase() : base()

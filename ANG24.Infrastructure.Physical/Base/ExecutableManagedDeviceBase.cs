@@ -1,4 +1,6 @@
-﻿namespace ANG24.Infrastructure.Physical.DeviceBase
+﻿using ANG24.Core.Interfaces.CommandBehaviors;
+
+namespace ANG24.Infrastructure.Physical.Base
 {
     public abstract class ExecutableManagedDeviceBase : ManagedDeviceBase
     {

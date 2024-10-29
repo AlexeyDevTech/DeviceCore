@@ -1,9 +1,4 @@
-﻿using ANG24.Core.Devices.Extensions;
-using ANG24.Core.Devices.External.Behaviors.CommandBehavior;
-using ANG24.Core.Devices.External.Behaviors.ConnectionBehavior;
-using ANG24.Core.Devices.External.Behaviors.RedirectOptionalCommandBehavior;
-
-namespace ANG24.Core.Devices.External
+﻿namespace ANG24.Core.External
 {
     public class MEADevice : ExecutableManagedDeviceBase
     {

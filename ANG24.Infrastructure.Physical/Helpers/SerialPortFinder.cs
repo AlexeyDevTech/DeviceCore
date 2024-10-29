@@ -1,7 +1,7 @@
 ﻿using System.Collections.Concurrent;
 using System.IO.Ports;
 
-namespace ANG24.Core.Devices.Helpers
+namespace ANG24.Infrastructure.Physical.Helpers
 {
     public delegate void PortFindEventHandler(string device, string PortName);
     public delegate void PortFindCompletedEventHandler(int countFindedDevices, bool isError);

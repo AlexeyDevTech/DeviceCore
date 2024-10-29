@@ -1,7 +1,4 @@
-﻿using ANG24.Core.Devices.External.Behaviors.CommandBehavior;
-using ANG24.Core.Devices.External.Behaviors.ConnectionBehavior;
-
-namespace ANG24.Core.Devices.External
+﻿namespace ANG24.Core.External
 {
     public class MockDevice : ExecutableManagedDeviceBase
     {

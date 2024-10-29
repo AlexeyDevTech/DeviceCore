@@ -1,6 +1,6 @@
-﻿using ANG24.Core.Devices.Base.Abstract;
+﻿using ANG24.Infrastructure.Logical.Base;
 
-namespace ANG24.Core.Devices.External.Behaviors.CommandBehavior
+namespace ANG24.Infrastructure.Logical.CommandBehavior
 {
     public class OrderStrongCommandDeviceBehavior : CommandDeviceBehaviorBase
     {
