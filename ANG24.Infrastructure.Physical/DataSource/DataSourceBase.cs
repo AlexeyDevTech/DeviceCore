@@ -1,4 +1,6 @@
-﻿namespace ANG24.Infrastructure.Physical.DataSource
+﻿using ANG24.Core.Interfaces;
+
+namespace ANG24.Infrastructure.Physical.DataSource
 {
     public abstract class DataSourceBase : IDataSource, IConnectable
     {

@@ -1,4 +1,7 @@
-﻿namespace ANG24.Infrastructure.Physical.DataSource
+﻿using ANG24.Infrastructure.Physical.DataAdapters;
+using System.IO.Ports;
+
+namespace ANG24.Infrastructure.Physical.DataSource
 {
     public class SerialDataSource : DataSourceBase
     {

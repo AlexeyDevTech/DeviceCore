@@ -1,7 +1,9 @@
-﻿using ANG24.Core.Entities.Logical;
+﻿using ANG24.Core.Entities.DataTypes;
 using ANG24.Core.Interfaces;
 using ANG24.Core.Interfaces.CommandBehaviors;
 using ANG24.Core.Interfaces.CommandBehaviors.Realizations;
+using ANG24.Core.Interfaces.CommandLogical;
+using ANG24.Infrastructure.Logical.CommandLogical;
 using ANG24.Infrastructure.Physical.Base;
 using System.Diagnostics;
 
@@ -13,7 +15,7 @@ namespace ANG24.Infrastructure.Logical.Base
      */
     public abstract class CommandDeviceBehaviorBase : ICommandDeviceBehaviorBase
     {
-        protected CommandElement Command;
+        protected ICommandElement Command;
         //protected bool Busy;
         protected int attempts = 3;
         int attempt_lost = 3;
@@ -30,7 +32,7 @@ namespace ANG24.Infrastructure.Logical.Base
 
         protected int CommandTickTime = 300;
 
-        protected Queue<CommandElement> cmds;
+        protected Queue<ICommandElement> cmds;
         protected IDeviceBase device;
 
         bool Active = false;
@@ -39,7 +41,7 @@ namespace ANG24.Infrastructure.Logical.Base
 
         protected CommandDeviceBehaviorBase()
         {
-            cmds = new Queue<CommandElement>();
+            cmds = new Queue<ICommandElement>();
         }
 
         public void ExecuteCommand<T>(T command)
@@ -80,7 +82,7 @@ namespace ANG24.Infrastructure.Logical.Base
             });
             Start();
         }
-        public void ExecuteCommand(CommandElement command)
+        public void ExecuteCommand(ICommandElement command)
         {
             cmds.Enqueue(command);
             Start();
@@ -253,7 +255,7 @@ namespace ANG24.Infrastructure.Logical.Base
 
 
         }
-        private CommandElement Set()
+        private ICommandElement Set()
         {
 
             try

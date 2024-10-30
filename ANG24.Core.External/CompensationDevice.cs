@@ -1,4 +1,7 @@
-﻿namespace ANG24.Core.External
+﻿using ANG24.Infrastructure.Middleware.Base;
+using ANG24.Infrastructure.Middleware.RedirectOptionalCommandBehavior;
+
+namespace ANG24.Core.External
 {
     public class CompensationDevice : ExecutableManagedDeviceBase
     {
@@ -10,7 +13,7 @@
 
         protected override void OnData(object data)
         {
-            ControllerLogger.WriteString($"device callback: {data}");
+            //ControllerLogger.WriteString($"device callback: {data}");
             if ((data as string).Contains("Voltage="))
             {
                 Voltage = int.Parse((data as string).Split('=')[1]);

@@ -1,4 +1,8 @@
-﻿namespace ANG24.Core.External
+﻿using ANG24.Core.Entities.DataTypes;
+using ANG24.Infrastructure.Middleware.Base;
+using ANG24.Infrastructure.Middleware.RedirectOptionalCommandBehavior;
+
+namespace ANG24.Core.External
 {
     public class TestDevice : ExecutableManagedDeviceBase
     {
@@ -12,10 +16,10 @@
             //CommandBehavior.SetDevice(this);
             //ConnectionBehavior = new AutoCallbackConnectionDeviceBehavior();
             //ConnectionBehavior.SetDevice(this);
-            this.SelectDataSource(new SerialDataSource("COM4"))
+           /* this.SelectDataSource(new SerialDataSource("COM4"))
                 .SetDataReceivedType(typeof(string))
                 .SetCommandBehavior(new OrderStrongCommandDeviceBehavior())
-                .SetConnectionBehavior(new AutoCallbackConnectionDeviceBehavior(), Disconnect, Connect);
+                .SetConnectionBehavior(new AutoCallbackConnectionDeviceBehavior(), Disconnect, Connect);*/
         }
         protected override void OnData(object data)
         {

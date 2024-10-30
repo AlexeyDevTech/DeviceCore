@@ -1,8 +1,10 @@
-﻿namespace ANG24.Core.Interfaces.CommandBehaviors
+﻿using ANG24.Core.Interfaces.CommandLogical;
+
+namespace ANG24.Core.Interfaces.CommandBehaviors
 {
     public interface IObjectiveCommandDeviceBehavior : ICommandDeviceBehavior
     {
-        void ExecuteCommand(CommandElement command);
+        void ExecuteCommand(ICommandElement command);
     }
 
 

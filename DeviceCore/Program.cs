@@ -1,4 +1,4 @@
-﻿using ANG24.Core.Devices.External;
+﻿using ANG24.Core.External;
 
 namespace DeviceCore
 {

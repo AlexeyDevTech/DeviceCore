@@ -1,5 +1,5 @@
-﻿using ANG24.Core.Entities.Logical;
-using ANG24.Core.Interfaces;
+﻿using ANG24.Core.Interfaces;
+using ANG24.Infrastructure.Logical.CommandLogical;
 
 namespace ANG24.Infrastructure.Logical.Base
 {

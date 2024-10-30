@@ -1,4 +1,8 @@
-﻿namespace ANG24.Core.External
+﻿using ANG24.Core.Entities.DataTypes;
+using ANG24.Infrastructure.Middleware.Base;
+using ANG24.Infrastructure.Middleware.RedirectOptionalCommandBehavior;
+
+namespace ANG24.Core.External
 {
     public class MEADevice : ExecutableManagedDeviceBase
     {
@@ -6,10 +10,10 @@
 
         public MEADevice()
         {
-            this.SelectDataSource(new SerialDataSource("COM4"))
-                .SetDataReceivedType(typeof(string))
-                .SetCommandBehavior(new OrderStrongCommandDeviceBehavior())
-                .SetConnectionBehavior(new AutoCallbackConnectionDeviceBehavior(), Disconnect, Connect);
+            //this.SelectDataSource(new SerialDataSource("COM4"))
+            //    .SetDataReceivedType(typeof(string))
+            //    .SetCommandBehavior(new OrderStrongCommandDeviceBehavior())
+            //    .SetConnectionBehavior(new AutoCallbackConnectionDeviceBehavior(), Disconnect, Connect);
         }
 
         protected override void OnData(object data)

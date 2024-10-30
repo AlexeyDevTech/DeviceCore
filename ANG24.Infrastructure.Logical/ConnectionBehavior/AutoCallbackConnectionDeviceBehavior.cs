@@ -1,10 +1,12 @@
-﻿using ANG24.Core.Interfaces.ConnectionDeviceBehaviors;
+﻿using ANG24.Core.Interfaces;
+using ANG24.Core.Interfaces.ConnectionDeviceBehaviors;
+using ANG24.Infrastructure.Physical.Base;
 
 namespace ANG24.Infrastructure.Logical.ConnectionBehavior
 {
     public class AutoCallbackConnectionDeviceBehavior : IConnectionDeviceBehavior
     {
-        DeviceBase device;
+        IDeviceBase device;
         int attemptLost = 5;
         bool IsRunning = false;
         public Action OnlineAction { get; set; }
@@ -40,7 +42,7 @@ namespace ANG24.Infrastructure.Logical.ConnectionBehavior
             attemptLost = 5;
         }
 
-        public void SetDevice(DeviceBase device) => this.device = device;
+        public void SetDevice(IDeviceBase device) => this.device = device;
 
         public void Start()
         {

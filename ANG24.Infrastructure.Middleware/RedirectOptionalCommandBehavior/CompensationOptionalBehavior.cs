@@ -1,4 +1,11 @@
-﻿namespace ANG24.Infrastructure.Logical.RedirectOptionalCommandBehavior
+﻿using ANG24.Infrastructure.Logical.Base;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace ANG24.Infrastructure.Middleware.RedirectOptionalCommandBehavior
 {
     public class CompensationOptionalBehavior : OptionalCommandBehaviorBase
     {

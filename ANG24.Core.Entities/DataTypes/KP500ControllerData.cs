@@ -1,4 +1,6 @@
-﻿namespace ANG24.Core.Entities.DataTypes
+﻿using System.IO.Ports;
+
+namespace ANG24.Core.Entities.DataTypes
 {
     public class KP500ControllerData
     {
