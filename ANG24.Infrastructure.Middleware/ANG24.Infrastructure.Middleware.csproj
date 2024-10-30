@@ -12,8 +12,4 @@
     <ProjectReference Include="..\ANG24.Infrastructure.Physical\ANG24.Infrastructure.Physical.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Factories\" />
-  </ItemGroup>
-
 </Project>
