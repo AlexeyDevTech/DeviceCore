@@ -107,11 +107,40 @@
                 <Grid Grid.Row="1"></Grid>
                 <TabControl Grid.Row="2" Background="#FF3A3C49">
                     <TabItem Header="Control">
-                        <Grid x:Name="ControlPanelBoard" Grid.Row="2">
-
+                        <Grid x:Name="ControlPanelBoard">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="25"/>
+                                <RowDefinition/>
+                            </Grid.RowDefinitions>
+                            <Grid Grid.Row="0" Margin="2 2">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="2*"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <Grid Grid.Column="0">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition/>
+                                        <ColumnDefinition Width="30"/>
+                                    </Grid.ColumnDefinitions>
+                                    <TextBox Text="C:\commands.json" FontFamily="Consolas"/>
+                                    <Button Content="..." Grid.Column="1" Command="{Binding OpenConfigCommand}" Margin="2,2,2,1"/>
+                                </Grid>
+                                <Grid Grid.Column="1">
+                                    
+                                </Grid>
+                                
+                            </Grid>
+                            <Grid Grid.Row="1">
+                                
+                            </Grid>
                         </Grid>
                     </TabItem>
+                    <TabItem Header="test2">
+                        
+                    </TabItem>
                 </TabControl>
+                
             </Grid>
             <Grid Grid.Column="3"/>
         </Grid>

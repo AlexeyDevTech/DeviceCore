@@ -6,4 +6,8 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\ANG24.Core.Interfaces\ANG24.Core.Interfaces.csproj" />
+  </ItemGroup>
+
 </Project>

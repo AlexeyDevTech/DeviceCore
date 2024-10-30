@@ -1,6 +1,6 @@
 ﻿namespace ANG24.Core.Interfaces.External
 {
-    public class Class1
+    public interface ISimpleDeviceBase : IDeviceBase
     {
 
     }
