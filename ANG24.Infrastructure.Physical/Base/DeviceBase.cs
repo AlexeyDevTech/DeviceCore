@@ -5,7 +5,7 @@ namespace ANG24.Infrastructure.Physical.Base
 {
     public abstract class DeviceBase : IDeviceBase
     {
-        protected internal DataSourceBase source;
+        public DataSourceBase source;
 
         public event Action OnConnect;
         public event Action OnDisconnect;

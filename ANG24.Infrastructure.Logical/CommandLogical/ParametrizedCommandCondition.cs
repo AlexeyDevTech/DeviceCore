@@ -1,4 +1,10 @@
-﻿namespace ANG24.Core.Entities.Logical
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace ANG24.Infrastructure.Logical.CommandLogical
 {
     #region Command element realization (and conditions)
     public class ParametrizedCommandCondition : CommandCondition

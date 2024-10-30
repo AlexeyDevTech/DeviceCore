@@ -1,4 +1,10 @@
-﻿namespace ANG24.Core.Entities.Logical
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace ANG24.Infrastructure.Logical.CommandLogical
 {
     #region ProcessAction types
     public class ProcessAction

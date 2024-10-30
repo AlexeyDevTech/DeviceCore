@@ -1,7 +1,12 @@
-﻿using ANG24.Core.Devices.DeviceBehaviors.Base;
-using ANG24.Core.Devices.Types;
+﻿using ANG24.Core.Entities.DataTypes;
+using ANG24.Infrastructure.Logical.Base;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
-namespace ANG24.Core.Devices.DeviceBehaviors.MEA.CommandBehaviors
+namespace ANG24.Infrastructure.Middleware.RedirectOptionalCommandBehavior
 {
     public class PowerControlOptionalBehavior : OptionalCommandBehaviorBase
     {
@@ -11,17 +16,18 @@ namespace ANG24.Core.Devices.DeviceBehaviors.MEA.CommandBehaviors
         public MKZStateInfo MKZStateInfo { get; set; } = new MKZStateInfo();
         public MagnetStateInfo MagnetStateInfo { get; set; } = new MagnetStateInfo();
         public bool HVSwitchIncorrect { get; set; }
-        public override void ProcessData(string data)
+        public override void ProcessData(object data)
         {
+            var msg = data as string;
             if (!PowerMode)
             {
-                if (data.Contains("shorter is up")) OnProcess();
-                if (data.Contains("shorter is down")) OnFail();
-                if (data.Contains("power is ready")) OnSuccess();
-                if (data.Contains("power is fault")) OnFail();
-                if (data.Contains("MKZ:"))
+                if (msg.Contains("shorter is up")) OnProcess();
+                if (msg.Contains("shorter is down")) OnFail();
+                if (msg.Contains("power is ready")) OnSuccess();
+                if (msg.Contains("power is fault")) OnFail();
+                if (msg.Contains("MKZ:"))
                 {
-                    var spl = data.Split(':');
+                    var spl = msg.Split(':');
                     var spl_desc = spl[1].Trim();
                     if (spl_desc.Contains("Door 2")) MKZStateInfo.DoorRight = true;
                     if (spl_desc.Contains("Door 1")) MKZStateInfo.DoorLeft = true;
@@ -31,17 +37,17 @@ namespace ANG24.Core.Devices.DeviceBehaviors.MEA.CommandBehaviors
                     if (spl_desc.Contains("Stop button")) MKZStateInfo.Stop = true;
                     OnProcess();
                 }
-                if (data.Contains("Check"))
+                if (msg.Contains("Check"))
                 {
-                    var spl = data.Split(' ');
+                    var spl = msg.Split(' ');
                     var spl_desc = spl[1].Trim();
                     if (spl_desc.Contains("MVK")) MagnetStateInfo.MVKMagnetFault = true;
                     if (spl_desc.Contains("SVI")) MagnetStateInfo.SVIMagnetFault = true;
                     if (spl_desc.Contains("MSK")) MagnetStateInfo.MSKMagnetFault = true;
                     OnProcess();
                 }
-                if (data.Contains("MKZ error")) OnFail();
-                if (data.Contains("HVSwitch mode is incorrect"))
+                if (msg.Contains("MKZ error")) OnFail();
+                if (msg.Contains("HVSwitch mode is incorrect"))
                 {
                     HVSwitchIncorrect = true;
                     OnFail();
@@ -49,17 +55,17 @@ namespace ANG24.Core.Devices.DeviceBehaviors.MEA.CommandBehaviors
             }
             else
             {
-                if (data.Contains("Check"))
+                if (msg.Contains("Check"))
                 {
-                    var spl = data.Split(' ');
+                    var spl = msg.Split(' ');
                     var spl_desc = spl[1].Trim();
                     if (spl_desc.Contains("MVK")) MagnetStateInfo.MVKMagnetFault = true;
                     if (spl_desc.Contains("SVI")) MagnetStateInfo.SVIMagnetFault = true;
                     if (spl_desc.Contains("MSK")) MagnetStateInfo.MSKMagnetFault = true;
                     OnProcess();
                 }
-                if (data.Contains("Power off is OK")) OnSuccess();
-                if (data.Contains("Power off is fault")) OnFail();
+                if (msg.Contains("Power off is OK")) OnSuccess();
+                if (msg.Contains("Power off is fault")) OnFail();
             }
         }
         public override void OnFail()
@@ -77,8 +83,14 @@ namespace ANG24.Core.Devices.DeviceBehaviors.MEA.CommandBehaviors
             }
 
         }
+        public override void OnSuccess()
+        {
+            new Timer(state =>
+            {
+                base.OnSuccess();
+            }).Change(300, Timeout.Infinite);
+
+        }
 
     }
-
-
 }

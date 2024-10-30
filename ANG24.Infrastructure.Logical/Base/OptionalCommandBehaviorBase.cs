@@ -1,11 +1,12 @@
 ﻿using ANG24.Core.Entities.DataTypes;
+using ANG24.Core.Interfaces;
 using ANG24.Core.Interfaces.CommandBehaviors;
 
 namespace ANG24.Infrastructure.Logical.Base
 {
     public abstract class OptionalCommandBehaviorBase : IOptionalCommandBehavior
     {
-        private DeviceBase _device;
+        private IDeviceBase _device;
 
         public OptionalBehaviorState State { get; protected set; } = OptionalBehaviorState.NotStarted;
         public int FaultCallback { get; set; }
@@ -56,7 +57,7 @@ namespace ANG24.Infrastructure.Logical.Base
 
         public virtual OptionalBehaviorState OperationCheck(object data) => State;
 
-        public void SetDevice(DeviceBase device)
+        public void SetDevice(IDeviceBase device)
         {
             _device = device;
         }

@@ -1,4 +1,6 @@
-﻿using ANG24.Core.Interfaces.ConnectionDeviceBehaviors;
+﻿using ANG24.Core.Interfaces.CommandBehaviors.Realizations;
+using ANG24.Core.Interfaces.ConnectionDeviceBehaviors;
+using ANG24.Infrastructure.Logical.Base;
 using ANG24.Infrastructure.Physical.Base;
 using System;
 using System.Collections.Generic;
@@ -26,7 +28,7 @@ namespace ANG24.Infrastructure.Middleware.Base
         }
 
         public void Start() => ConnectionBehavior?.Start();
-        public void Stop() => CommandBehavior?.Stop();
+        public void Stop() => ConnectionBehavior?.Stop();
 
     }
 }

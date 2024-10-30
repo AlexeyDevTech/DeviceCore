@@ -8,6 +8,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\ANG24.Core.Interfaces\ANG24.Core.Interfaces.csproj" />
+    <ProjectReference Include="..\ANG24.Infrastructure.Logical\ANG24.Infrastructure.Logical.csproj" />
     <ProjectReference Include="..\ANG24.Infrastructure.Physical\ANG24.Infrastructure.Physical.csproj" />
   </ItemGroup>
 

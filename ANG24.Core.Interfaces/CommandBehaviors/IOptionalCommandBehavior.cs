@@ -1,4 +1,6 @@
-﻿namespace ANG24.Core.Interfaces.CommandBehaviors
+﻿using ANG24.Core.Entities.DataTypes;
+
+namespace ANG24.Core.Interfaces.CommandBehaviors
 {
     public interface IOptionalCommandBehavior : IOptionalBehavior
     {

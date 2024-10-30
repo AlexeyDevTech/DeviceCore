@@ -12,7 +12,6 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ANG24.Infrastructure.Physical", "ANG24.Infrastructure.Physical\ANG24.Infrastructure.Physical.csproj", "{EBD81A59-98FE-4B7A-8831-67769BCF27F6}"
 	ProjectSection(ProjectDependencies) = postProject
 		{7D6BC5E5-7CC8-4A0C-86BA-310816E444AC} = {7D6BC5E5-7CC8-4A0C-86BA-310816E444AC}
-		{7FF3F7DD-B54B-4E5D-800D-DF0ADDCFA07C} = {7FF3F7DD-B54B-4E5D-800D-DF0ADDCFA07C}
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ANG24.Infrastructure.Logical", "ANG24.Infrastructure.Logical\ANG24.Infrastructure.Logical.csproj", "{1AA49847-4E32-47AD-9963-4C32DCBD8D42}"

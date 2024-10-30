@@ -1,10 +1,16 @@
-﻿using ANG24.Infrastructure.Physical.External;
+﻿using ANG24.Core.Interfaces.ConnectionDeviceBehaviors;
+using ANG24.Core.Interfaces;
+using ANG24.Infrastructure.Logical.Base;
+using ANG24.Infrastructure.Middleware.Base;
+using ANG24.Infrastructure.Physical.Base;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
-namespace ANG24.Infrastructure.Physical.External
+namespace ANG24.Infrastructure.Middleware.External
 {
-
-
-
     #region Extensions for DeviceBase
     public static class DeviceBaseExtensions
     {

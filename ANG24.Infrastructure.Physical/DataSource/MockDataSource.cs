@@ -1,4 +1,6 @@
-﻿namespace ANG24.Infrastructure.Physical.DataSource
+﻿using ANG24.Infrastructure.Physical.DataAdapters;
+
+namespace ANG24.Infrastructure.Physical.DataSource
 {
     public class MockDataSource : DataSourceBase
     {
