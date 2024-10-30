@@ -52,9 +52,4 @@ namespace ANG24.Infrastructure.Physical.DataSource
             }
         }
     }
-
-
-
-
-
 }
