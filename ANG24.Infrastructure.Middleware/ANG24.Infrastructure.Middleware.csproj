@@ -1,0 +1,14 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\ANG24.Core.Interfaces\ANG24.Core.Interfaces.csproj" />
+    <ProjectReference Include="..\ANG24.Infrastructure.Physical\ANG24.Infrastructure.Physical.csproj" />
+  </ItemGroup>
+
+</Project>

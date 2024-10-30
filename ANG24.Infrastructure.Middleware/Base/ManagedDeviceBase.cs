@@ -1,9 +1,14 @@
-﻿using ANG24.Core.Interfaces.CommandBehaviors.Realizations;
-using ANG24.Core.Interfaces.ConnectionDeviceBehaviors;
+﻿using ANG24.Core.Interfaces.ConnectionDeviceBehaviors;
+using ANG24.Infrastructure.Physical.Base;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
-namespace ANG24.Infrastructure.Physical.Base
+namespace ANG24.Infrastructure.Middleware.Base
 {
-    public abstract class ManagedDeviceBase : DeviceBase
+    public abstract class ManagedDeviceBase : SimpleDeviceBase
     {
         public IConnectionDeviceBehavior ConnectionBehavior; //операция Reconnect
         public ICommandDeviceBehaviorBase CommandBehavior; //операции SetCommand, Check
