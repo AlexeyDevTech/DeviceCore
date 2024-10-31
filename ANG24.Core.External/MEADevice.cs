@@ -1,6 +1,7 @@
 ﻿using ANG24.Core.Entities.DataTypes;
 using ANG24.Infrastructure.Middleware.Base;
 using ANG24.Infrastructure.Middleware.External;
+using ANG24.Infrastructure.Middleware.Factories;
 using ANG24.Infrastructure.Middleware.RedirectOptionalCommandBehavior;
 
 namespace ANG24.Core.External
@@ -16,7 +17,7 @@ namespace ANG24.Core.External
              * в Middleware -- добавить фабрики
              * 
              */
-            this.SelectDataSource(new SerialDataSource("COM4"))
+            this.SelectDataSource(new SerialDataSourceFactory().Create("COM4"))
                 .SetDataReceivedType(typeof(string))
                 .SetCommandBehavior(new OrderStrongCommandDeviceBehavior())
                 .SetConnectionBehavior(new AutoCallbackConnectionDeviceBehavior(), Disconnect, Connect);
