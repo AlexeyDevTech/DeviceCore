@@ -123,8 +123,8 @@
                                         <ColumnDefinition/>
                                         <ColumnDefinition Width="30"/>
                                     </Grid.ColumnDefinitions>
-                                    <TextBox Text="C:\commands.json" FontFamily="Consolas"/>
-                                    <Button Content="..." Grid.Column="1" Command="{Binding OpenConfigCommand}" Margin="2,2,2,1"/>
+                                    <ComboBox FontFamily="Consolas" Style="{DynamicResource SelectedInputControllerComboBoxStyle}"/>
+                                    <!--<Button Content="..." Grid.Column="1" Command="{Binding OpenConfigCommand}" Margin="2,2,2,1"/>-->
                                 </Grid>
                                 <Grid Grid.Column="1">
                                     
