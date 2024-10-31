@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using ANG24.Core.Interfaces.CommandBehaviors.Realizations;
 
 namespace ANG24.Infrastructure.Middleware.External
 {
@@ -85,7 +86,7 @@ namespace ANG24.Infrastructure.Middleware.External
             device.source.SetDataReceivedType(type);
             return device;
         }
-        public static DeviceBase SetCommandBehavior(this DeviceBase device, CommandDeviceBehaviorBase commandDeviceBehavior)
+        public static DeviceBase SetCommandBehavior(this DeviceBase device, ICommandDeviceBehaviorBase commandDeviceBehavior)
         {
             (device as ManagedDeviceBase).CommandBehavior = commandDeviceBehavior;
             (device as ManagedDeviceBase).CommandBehavior.SetDevice(device);

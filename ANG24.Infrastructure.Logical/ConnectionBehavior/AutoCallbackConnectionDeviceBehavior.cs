@@ -1,6 +1,5 @@
 ﻿using ANG24.Core.Interfaces;
 using ANG24.Core.Interfaces.ConnectionDeviceBehaviors;
-using ANG24.Infrastructure.Physical.Base;
 
 namespace ANG24.Infrastructure.Logical.ConnectionBehavior
 {

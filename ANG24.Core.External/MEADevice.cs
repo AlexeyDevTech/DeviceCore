@@ -19,8 +19,8 @@ namespace ANG24.Core.External
              */
             this.SelectDataSource(new SerialDataSourceFactory().Create("COM4"))
                 .SetDataReceivedType(typeof(string))
-                .SetCommandBehavior(new OrderStrongCommandDeviceBehavior())
-                .SetConnectionBehavior(new AutoCallbackConnectionDeviceBehavior(), Disconnect, Connect);
+                .SetCommandBehavior(new OrderStrongCommandBehaviorFactory().Create())
+                .SetConnectionBehavior(new AutoCallbackConnectionBahviorFactory().Create(), Disconnect, Connect);
         }
 
         protected override void OnData(object data)
