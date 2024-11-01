@@ -21,4 +21,9 @@
     <PackageReference Include="PubSub" Version="4.0.2" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\ANG24.Core.External\ANG24.Core.External.csproj" />
+    <ProjectReference Include="..\ANG24.Core.Interfaces.External\ANG24.Core.Interfaces.External.csproj" />
+  </ItemGroup>
+
 </Project>
