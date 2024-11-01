@@ -22,7 +22,12 @@ namespace TerminalLab.Controls.ViewModels
         public string PortName
         {
             get => _portName;
-            set => SetProperty(ref _portName, value);
+            set
+            {
+                SetProperty(ref _portName, value);
+
+            }
+            
         }
         public string ControllerName
         {
