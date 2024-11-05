@@ -24,25 +24,32 @@
             </ItemsControl.ItemsPanel>
             <ItemsControl.ItemTemplate>
                 <DataTemplate>
-                    <StackPanel Margin="5">
+                    <Border BorderBrush="Black" BorderThickness="1" Margin="5">
+                        <StackPanel Orientation="Vertical" Margin="5">
 
-                        <Button Height="25" Width="100" Content="{Binding Name}" Command="{Binding Command}" CommandParameter="{Binding Param}" />
-                        <ComboBox Style="{DynamicResource ComboBoxUserControl}" Height="25" ItemsSource="{Binding Values}" SelectedItem="{Binding Param}"  IsEnabled="{Binding isEnum}" />
-                        <TextBox Height="25" Style="{DynamicResource TextBoxUserControl}" Text="{Binding Param}" IsEnabled="{Binding isString}"/>
-                    </StackPanel>
-
+                            <Button Height="25" MinWidth="100" 
+                                Margin="5"
+                                Content="{Binding Name}" 
+                                Command="{Binding Command}" 
+                                CommandParameter="{Binding Param}" />
+                            <ComboBox Style="{DynamicResource ComboBoxUserControl}" 
+                                  Height="25" 
+                                  Margin="5"
+                                  ItemsSource="{Binding Values}" 
+                                  SelectedItem="{Binding Param}" 
+                                  IsEnabled="{Binding isEnum}"/>
+                            <TextBox  Style="{DynamicResource TextBoxUserControl}" 
+                                  Height="25"
+                                  Margin="5"
+                                  Text="{Binding Param}" 
+                                  IsEnabled="{Binding isString}"/>
+  
+                        </StackPanel>
+                    </Border>
                 </DataTemplate>
 
             </ItemsControl.ItemTemplate>
         </ItemsControl>
-
-        <!--<ItemsControl Height="100" ItemsSource="{Binding MethodButtons}">
-            <ItemsControl.ItemTemplate>
-                <DataTemplate>
-                    <Button Content="{Binding Name}" Command="{Binding Command}" />
-                </DataTemplate>
-            </ItemsControl.ItemTemplate>
-        </ItemsControl>-->
     </StackPanel>
 
 </UserControl>

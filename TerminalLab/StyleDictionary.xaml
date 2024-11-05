@@ -382,8 +382,12 @@
         </Setter>
 
     </Style>
-    <Style x:Key="TextBoxUserControl" TargetType="TextBox" BasedOn="{StaticResource ComboBoxEditableTextBox}">
-        <Setter Property="BorderThickness" Value="1"/>
+    <Style x:Key="TextBoxUserControl" TargetType="TextBox" >
+        <Setter Property="BorderThickness" Value="2"/>
+        <Setter Property="BorderBrush" Value="Black"/>
+        <Setter Property="Visibility" Value="Collapsed"/>
+        <Setter Property="Background" Value="#FF606060"/>
+        <Setter Property="Foreground" Value="White"/>
         <Style.Triggers>
             <DataTrigger Binding="{Binding isStringParam}" Value="true">
                 <Setter Property="Visibility" Value="Visible"/>

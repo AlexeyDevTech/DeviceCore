@@ -109,34 +109,15 @@
 
                     <TabItem Header="Control">
                         <Grid x:Name="ControlPanelBoard">
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="25"/>
-                                <RowDefinition/>
-                            </Grid.RowDefinitions>
-                            <Grid Grid.Row="0" Margin="2 2">
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="*"/>
-                                    <ColumnDefinition Width="2*"/>
-                                    <ColumnDefinition Width="*"/>
-                                </Grid.ColumnDefinitions>
-                                <Grid Grid.Column="0">
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition/>
-                                        <ColumnDefinition Width="30"/>
-                                    </Grid.ColumnDefinitions>
 
-                                </Grid>
-                                <Grid Grid.Column="1">
 
-                                </Grid>
 
-                            </Grid>
-                            <Grid Grid.Row="1">
+                            <controls:ControlledMethodButtonsView DataContext="{Binding Buttons}"/>
 
-                                <controls:ControlledMethodButtonsView DataContext="{Binding Buttons}"/>
 
-                            </Grid>
                         </Grid>
+
+
                     </TabItem>
                     <TabItem Header="test2">
 

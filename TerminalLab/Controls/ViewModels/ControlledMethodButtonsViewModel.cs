@@ -34,11 +34,11 @@ namespace TerminalLab.Controls.ViewModels
         {
             Controllers = new ObservableCollection<SimpleDeviceBase>()
               {
-                 new MEADevice(),
-                 new MNKDevice(),
-                 new MockDevice(),
-                 new TestDevice(),
+                 SimpleDeviceFabric.Create(ANG24.Core.External.Types.ControllerNames.Main),
+                 SimpleDeviceFabric.Create(ANG24.Core.External.Types.ControllerNames.Compensation),
+                 SimpleDeviceFabric.Create(ANG24.Core.External.Types.ControllerNames.MNK)
               };
+
             MethodButtons = new ObservableCollection<MethodButton>();
         }
         private void FindPublicMethods(SimpleDeviceBase device)
@@ -60,6 +60,10 @@ namespace TerminalLab.Controls.ViewModels
                         method.Invoke(device, null);
                     else
                     {
+                        if (parameter == null)
+                        {
+                            return;
+                        }
                         try
                         {
                             method.Invoke(device, new object[] { parameter });
@@ -74,7 +78,15 @@ namespace TerminalLab.Controls.ViewModels
                             }
                             catch
                             {
-                                method.Invoke(device, new object[] { (int)par });
+                                try
+                                {
+
+                                    method.Invoke(device, new object[] { (int)par });
+                                }
+                                catch
+                                {
+
+                                }
                             }
                         }
 

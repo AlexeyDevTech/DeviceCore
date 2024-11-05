@@ -38,6 +38,10 @@ namespace ANG24.Core.External
             Console.WriteLine(data);
             base.OnData(data); //в этом случае -- сначала обновляем котроллер потом OnData
         }
+        /// <summary>
+        /// Устанавливает модуль
+        /// </summary>
+        /// <param name="module">выбранный модуль</param>
         public void SetModule(LabModules module)
         {
             Console.WriteLine($"module set -> {module}");

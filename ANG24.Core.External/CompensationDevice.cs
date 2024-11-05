@@ -6,6 +6,7 @@ namespace ANG24.Core.External
 {
     public class CompensationDevice : ExecutableManagedDeviceBase, ISimpleDeviceBase
     {
+        public string Name { get; set; } = "Compensation";
         public int Voltage { get; set; }
         public int Current { get; set; }
         public int Combination { get; set; }
