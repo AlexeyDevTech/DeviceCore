@@ -9,6 +9,7 @@ namespace ANG24.Core.External
         public MNKActionTypes MNKConnection;
         public bool OperationSuccess { get; set; } = false;
         public bool Error { get; set; } = false;
+        public string Name { get; set; } = "MNKDevice";
 
         protected override void OnData(object data)
         {

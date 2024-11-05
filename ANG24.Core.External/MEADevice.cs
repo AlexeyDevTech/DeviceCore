@@ -9,7 +9,7 @@ namespace ANG24.Core.External
     public class MEADevice : ExecutableManagedDeviceBase
     {
         public ControllerData CurrentData { get; private set; }
-
+        public string Name { get; set; } = "MEADevice";
         public MEADevice()
         {
             /*

@@ -106,6 +106,7 @@
 
                 <Grid Grid.Row="1"></Grid>
                 <TabControl Grid.Row="2" Background="#FF3A3C49">
+
                     <TabItem Header="Control">
                         <Grid x:Name="ControlPanelBoard">
                             <Grid.RowDefinitions>
@@ -123,24 +124,25 @@
                                         <ColumnDefinition/>
                                         <ColumnDefinition Width="30"/>
                                     </Grid.ColumnDefinitions>
-                                    <TextBox Text="C:\commands.json" FontFamily="Consolas"/>
-                                    <Button Content="..." Grid.Column="1" Command="{Binding OpenConfigCommand}" Margin="2,2,2,1"/>
+
                                 </Grid>
                                 <Grid Grid.Column="1">
-                                    
+
                                 </Grid>
-                                
+
                             </Grid>
                             <Grid Grid.Row="1">
-                                
+
+                                <controls:ControlledMethodButtonsView DataContext="{Binding Buttons}"/>
+
                             </Grid>
                         </Grid>
                     </TabItem>
                     <TabItem Header="test2">
-                        
+
                     </TabItem>
                 </TabControl>
-                
+
             </Grid>
             <Grid Grid.Column="3"/>
         </Grid>

@@ -7,7 +7,7 @@ namespace ANG24.Core.External
     public class TestDevice : ExecutableManagedDeviceBase
     {
         private ControllerData CurrentData;
-
+        public string Name { get; private set; } = "TestDevice";
         public TestDevice()
         {
             //SetDataSource(new SerialDataSource("COM4"));
@@ -16,10 +16,10 @@ namespace ANG24.Core.External
             //CommandBehavior.SetDevice(this);
             //ConnectionBehavior = new AutoCallbackConnectionDeviceBehavior();
             //ConnectionBehavior.SetDevice(this);
-           /* this.SelectDataSource(new SerialDataSource("COM4"))
-                .SetDataReceivedType(typeof(string))
-                .SetCommandBehavior(new OrderStrongCommandDeviceBehavior())
-                .SetConnectionBehavior(new AutoCallbackConnectionDeviceBehavior(), Disconnect, Connect);*/
+            /* this.SelectDataSource(new SerialDataSource("COM4"))
+                 .SetDataReceivedType(typeof(string))
+                 .SetCommandBehavior(new OrderStrongCommandDeviceBehavior())
+                 .SetConnectionBehavior(new AutoCallbackConnectionDeviceBehavior(), Disconnect, Connect);*/
         }
         protected override void OnData(object data)
         {
@@ -117,5 +117,19 @@ namespace ANG24.Core.External
         }
         public void PowerOn() => Execute("#POWERUP", new PowerControlOptionalBehavior());
         public void PowerOff() => Execute("#POWERDOWN", new PowerControlOptionalBehavior() { PowerMode = true });
+
+        public void TestINT(int str)
+        {
+
+        }
+        public void TestString(string str)
+        {
+
+        }
+
+        public void TestDouble(double str)
+        {
+
+        }
     }
 }

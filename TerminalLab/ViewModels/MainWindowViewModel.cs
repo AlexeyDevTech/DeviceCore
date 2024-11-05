@@ -12,10 +12,11 @@ namespace TerminalLab.ViewModels
         Hub hub = Hub.Default;
         private string _rawText;
 
+
+        public ControlledMethodButtonsViewModel Buttons { get; set; }
         int _maxStringLenght = 1024;
         private ControllerItemUserControlViewModel _selController;
         private string _inputText;
-
         public string RawText
         {
             get => _rawText;
@@ -97,6 +98,8 @@ namespace TerminalLab.ViewModels
             {
                 RawText += $"{x.Controller} <- {x.Command}\n";
             });
+
+            Buttons = new();
         }
     }
 }

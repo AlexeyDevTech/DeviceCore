@@ -4,6 +4,7 @@ namespace ANG24.Core.External
 {
     public class MockDevice : ExecutableManagedDeviceBase
     {
+        public string Name { get; set; } = "MockDevice";
         public MockDevice()
         {
             /*

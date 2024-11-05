@@ -355,6 +355,14 @@
             </Setter.Value>
         </Setter>
     </Style>
+    <Style x:Key="ComboBoxUserControl" TargetType="ComboBox" BasedOn="{StaticResource SelectedInputControllerComboBoxStyle}">
+        <Setter Property="Visibility" Value="Collapsed"/>
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding isEnumParam}" Value="true">
+                <Setter Property="Visibility" Value="Visible"/>
+            </DataTrigger>
+        </Style.Triggers>
+    </Style>
     <Style TargetType="Button">
         <Setter Property="Template">
             <Setter.Value>
@@ -374,7 +382,14 @@
         </Setter>
 
     </Style>
-
+    <Style x:Key="TextBoxUserControl" TargetType="TextBox" BasedOn="{StaticResource ComboBoxEditableTextBox}">
+        <Setter Property="BorderThickness" Value="1"/>
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding isStringParam}" Value="true">
+                <Setter Property="Visibility" Value="Visible"/>
+            </DataTrigger>
+        </Style.Triggers>
+    </Style>
     <SolidColorBrush x:Key="TextBox.Static.Border" Color="#FFABAdB3"/>
     <SolidColorBrush x:Key="TextBox.MouseOver.Border" Color="#FF7EB4EA"/>
     <SolidColorBrush x:Key="TextBox.Focus.Border" Color="#FF569DE5"/>
