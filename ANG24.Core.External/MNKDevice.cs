@@ -1,9 +1,10 @@
 ﻿using ANG24.Core.Entities.DataTypes;
+using ANG24.Core.Interfaces.External;
 using ANG24.Infrastructure.Middleware.Base;
 
 namespace ANG24.Core.External
 {
-    public class MNKDevice : ExecutableManagedDeviceBase
+    public class MNKDevice : ExecutableManagedDeviceBase, ISimpleDeviceBase
     {
         public MNKControllerTypes MNKControllerType;
         public MNKActionTypes MNKConnection;

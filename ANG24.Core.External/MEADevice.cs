@@ -1,4 +1,5 @@
 ﻿using ANG24.Core.Entities.DataTypes;
+using ANG24.Core.Interfaces.External;
 using ANG24.Infrastructure.Middleware.Base;
 using ANG24.Infrastructure.Middleware.External;
 using ANG24.Infrastructure.Middleware.Factories;
@@ -6,7 +7,7 @@ using ANG24.Infrastructure.Middleware.RedirectOptionalCommandBehavior;
 
 namespace ANG24.Core.External
 {
-    public class MEADevice : ExecutableManagedDeviceBase
+    public class MEADevice : ExecutableManagedDeviceBase, ISimpleDeviceBase
     {
         public ControllerData CurrentData { get; private set; }
         public string Name { get; set; } = "MEADevice";

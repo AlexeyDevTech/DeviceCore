@@ -23,6 +23,11 @@
 
   <ItemGroup>
     <ProjectReference Include="..\ANG24.Core.External\ANG24.Core.External.csproj" />
+    <ProjectReference Include="..\ANG24.Core.Interfaces.External\ANG24.Core.Interfaces.External.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\ANG24.Core.External\ANG24.Core.External.csproj" />
     <ProjectReference Include="..\ANG24.Infrastructure.Middleware\ANG24.Infrastructure.Middleware.csproj" />
   </ItemGroup>
 

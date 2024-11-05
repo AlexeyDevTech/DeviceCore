@@ -1,4 +1,5 @@
 ﻿using ANG24.Core.Interfaces.CommandBehaviors.Realizations;
+using ANG24.Infrastructure.Logical.Base;
 using ANG24.Infrastructure.Logical.CommandBehavior;
 using System;
 using System.Collections.Generic;
@@ -13,7 +14,7 @@ namespace ANG24.Infrastructure.Middleware.Factories
     }
     public class OrderStrongCommandBehaviorFactory : CommandBehaviorFactory
     {
-        public ICommandDeviceBehaviorBase Create()
+        public CommandDeviceBehaviorBase Create()
         {
             return new OrderStrongCommandDeviceBehavior();
         }

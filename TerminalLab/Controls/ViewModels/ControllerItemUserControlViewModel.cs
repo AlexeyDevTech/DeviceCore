@@ -1,4 +1,6 @@
-﻿using Prism.Commands;
+﻿using ANG24.Core.External;
+using ANG24.Core.Interfaces.External;
+using Prism.Commands;
 using Prism.Mvvm;
 using PubSub;
 using System.Diagnostics;
@@ -10,6 +12,7 @@ namespace TerminalLab.Controls.ViewModels
 {
     public partial class ControllerItemUserControlViewModel : BindableBase
     {
+        ISimpleDeviceBase device;
         public bool Online
         {
             get => _online;
@@ -19,12 +22,21 @@ namespace TerminalLab.Controls.ViewModels
         public string PortName
         {
             get => _portName;
-            set => SetProperty(ref _portName, value);
+            set
+            {
+                SetProperty(ref _portName, value);
+
+            }
+            
         }
         public string ControllerName
         {
             get => _controllerName;
-            set => SetProperty(ref _controllerName, value);
+            set
+            {
+                SetProperty(ref _controllerName, value);
+                device = (ISimpleDeviceBase)SimpleDeviceFabric.Create(value);
+            }
         }
 
 

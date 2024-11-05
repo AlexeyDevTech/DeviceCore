@@ -1,9 +1,10 @@
-﻿using ANG24.Infrastructure.Middleware.Base;
+﻿using ANG24.Core.Interfaces.External;
+using ANG24.Infrastructure.Middleware.Base;
 using ANG24.Infrastructure.Middleware.RedirectOptionalCommandBehavior;
 
 namespace ANG24.Core.External
 {
-    public class CompensationDevice : ExecutableManagedDeviceBase
+    public class CompensationDevice : ExecutableManagedDeviceBase, ISimpleDeviceBase
     {
         public int Voltage { get; set; }
         public int Current { get; set; }
