@@ -127,7 +127,16 @@ namespace ANG24.Core.External
 
         }
 
-        public void TestDouble(double str)
+
+        public void TestMultiBinding(LabModules modul, int ret)
+        {
+
+        }
+        public void Test123(double qwe, double rwe)
+        {
+
+        }
+        public void Test13(double qwe, double rwe)
         {
 
         }

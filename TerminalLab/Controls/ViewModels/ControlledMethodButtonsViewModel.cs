@@ -1,5 +1,6 @@
 ﻿using ANG24.Core.External;
 using ANG24.Infrastructure.Middleware.Base;
+using Autofac.Core;
 using Prism.Commands;
 using Prism.Mvvm;
 using System;
@@ -15,9 +16,7 @@ namespace TerminalLab.Controls.ViewModels
 {
     public class ControlledMethodButtonsViewModel : BindableBase
     {
-        public ObservableCollection<MethodButton> MethodButtons { get; set; }
-
-
+        public ObservableCollection<MethodButton> MethodButtons { get; set; } = new ObservableCollection<MethodButton>();
         private SimpleDeviceBase _device;
         public SimpleDeviceBase Device
         {
@@ -36,7 +35,8 @@ namespace TerminalLab.Controls.ViewModels
               {
                  SimpleDeviceFabric.Create(ANG24.Core.External.Types.ControllerNames.Main),
                  SimpleDeviceFabric.Create(ANG24.Core.External.Types.ControllerNames.Compensation),
-                 SimpleDeviceFabric.Create(ANG24.Core.External.Types.ControllerNames.MNK)
+                 SimpleDeviceFabric.Create(ANG24.Core.External.Types.ControllerNames.MNK),
+                 new TestDevice()
               };
 
             MethodButtons = new ObservableCollection<MethodButton>();
@@ -52,67 +52,76 @@ namespace TerminalLab.Controls.ViewModels
             {
                 var parameters = method.GetParameters();
                 // Создаем команду для каждого метода
-                ICommand command = new DelegateCommand<object>(parameter =>
-                {
-                    var parameters = method.GetParameters();
 
-                    if (parameters.Length == 0)
-                        method.Invoke(device, null);
-                    else
-                    {
-                        if (parameter == null)
-                        {
-                            return;
-                        }
-                        try
-                        {
-                            method.Invoke(device, new object[] { parameter });
-                        }
-                        catch
-                        {
-                            double par = 0;
-                            try
-                            {
-                                par = Double.Parse((parameter as string).Replace('.', ',').Trim());
-                                method.Invoke(device, new object[] { par });
-                            }
-                            catch
-                            {
-                                try
-                                {
-
-                                    method.Invoke(device, new object[] { (int)par });
-                                }
-                                catch
-                                {
-
-                                }
-                            }
-                        }
-
-
-
-                    }
-                });
 
                 MethodButton button = new MethodButton();
                 button.Name = method.Name;
-                button.Command = command;
+                button.Command = CreateCommand(method, device);
 
                 if (parameters.Length > 0)
                 {
-                    try
+                    for (int i = 0; i < parameters.Length; i++)
                     {
-                        button.Values = parameters[0].ParameterType.GetEnumValues();
-                        button.isEnumParam = true;
-                    }
-                    catch
-                    {
-                        button.Param = parameters[0];
-                        button.isStringParam = true;
+
+                        Parameter param = new Parameter();
+                        try
+                        {
+                            param.Param = parameters[i].ParameterType.GetEnumValues();
+                            param.IsEnumParam = true;
+                        }
+                        catch
+                        {
+                            param.Param = parameters[i];
+                            param.IsEnumParam = false;
+                        }
+                        button.Params.Add(param);
                     }
                 }
                 MethodButtons.Add(button);
+            }
+        }
+
+        private ICommand CreateCommand(MethodInfo method, SimpleDeviceBase device)
+        {
+            ICommand command = new DelegateCommand<object>(parameter =>
+            {
+                var parameters = method.GetParameters();
+                if (parameters.Length == 0)
+                    method.Invoke(device, null);
+                else
+                {
+                    try
+                    {
+                        object[] invokeParams = new object[parameters.Length];
+                        for (int i = 0; i < parameters.Length; i++)
+                        {
+                            Type type = parameters[i].ParameterType;
+                            invokeParams[i] = GetParameterInType(type, (parameter as object[])[i]);
+                        }
+                        method.Invoke(device, invokeParams);
+                    }
+                    catch
+                    {
+
+
+                    }
+                }
+            });
+
+            return command;
+        }
+        private object GetParameterInType(Type type, object param)
+        {
+            switch (type.Name)
+            {
+                case "Int32":
+                    return int.Parse(param.ToString());
+                case "Double":
+                    return double.Parse((param as string).Replace('.', ',').Trim());
+                case "String":
+                    return param.ToString();
+                default:
+                    return param;
             }
         }
     }
@@ -121,11 +130,14 @@ namespace TerminalLab.Controls.ViewModels
     {
         public string Name { get; set; }
         public ICommand Command { get; set; }
+        public ObservableCollection<Parameter> Params { get; set; } = new ObservableCollection<Parameter>();
+    }
 
-        public bool isStringParam { get; set; }
-        public bool isEnumParam { get; set; }
-        public object? Values { get; set; }
+    public class Parameter
+    {
         public object? Param { get; set; }
+        public object? Value { get; set; } = new object();
+        public bool IsEnumParam { get; set; }
     }
 
 }

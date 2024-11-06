@@ -356,12 +356,7 @@
         </Setter>
     </Style>
     <Style x:Key="ComboBoxUserControl" TargetType="ComboBox" BasedOn="{StaticResource SelectedInputControllerComboBoxStyle}">
-        <Setter Property="Visibility" Value="Collapsed"/>
-        <Style.Triggers>
-            <DataTrigger Binding="{Binding isEnumParam}" Value="true">
-                <Setter Property="Visibility" Value="Visible"/>
-            </DataTrigger>
-        </Style.Triggers>
+        
     </Style>
     <Style TargetType="Button">
         <Setter Property="Template">
@@ -389,7 +384,7 @@
         <Setter Property="Background" Value="#FF606060"/>
         <Setter Property="Foreground" Value="White"/>
         <Style.Triggers>
-            <DataTrigger Binding="{Binding isStringParam}" Value="true">
+            <DataTrigger Binding="{Binding Params[0].IsEnumParam}" Value="false">
                 <Setter Property="Visibility" Value="Visible"/>
             </DataTrigger>
         </Style.Triggers>

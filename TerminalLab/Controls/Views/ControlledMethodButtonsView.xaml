@@ -13,43 +13,17 @@
         <ResourceDictionary Source="../../StyleDictionary.xaml"/>
     </UserControl.Resources>
     <StackPanel >
-        <ComboBox Height="25" ItemsSource="{Binding Controllers}" DisplayMemberPath="Name" SelectedItem="{Binding Device}" Style="{DynamicResource SelectedInputControllerComboBoxStyle}"/>
+        <ComboBox Height="25" 
+                  ItemsSource="{Binding Controllers}" 
+                  DisplayMemberPath="Name" 
+                  SelectedItem="{Binding Device}" 
+                  Style="{DynamicResource SelectedInputControllerComboBoxStyle}"
+                  SelectionChanged="ComboBox_SelectionChanged"/>
 
-        <ItemsControl ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-                 ItemsSource="{Binding MethodButtons}">
-            <ItemsControl.ItemsPanel>
-                <ItemsPanelTemplate>
-                    <WrapPanel Orientation="Vertical" Height="100"/>
-                </ItemsPanelTemplate>
-            </ItemsControl.ItemsPanel>
-            <ItemsControl.ItemTemplate>
-                <DataTemplate>
-                    <Border BorderBrush="Black" BorderThickness="1" Margin="5">
-                        <StackPanel Orientation="Vertical" Margin="5">
+        
+        <WrapPanel x:Name="Panel" Orientation="Vertical" Height="100" />
 
-                            <Button Height="25" MinWidth="100" 
-                                Margin="5"
-                                Content="{Binding Name}" 
-                                Command="{Binding Command}" 
-                                CommandParameter="{Binding Param}" />
-                            <ComboBox Style="{DynamicResource ComboBoxUserControl}" 
-                                  Height="25" 
-                                  Margin="5"
-                                  ItemsSource="{Binding Values}" 
-                                  SelectedItem="{Binding Param}" 
-                                  IsEnabled="{Binding isEnum}"/>
-                            <TextBox  Style="{DynamicResource TextBoxUserControl}" 
-                                  Height="25"
-                                  Margin="5"
-                                  Text="{Binding Param}" 
-                                  IsEnabled="{Binding isString}"/>
-  
-                        </StackPanel>
-                    </Border>
-                </DataTemplate>
 
-            </ItemsControl.ItemTemplate>
-        </ItemsControl>
     </StackPanel>
 
 </UserControl>
