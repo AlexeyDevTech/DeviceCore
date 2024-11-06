@@ -10,5 +10,6 @@ namespace ANG24.Core.External
 {
     public class AOTDevice : ExecutableManagedDeviceBase, ISimpleDeviceBase
     {
+        public string Name { get; set; } = "AOT";
     }
 }

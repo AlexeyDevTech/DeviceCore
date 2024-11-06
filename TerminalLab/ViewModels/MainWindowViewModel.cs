@@ -99,7 +99,7 @@ namespace TerminalLab.ViewModels
                 RawText += $"{x.Controller} <- {x.Command}\n";
             });
 
-            Buttons = new();
+            Buttons = new(Controllers);
         }
     }
 }

@@ -29,17 +29,19 @@ namespace TerminalLab.Controls.ViewModels
         }
         public ObservableCollection<SimpleDeviceBase> Controllers { get; set; }
 
-        public ControlledMethodButtonsViewModel()
+        public ControlledMethodButtonsViewModel(ObservableCollection<ControllerItemUserControlViewModel> controllers)
         {
-            Controllers = new ObservableCollection<SimpleDeviceBase>()
-              {
-                 SimpleDeviceFabric.Create(ANG24.Core.External.Types.ControllerNames.Main),
-                 SimpleDeviceFabric.Create(ANG24.Core.External.Types.ControllerNames.Compensation),
-                 SimpleDeviceFabric.Create(ANG24.Core.External.Types.ControllerNames.MNK),
-                 new TestDevice()
-              };
+            FillControllers(controllers);
 
             MethodButtons = new ObservableCollection<MethodButton>();
+        }
+        private void FillControllers(ObservableCollection<ControllerItemUserControlViewModel> controllers)
+        {
+            Controllers = new();
+            for (var i = 0; i < controllers.Count; i++)
+            {
+                Controllers.Add(SimpleDeviceFabric.Create(controllers[i].ControllerName));
+            }
         }
         private void FindPublicMethods(SimpleDeviceBase device)
         {

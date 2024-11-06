@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ANG24.Infrastructure.Middleware.Base;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -26,9 +27,9 @@ namespace TerminalLab.Controls.Views
         public ControlledMethodButtonsView()
         {
             InitializeComponent();
-
+            
         }
-
+       
         private void GenerateMethods()
         {
             this.Panel.Children.Clear();
@@ -38,13 +39,12 @@ namespace TerminalLab.Controls.Views
                 Border border = new Border();
                 border.BorderThickness = new Thickness(1);
                 border.BorderBrush = Brushes.Black;
-               // border.Margin = new Thickness(1);
-                //border.Padding = new Thickness(2);
+
 
                 StackPanel panel = new StackPanel();
                 panel.Orientation = Orientation.Vertical;
-               
-                
+
+
                 Button button = new();
                 button.MinWidth = 100;
                 button.Height = 25;
@@ -74,14 +74,14 @@ namespace TerminalLab.Controls.Views
                             comboBox.SetBinding(ComboBox.SelectedItemProperty, binding);
 
                             multiBinding.Bindings.Add(binding);
-                            //button.SetBinding(Button.CommandParameterProperty, binding);
+
                             panel.Children.Add(comboBox);
                         }
                         else
                         {
                             TextBox textBox = new TextBox();
                             textBox.Height = 25;
-                           // textBox.Margin = new Thickness(5);
+
                             Binding binding = new Binding();
                             binding.Source = item.Params[i];
                             binding.Path = new PropertyPath("Value");
@@ -90,9 +90,7 @@ namespace TerminalLab.Controls.Views
                             textBox.Text = "";
                             multiBinding.Bindings.Add(binding);
 
-                            // button.SetBinding(Button.CommandParameterProperty, binding);
 
-                            //panel.Children.Add(button);
                             panel.Children.Add(textBox);
                         }
                     }
@@ -114,5 +112,7 @@ namespace TerminalLab.Controls.Views
         {
             GenerateMethods();
         }
+
+
     }
 }
